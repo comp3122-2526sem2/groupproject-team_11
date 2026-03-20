@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圓柱表面積視覺化</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        #cyl-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .animation-panel {
+            background: radial-gradient(circle at 60% 50%, #0f172a 0%, #020617 100%);
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="index.html" class="nav-link">1. 圓形面積 ($A = \pi r^2$)</a>
+        <a href="cylinder.html" class="nav-link active">2. 圓柱側表面積 ($A = 2\pi r \times h$)</a>
+    </nav>
+
+    <header class="page-header">
+        <h1>數學之美：圓柱側面展開</h1>
+        <p class="scroll-hint">請往下滾動 👇</p>
+    </header>
+
+    <div class="scroll-container">
+        <div class="sticky-layout">
+            <div class="text-panel">
+                <div class="step step-0 active">
+                    <h2>圓柱體的側面</h2>
+                    <p>這是一個高度為 <span class="math-hl">\(h\)</span>，底面半徑為 <span class="math-hl">\(r\)</span> 的圓柱體。<br><br>我們如何計算它周圍這一圈「側表面」的面積呢？</p>
+                </div>
+                <div class="step step-1">
+                    <h2>沿側面剪一刀</h2>
+                    <p>想像我們沿圓柱體背面的垂直線剪開，<br>然後把這片外殼向外攤平展開...</p>
+                </div>
+                <div class="step step-2">
+                    <h2>攤平成長方形！</h2>
+                    <p>你看！完全攤平後，原來就只是一個長方形！<br><br>高度仍然是圓柱的高 (<span class="math-hl">\(h\)</span>)，<br>而長度則正好等於底面圓形的周長。</p>
+                </div>
+                <div class="step step-3">
+                    <h2>側面積公式</h2>
+                    <p>長方形面積 = 長 × 寬<br><br>
+                    長 = 圓周長 = <span class="math-hl">\(2\pi r\)</span><br>
+                    寬 = 圓柱高度 = <span class="math-hl">\(h\)</span><br><br>
+                    所以側表面積：<br><br>
+                    <span class="math-hl">\(A = 2\pi r \times h\)</span></p>
+                </div>
+            </div>
+
+            <div class="animation-panel">
+                <canvas id="cyl-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="cylinder.js"></script>
+</body>
+</html>
