@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圓面積公式視覺化 — 3D 互動動畫</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        #circle-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .animation-panel {
+            background: radial-gradient(circle at 50% 45%, #0f172a 0%, #020617 100%);
+        }
+        .scroll-container {
+            height: 700vh !important;
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav" style="justify-content: flex-start;">
+        <a href="index.html" class="nav-link">🏠 返回數學概念首頁</a>
+    </nav>
+
+    <header class="page-header">
+        <div class="glow-orb orb-1" style="opacity: 0.2;"></div>
+        <div class="glow-orb orb-2" style="opacity: 0.2;"></div>
+        <h1>數學之美：圓面積公式的由來</h1>
+        <p class="scroll-hint">請往下滾動 👇</p>
+    </header>
+
+    <div class="scroll-container">
+        <div class="sticky-layout">
+            <!-- Text content fixed on the left -->
+            <div class="text-panel">
+                <div class="step step-0 active">
+                    <h2>一個完整的圓</h2>
+                    <p>這是一個半徑為 <span class="math-hl">\(r\)</span> 的圓。<br><br>
+                    你想知道它的面積公式 <span class="math-hl">\(A = \pi r^2\)</span> 是怎麼來的嗎？<br><br>
+                    讓我們一步步拆解這個秘密。</p>
+                </div>
+                <div class="step step-1">
+                    <h2>✂️ 切割線出現</h2>
+                    <p>想像我們拿起一把刀，<br>從圓心出發，沿著半徑方向切出 <span class="math-hl">16</span> 條等距的線...<br><br>
+                    把圓形切割成 16 個大小完全相同的「扇形」。</p>
+                </div>
+                <div class="step step-2">
+                    <h2>切片微微分開</h2>
+                    <p>切割完成後，16 個扇形微微鬆開。<br><br>
+                    每一片都像一塊披薩🍕！<br>
+                    注意它們的 3D 深度效果——每片扇形彷彿從圓盤上「浮」了起來。</p>
+                </div>
+                <div class="step step-3">
+                    <h2>扇形散開</h2>
+                    <p>所有扇形沿著各自的方向向外飛散！<br><br>
+                    每一片的尖端都指向圓心的方向。<br>
+                    觀察它們在空間中是如何分布的。</p>
+                </div>
+                <div class="step step-4">
+                    <h2>分成兩組</h2>
+                    <p>接著，我們將 16 個扇形分成兩組：<br><br>
+                    🔵 <strong>雙數扇形</strong>——尖端朝下，排在上方<br>
+                    🟣 <strong>單數扇形</strong>——尖端朝上，排在下方<br><br>
+                    為下一步的拼合做好準備。</p>
+                </div>
+                <div class="step step-5">
+                    <h2>交錯拼合！</h2>
+                    <p>兩組扇形像齒輪一樣交錯咬合——<br><br>
+                    上面一片（尖端朝下）、下面一片（尖端朝上）...<br>
+                    它們完美的拼成了一個近似的<strong>長方形</strong>！</p>
+                </div>
+                <div class="step step-6">
+                    <h2>公式揭曉 🎉</h2>
+                    <p>這個長方形的：<br><br>
+                    長 = 圓周長的一半 = <span class="math-hl">\(\pi r\)</span><br>
+                    高 = 半徑 = <span class="math-hl">\(r\)</span><br><br>
+                    所以圓的面積：<br><br>
+                    <span class="math-hl">\(A = \pi r \times r = \pi r^2\)</span></p>
+                </div>
+            </div>
+
+            <!-- Animation panel fixed on the right -->
+            <div class="animation-panel">
+                <canvas id="circle-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="circle-area.js"></script>
+</body>
+</html>

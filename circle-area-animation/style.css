@@ -183,3 +183,225 @@ body {
 .slice:hover {
     filter: brightness(1.2);
 }
+
+
+/* =========================================
+   HUB PAGE SPECIFIC STYLES (Vibrant Mesh)
+   ========================================= */
+
+.hub-body {
+    background-color: #000; /* Fallback */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Vibrant Mesh Background */
+.mesh-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: #020617;
+}
+
+.color-blob {
+    position: absolute;
+    filter: blur(100px);
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: drift 15s infinite alternate ease-in-out;
+}
+
+.blob-1 { width: 50vw; height: 50vw; background: #38bdf8; top: -10vw; left: -10vw; animation-duration: 25s; }
+.blob-2 { width: 40vw; height: 40vw; background: #c026d3; bottom: -10vw; right: -10vw; animation-delay: -5s; }
+.blob-3 { width: 45vw; height: 45vw; background: #4f46e5; top: 40%; left: 40%; animation-duration: 20s; }
+.blob-4 { width: 30vw; height: 30vw; background: #f43f5e; top: -5vw; right: 20vw; animation-delay: -10s; }
+
+@keyframes drift {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(10vw, 10vh) scale(1.2); }
+}
+
+/* Header */
+.hub-header {
+    text-align: center;
+    padding: 6rem 2rem 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+.hub-header h1 {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #67e8f9, #d8b4fe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hub-header p {
+    font-size: 1.3rem;
+    color: #e2e8f0;
+    max-width: 650px;
+    margin: 0 auto;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+/* Category Sections */
+.hub-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    padding: 2rem 2rem 6rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.category-title {
+    font-size: 2rem;
+    color: #f8fafc;
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.hub-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2.5rem;
+}
+
+/* Enhanced Glassmorphism Math Cards */
+.math-card {
+    --accent: #38bdf8;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    text-decoration: none;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Specular highlight on border */
+.math-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.card-glow {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: var(--accent);
+    filter: blur(70px);
+    opacity: 0.2;
+    border-radius: 50%;
+    top: -50px;
+    right: -50px;
+    transition: all 0.5s ease;
+    z-index: -1;
+}
+
+.math-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(var(--accent), 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.math-card:hover .card-glow {
+    opacity: 0.5;
+}
+
+.card-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
+.math-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.formula {
+    font-size: 1.4rem;
+    font-family: monospace;
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    background: rgba(0,0,0,0.4);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.math-card p {
+    color: #e2e8f0;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    flex: 1;
+}
+
+.btn-explore {
+    display: inline-flex;
+    align-items: center;
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.math-card:hover .btn-explore {
+    transform: translateX(8px);
+}
+
+/* Disabled Future Cards */
+.disabled-card {
+    opacity: 0.6;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(10px);
+    cursor: not-allowed;
+}
+
+.disabled-card:hover {
+    transform: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.4);
+}
+
+.btn-explore.waiting {
+    color: #94a3b8;
+}
+
