@@ -224,10 +224,15 @@ function draw() {
         ctx.setLineDash([]);
 
         // Scissors emoji
-        ctx.font = 'bold 28px serif';
+        ctx.font = 'bold 30px serif';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = 'rgba(0,0,0,0.95)';
+        ctx.shadowBlur  = 10;
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1;
         ctx.fillText('✂', cutX, cutTop - 8);
+        ctx.shadowColor = 'transparent';
 
         ctx.restore();
     }

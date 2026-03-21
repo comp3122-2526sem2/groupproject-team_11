@@ -272,9 +272,13 @@ function draw() {
                 const sx    = cx + Math.cos(angle) * len;
                 const sy    = cy + Math.sin(angle) * len * scaleY;
                 ctx.save();
-                ctx.font      = '24px serif';
+                ctx.font      = '28px serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(0,0,0,0.9)';
+                ctx.shadowBlur  = 8;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
                 ctx.fillText('✂️', sx, sy);
                 ctx.restore();
             }
