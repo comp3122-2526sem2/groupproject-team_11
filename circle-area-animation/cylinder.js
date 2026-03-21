@@ -139,10 +139,10 @@ function draw() {
         const topY = cy - CYL_H / 2;
         const botY = cy + CYL_H / 2;
 
-        // Colour: from shaded cylinder to uniform flat blue
-        const flatBright = 55;
+        // Colour: from shaded cylinder to uniform flat grey-white
+        const flatBright = 72;
         const curBright = lerp(s.brightness, flatBright, st);
-        const fill = `hsl(199, 89%, ${curBright}%)`;
+        const fill = `hsl(0, 0%, ${curBright}%)`;
 
         // Border between strips
         const borderAlpha = lerp(0, 0.25, st);
@@ -185,7 +185,7 @@ function draw() {
         // Top cap
         ctx.beginPath();
         ctx.ellipse(cx, cy - CYL_H / 2, CYL_R, CYL_R * ELLIP, 0, 0, Math.PI * 2);
-        ctx.fillStyle = 'hsla(199, 100%, 78%, 0.6)';
+        ctx.fillStyle = 'hsla(0, 0%, 90%, 0.55)';
         ctx.fill();
         ctx.strokeStyle = 'rgba(255,255,255,0.5)';
         ctx.lineWidth = 1.5;
@@ -194,7 +194,7 @@ function draw() {
         // Bottom cap (only the front half visible)
         ctx.beginPath();
         ctx.ellipse(cx, cy + CYL_H / 2, CYL_R, CYL_R * ELLIP, 0, 0, Math.PI);
-        ctx.fillStyle = 'hsla(199, 100%, 30%, 0.7)';
+        ctx.fillStyle = 'hsla(0, 0%, 25%, 0.7)';
         ctx.fill();
         ctx.strokeStyle = 'rgba(255,255,255,0.3)';
         ctx.stroke();
@@ -215,7 +215,7 @@ function draw() {
         const cutBot = cy + CYL_H / 2 + CYL_R * ELLIP;
 
         ctx.setLineDash([8, 5]);
-        ctx.strokeStyle = '#fbbf24';
+        ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.moveTo(cutX, cutTop);
@@ -226,7 +226,7 @@ function draw() {
         // Scissors emoji
         ctx.font = 'bold 28px serif';
         ctx.textAlign = 'center';
-        ctx.fillStyle = '#fbbf24';
+        ctx.fillStyle = '#ffffff';
         ctx.fillText('✂', cutX, cutTop - 8);
 
         ctx.restore();
@@ -240,8 +240,8 @@ function draw() {
 
         // Two curved arrows pointing left and right from the cut
         const arrowY = cy - CYL_H / 2 - 40;
-        ctx.strokeStyle = '#fbbf24';
-        ctx.fillStyle   = '#fbbf24';
+        ctx.strokeStyle = '#ffffff';
+        ctx.fillStyle   = '#ffffff';
         ctx.lineWidth   = 2;
 
         // Left arrow
@@ -282,14 +282,14 @@ function draw() {
 
         // Dashed rectangle border for emphasis
         ctx.setLineDash([10, 6]);
-        ctx.strokeStyle = '#fbbf24';
+        ctx.strokeStyle = '#ffffff';
         ctx.lineWidth   = 2.5;
         ctx.strokeRect(rectLeft, rectTop, totalFlatW, CYL_H);
         ctx.setLineDash([]);
 
         // Width brace (top)
         const braceY = rectTop - 20;
-        ctx.strokeStyle = '#fcd34d';
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
         ctx.lineWidth   = 2;
         ctx.beginPath();
         ctx.moveTo(rectLeft,  rectTop - 5);
@@ -298,7 +298,7 @@ function draw() {
         ctx.lineTo(rectRight, rectTop - 5);
         ctx.stroke();
 
-        ctx.fillStyle = '#fcd34d';
+        ctx.fillStyle = '#ffffff';
         ctx.font      = 'bold 20px "Noto Sans TC", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('展開長度 = 2πr（底圓的周長）', cx, braceY - 10);
@@ -318,7 +318,7 @@ function draw() {
         // Area formula below
         ctx.textAlign = 'center';
         ctx.font = 'bold 24px "Noto Sans TC", sans-serif';
-        ctx.fillStyle = '#fbbf24';
+        ctx.fillStyle = '#ffffff';
         ctx.fillText('側面積 = 2πr × h', cx, rectBot + 45);
 
         ctx.restore();

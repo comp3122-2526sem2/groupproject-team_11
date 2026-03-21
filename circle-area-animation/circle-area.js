@@ -27,10 +27,10 @@ const N           = 16;
 const R           = 130;
 const SLICE_ANGLE = (2 * Math.PI) / N;
 
-const COL_EVEN_A = '#06b6d4';
-const COL_EVEN_B = '#3b82f6';
-const COL_ODD_A  = '#d946ef';
-const COL_ODD_B  = '#8b5cf6';
+const COL_EVEN_A = '#e0e0e0';
+const COL_EVEN_B = '#a0a0a0';
+const COL_ODD_A  = '#555555';
+const COL_ODD_B  = '#2a2a2a';
 
 // Half-chord width of one slice at its arc edge
 const W = 2 * R * Math.sin(SLICE_ANGLE / 2);
@@ -256,10 +256,10 @@ function draw() {
                 ctx.beginPath();
                 ctx.moveTo(cx, cy);
                 ctx.lineTo(ex, ey);
-                ctx.strokeStyle = '#fbbf24';
+                ctx.strokeStyle = '#ffffff';
                 ctx.lineWidth   = 2;
                 ctx.setLineDash([4, 3]);
-                ctx.shadowColor = '#fbbf24';
+                ctx.shadowColor = '#ffffff';
                 ctx.shadowBlur  = 8;
                 ctx.stroke();
                 ctx.restore();
@@ -361,14 +361,14 @@ function draw() {
 
         // Dashed rectangle
         ctx.setLineDash([10, 6]);
-        ctx.strokeStyle = '#fbbf24';
+        ctx.strokeStyle = '#ffffff';
         ctx.lineWidth   = 2.5;
         ctx.strokeRect(rectLeft, rectTop, totalW, halfH * 2);
         ctx.setLineDash([]);
 
         // Top brace
         const brY = rectTop - 22;
-        ctx.strokeStyle = '#fcd34d';
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
         ctx.lineWidth   = 2;
         ctx.beginPath();
         ctx.moveTo(rectLeft,  rectTop - 5);
@@ -377,7 +377,7 @@ function draw() {
         ctx.lineTo(rectRight, rectTop - 5);
         ctx.stroke();
 
-        ctx.fillStyle = '#fcd34d';
+        ctx.fillStyle = '#ffffff';
         ctx.font      = 'bold 20px "Noto Sans TC", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('長度 = πr（半周長）', cx, brY - 12);
@@ -396,7 +396,7 @@ function draw() {
         // Formula
         ctx.textAlign = 'center';
         ctx.font      = 'bold 26px "Noto Sans TC", sans-serif';
-        ctx.fillStyle = '#fbbf24';
+        ctx.fillStyle = '#ffffff';
         ctx.fillText('面積 A = πr × r = πr²', cx, rectBot + 50);
 
         ctx.restore();
