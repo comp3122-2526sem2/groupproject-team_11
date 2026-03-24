@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>指數增長 vs 線性增長 | Exponential vs Linear Growth</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        /* ==========================================
+           EXPONENTIAL PAGE — LAYOUT
+           ========================================== */
+        .exp-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #0d0d0d;
+        }
+
+        .exp-nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            background: rgba(13, 13, 13, 0.92);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .exp-nav a {
+            color: #909090;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: color 0.3s;
+        }
+
+        .exp-nav a:hover { color: #fff; }
+
+        .exp-nav .nav-title {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 900;
+        }
+
+        /* Main content area — fixed height, no overflow growth */
+        .exp-content {
+            display: flex;
+            margin-top: 60px;
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+
+        /* ==========================================
+           LEFT — EXPLANATION PANEL
+           ========================================== */
+        .exp-text-panel {
+            width: 30%;
+            min-width: 300px;
+            padding: 2rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-right: 1px solid rgba(255,255,255,0.08);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .exp-text-panel h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.3;
+            margin-bottom: 0.25rem;
+        }
+
+        .exp-text-panel .subtitle {
+            font-size: 0.95rem;
+            color: #707070;
+            margin-bottom: 0.25rem;
+        }
+
+        .concept-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .concept-box h3 {
+            font-size: 1.05rem;
+            color: #e0e0e0;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .concept-box p, .concept-box ul {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+
+        .concept-box ul {
+            padding-left: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        .concept-box li {
+            margin-bottom: 0.35rem;
+        }
+
+        .concept-highlight {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .insight-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.08));
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .insight-box h3 {
+            font-size: 1.05rem;
+            color: #fbbf24;
+            margin-bottom: 0.6rem;
+        }
+
+        .insight-box p {
+            font-size: 0.9rem;
+            color: #fcd34d;
+            line-height: 1.7;
+        }
+
+        /* ==========================================
+           RIGHT — INTERACTIVE PANEL
+           ========================================== */
+        .exp-interactive {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+        }
+
+        /* — Big narrative display — the core "wow" element */
+        .narrative-display {
+            text-align: center;
+            padding: 1.25rem 1.5rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .narrative-display .narr-square {
+            font-size: 0.9rem;
+            color: #909090;
+            font-weight: 700;
+        }
+
+        .narrative-display .narr-grains {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fbbf24;
+            text-shadow: 0 0 20px rgba(251,191,36,0.3);
+            transition: font-size 0.3s;
+        }
+
+        .narrative-display .narr-comparison {
+            font-size: 0.95rem;
+            color: #a0a0a0;
+            line-height: 1.5;
+            max-width: 500px;
+        }
+
+        .narrative-display .narr-comparison strong {
+            color: #f87171;
+            font-weight: 900;
+        }
+
+        .narrative-display.milestone {
+            border-color: rgba(239, 68, 68, 0.35);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(245, 158, 11, 0.06));
+            animation: milestoneGlow 0.5s ease-out;
+        }
+
+        @keyframes milestoneGlow {
+            0% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
+            100% { box-shadow: none; }
+        }
+
+        /* — Chessboard */
+        .chessboard-wrapper {
+            display: flex;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .chessboard {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+            width: 100%;
+            max-width: 440px;
+            aspect-ratio: 1;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 3px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .cell {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0.2rem;
+            gap: 0.1rem;
+            overflow: hidden;
+        }
+
+        .cell.light { background: #1a1a2e; }
+        .cell.dark  { background: #16213e; }
+
+        .cell .cell-number {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.3);
+            z-index: 2;
+            line-height: 1;
+        }
+
+        .cell .cell-fill {
+            position: absolute;
+            inset: 0;
+            border-radius: 3px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .cell.visited .cell-number { color: rgba(255,255,255,0.8); }
+        .cell.active {
+            box-shadow: 0 0 10px rgba(251,191,36,0.6);
+            transform: scale(1.08);
+            z-index: 5;
+        }
+        .cell.active .cell-number {
+            color: #fff;
+            text-shadow: 0 0 6px rgba(251,191,36,0.6);
+        }
+        .cell:hover:not(.active) {
+            box-shadow: 0 0 6px rgba(255,255,255,0.12);
+            transform: scale(1.04);
+            z-index: 4;
+        }
+
+        /* — Button bar + stats in one row */
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            padding: 0.65rem 1.2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'Noto Sans TC', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(245,158,11,0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,0.45); }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.08);
+            color: #e0e0e0;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+
+        .btn-danger {
+            background: rgba(239,68,68,0.15);
+            color: #f87171;
+            border: 1px solid rgba(239,68,68,0.25);
+        }
+        .btn-danger:hover { background: rgba(239,68,68,0.25); transform: translateY(-2px); }
+
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            color: #707070;
+            margin-left: auto;
+        }
+
+        .speed-control input[type="range"] { width: 70px; accent-color: #f59e0b; }
+        .speed-label { min-width: 30px; text-align: center; color: #fbbf24; font-weight: 700; }
+
+        .stat-inline {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #707070;
+            margin-left: 0.5rem;
+            padding-left: 0.75rem;
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-inline .stat-val {
+            color: #fff;
+            font-weight: 900;
+        }
+        .stat-inline .stat-val.accent {
+            color: #fbbf24;
+        }
+
+        /* — Chart area — FIXED height, never grows */
+        .chart-wrapper {
+            height: 280px;
+            min-height: 200px;
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            position: relative;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            height: 28px;
+        }
+
+        .chart-label {
+            font-size: 0.8rem;
+            color: #707070;
+            letter-spacing: 0.5px;
+        }
+
+        .axis-toggle {
+            display: flex; gap: 0;
+            border-radius: 6px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .axis-toggle button {
+            padding: 0.25rem 0.7rem; font-size: 0.7rem; font-weight: 700;
+            font-family: 'Noto Sans TC', sans-serif; border: none; cursor: pointer;
+            background: rgba(255,255,255,0.05); color: #707070; transition: all 0.25s;
+        }
+        .axis-toggle button.active { background: rgba(245,158,11,0.25); color: #fbbf24; }
+        .axis-toggle button:hover:not(.active) { background: rgba(255,255,255,0.1); color: #c0c0c0; }
+
+        .chart-canvas-container {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 38px);
+        }
+
+        /* ==========================================
+           RESPONSIVE
+           ========================================== */
+        @media (max-width: 1000px) {
+            .exp-content { flex-direction: column; height: auto; min-height: calc(100vh - 60px); overflow: auto; }
+            .exp-text-panel { width: 100%; min-width: auto; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); max-height: 30vh; }
+            .exp-interactive { padding: 1.25rem; }
+            .chessboard { max-width: 320px; }
+            .cell .cell-number { font-size: 0.5rem; }
+            .chart-wrapper { height: 220px; min-height: 180px; }
+        }
+    </style>
+</head>
+<body class="exp-page">
+    <!-- Navigation -->
+    <nav class="exp-nav">
+        <a href="index.html">← 返回首頁</a>
+        <span class="nav-title">📈 指數增長 vs 線性增長</span>
+    </nav>
+
+    <div class="exp-content">
+        <!-- LEFT: Explanation Panel -->
+        <aside class="exp-text-panel">
+            <div>
+                <h1>📈 指數增長<br>vs 線性增長</h1>
+                <p class="subtitle">中三 · 直覺的崩塌</p>
+            </div>
+
+            <div class="concept-box">
+                <h3>🧠 為什麼這很抽象？</h3>
+                <p>人類大腦天生是<span class="concept-highlight">線性思維</span>。我們習慣「每次多一點」，卻完全無法直覺感受<span class="concept-highlight">每次翻倍</span>的驚人威力。</p>
+            </div>
+
+            <div class="concept-box">
+                <h3>♟️ 棋盤放米粒</h3>
+                <p>傳說有位智者發明了棋盤，國王問他要什麼獎賞。</p>
+                <p style="margin-top:0.5rem">智者說：「在 8×8 棋盤上，第 1 格放 <span class="concept-highlight">1 粒米</span>，之後每格<span class="concept-highlight">翻倍</span>就好。」</p>
+                <p style="margin-top:0.5rem">國王笑了，覺得太少了 — 按「播放」你就知道為什麼國王<span class="concept-highlight">笑不出來</span>了。</p>
+            </div>
+
+            <div class="concept-box">
+                <h3>📊 兩種增長公式</h3>
+                <ul>
+                    <li><span class="concept-highlight">指數：</span>第 n 格 = 2<sup>n−1</sup> 粒</li>
+                    <li><span class="concept-highlight">線性：</span>第 n 格 = n 粒</li>
+                </ul>
+                <p style="margin-top:0.5rem">右邊的<span class="concept-highlight">曲線圖</span>同時畫出兩者 — 切換「線性軸」看看效果！</p>
+            </div>
+
+            <div class="insight-box">
+                <h3>💡 現實啟示</h3>
+                <p>理解指數增長 → 深刻領悟<span style="font-weight:700">複利投資</span>、<span style="font-weight:700">病毒傳播</span>、<span style="font-weight:700">人口增長</span>的數學直覺。</p>
+            </div>
+        </aside>
+
+        <!-- RIGHT: Interactive Panel -->
+        <main class="exp-interactive">
+            <!-- Big narrative display — tells the story -->
+            <div class="narrative-display" id="narrativeDisplay">
+                <div class="narr-square" id="narrSquare">按「▶ 播放」開始棋盤放米粒</div>
+                <div class="narr-grains" id="narrGrains">♟️</div>
+                <div class="narr-comparison" id="narrComparison">每一格的米粒數量翻倍，你覺得 64 格加起來有多少？</div>
+            </div>
+
+            <!-- Chessboard -->
+            <div class="chessboard-wrapper">
+                <div class="chessboard" id="chessboard"></div>
+            </div>
+
+            <!-- Controls + inline stats -->
+            <div class="controls-row">
+                <button class="btn btn-primary" id="btnPlay">▶ 播放</button>
+                <button class="btn btn-secondary" id="btnStep">⏭ 下一格</button>
+                <button class="btn btn-danger" id="btnReset">🔄 重置</button>
+                <div class="stat-inline" id="statInline" style="display:none">
+                    <span>指數 <span class="stat-val accent" id="expVal">—</span></span>
+                    <span>線性 <span class="stat-val" id="linVal">—</span></span>
+                    <span>差距 <span class="stat-val accent" id="ratioVal">—</span></span>
+                </div>
+                <div class="speed-control">
+                    <span>速度</span>
+                    <input type="range" id="speedSlider" min="1" max="10" value="5">
+                    <span class="speed-label" id="speedLabel">5x</span>
+                </div>
+            </div>
+
+            <!-- Chart — FIXED HEIGHT -->
+            <div class="chart-wrapper">
+                <div class="chart-header">
+                    <span class="chart-label">米粒數量 vs 格子編號</span>
+                    <div class="axis-toggle">
+                        <button id="btnLog" class="active" onclick="setAxisType('log')">對數軸</button>
+                        <button id="btnLinear" onclick="setAxisType('linear')">線性軸</button>
+                    </div>
+                </div>
+                <div class="chart-canvas-container">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="exponential.js"></script>
+</body>
+</html>
