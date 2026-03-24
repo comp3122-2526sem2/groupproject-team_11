@@ -17,6 +17,9 @@
         .animation-panel {
             background: radial-gradient(circle at 60% 50%, #1a1a1a 0%, #0d0d0d 100%);
         }
+        .scroll-container {
+            height: 600vh;
+        }
     </style>
 </head>
 <body>
@@ -35,24 +38,49 @@
         <div class="sticky-layout">
             <div class="text-panel">
                 <div class="step step-0 active">
-                    <h2>圓柱體的側面</h2>
-                    <p>這是一個高度為 <span class="math-hl">\(h\)</span>，底面半徑為 <span class="math-hl">\(r\)</span> 的圓柱體。<br><br>我們如何計算它周圍這一圈「側表面」的面積呢？</p>
+                    <h2>認識圓柱體</h2>
+                    <p>這是一個高度為 <span class="math-hl">\(h\)</span>，底面半徑為 <span class="math-hl">\(r\)</span> 的圓柱體。<br><br>
+                    仔細觀察它在旋轉——<br>注意觀察它周圍那一圈彎曲的「側表面」。<br><br>
+                    我們如何計算這個曲面的面積呢？🤔</p>
                 </div>
                 <div class="step step-1">
-                    <h2>沿側面剪一刀</h2>
-                    <p>想像我們沿圓柱體背面的垂直線剪開，<br>然後把這片外殼向外攤平展開...</p>
+                    <h2>底面圓的周長</h2>
+                    <p>在展開側面之前，我們先觀察底面圓。<br><br>
+                    底面是一個半徑為 <span class="math-hl">\(r\)</span> 的圓，<br>
+                    它的周長等於 <span class="math-hl">\(2\pi r\)</span>。<br><br>
+                    👀 看見底部那圈亮線了嗎？<br>
+                    記住這個周長——接下來展開時你會再次見到它！</p>
                 </div>
                 <div class="step step-2">
-                    <h2>攤平成長方形！</h2>
-                    <p>你看！完全攤平後，原來就只是一個長方形！<br><br>高度仍然是圓柱的高 (<span class="math-hl">\(h\)</span>)，<br>而長度則正好等於底面圓形的周長。</p>
+                    <h2>✂️ 沿側面剪一刀</h2>
+                    <p>想像我們拿起剪刀，<br>
+                    沿著圓柱側面的一條<strong>豎直線</strong>從上剪到下……<br><br>
+                    就像剪開一筒衛生紙的紙捲一樣！</p>
                 </div>
                 <div class="step step-3">
-                    <h2>側面積公式</h2>
+                    <h2>向兩側展開攤平</h2>
+                    <p>剪開之後，想像用手向左右兩邊推開……<br><br>
+                    曲面就像一張紙一樣被<strong>攤平</strong>了！ 📄<br><br>
+                    注意看表面的網格線——<br>
+                    原本彎曲的線條都變成了筆直的線！<br>
+                    這證明它就是一個<strong>長方形</strong>。</p>
+                </div>
+                <div class="step step-4">
+                    <h2>長方形的長和寬</h2>
+                    <p>仔細看這個長方形：<br><br>
+                    <strong>寬</strong>（短邊）= 圓柱的高度 <span class="math-hl">\(h\)</span><br><br>
+                    <strong>長</strong>（長邊）= 底面圓的<strong>周長</strong>！<br>
+                    就是剛才看到的 <span class="math-hl">\(2\pi r\)</span><br><br>
+                    看見底部那條亮線了嗎？<br>
+                    它就是底圓周長展開後的樣子！</p>
+                </div>
+                <div class="step step-5">
+                    <h2>側面積公式 🎉</h2>
                     <p>長方形面積 = 長 × 寬<br><br>
                     長 = 圓周長 = <span class="math-hl">\(2\pi r\)</span><br>
                     寬 = 圓柱高度 = <span class="math-hl">\(h\)</span><br><br>
-                    所以側表面積：<br><br>
-                    <span class="math-hl">\(A = 2\pi r \times h\)</span></p>
+                    所以圓柱的側表面積：<br><br>
+                    <span class="math-hl" style="font-size: 1.6rem;">\(A_{\text{側}} = 2\pi r \times h\)</span></p>
                 </div>
             </div>
 
