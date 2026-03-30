@@ -202,6 +202,55 @@ body {
     position: relative;
 }
 
+.hub-top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1.5rem;
+    background: rgba(13, 13, 13, 0.88);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.hub-nav-brand {
+    color: #f2f2f2;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}
+
+.hub-nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.hub-nav-link {
+    color: #f0f0f0;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    transition: all 0.25s ease;
+}
+
+.hub-nav-link.ai-link {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hub-nav-link.ai-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
 /* Minimal vignette background — no colour blobs */
 .mesh-bg {
     position: fixed;
@@ -219,7 +268,7 @@ body {
 /* Header */
 .hub-header {
     text-align: center;
-    padding: 6rem 2rem 2rem;
+    padding: 7rem 2rem 2rem;
     position: relative;
     z-index: 10;
 }
@@ -396,4 +445,24 @@ body {
 
 .btn-explore.waiting {
     color: #555555;
+}
+
+@media (max-width: 700px) {
+    .hub-top-nav {
+        padding: 0.75rem 0.9rem;
+    }
+
+    .hub-nav-brand {
+        font-size: 0.86rem;
+        letter-spacing: 0.02em;
+    }
+
+    .hub-nav-link {
+        font-size: 0.86rem;
+        padding: 0.45rem 0.75rem;
+    }
+
+    .hub-header {
+        padding-top: 6.2rem;
+    }
 }

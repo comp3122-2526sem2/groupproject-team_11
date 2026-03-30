@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 數學題目求解助手 | Math Problem Solver</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="problem-solver.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="problem-solver-body">
+    <div class="mesh-bg">
+        <div class="color-blob blob-1"></div>
+        <div class="color-blob blob-2"></div>
+        <div class="color-blob blob-3"></div>
+        <div class="color-blob blob-4"></div>
+    </div>
+
+    <header class="solver-header">
+        <a href="index.html" class="back-btn">← 返回首頁</a>
+        <h1>📚 AI 數學題目求解助手</h1>
+        <p>輸入你的數學題目，AI 將逐步引導你解答</p>
+    </header>
+
+    <main class="solver-main">
+        <!-- Problem Input Phase -->
+        <section id="problem-input-section" class="solver-section active-section">
+            <div class="solver-container">
+                <div class="input-area">
+                    <h2>📝 輸入題目</h2>
+                    <textarea id="problem-input" 
+                              placeholder="請輸入你的數學題目，例如：求解方程式 2x + 5 = 13..."
+                              class="problem-textarea"></textarea>
+                    <div class="button-group">
+                        <button id="submit-problem-btn" class="btn-primary">
+                            分析題目 ✨
+                        </button>
+                        <button id="example-btn" class="btn-secondary">
+                            查看範例 📖
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Example Problems -->
+                <div class="examples-area" id="examples-area" style="display: none;">
+                    <h3>📋 範例題目</h3>
+                    <div class="examples-list">
+                        <button class="example-card" data-problem="求解一元一次方程式：3x - 7 = 11">
+                            <div class="example-tag">一元一次方程式</div>
+                            <p>3x - 7 = 11</p>
+                        </button>
+                        <button class="example-card" data-problem="一個直角三角形，兩條直角邊長分別為 3 和 4，求斜邊長度">
+                            <div class="example-tag">勾股定理</div>
+                            <p>a=3, b=4, 求 c</p>
+                        </button>
+                        <button class="example-card" data-problem="計算圓形的面積，已知半徑為 5">
+                            <div class="example-tag">圓形面積</div>
+                            <p>A = πr², r = 5</p>
+                        </button>
+                        <button class="example-card" data-problem="求解二次方程式：x² - 5x + 6 = 0">
+                            <div class="example-tag">二次方程式</div>
+                            <p>x² - 5x + 6 = 0</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading-spinner" class="loading-spinner" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>AI 正在分析你的題目...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solving Phase -->
+        <section id="solving-section" class="solver-section">
+            <div class="solver-container">
+                <!-- Problem Analysis -->
+                <div class="problem-analysis-card">
+                    <div class="problem-header">
+                        <h2>📚 題目</h2>
+                        <button id="restart-btn" class="btn-icon">🔄 重新開始</button>
+                    </div>
+                    <div id="problem-display" class="problem-display"></div>
+                </div>
+
+                <!-- Step-by-Step Solving -->
+                <div class="solving-area">
+                    <div class="steps-tracker">
+                        <h3>📍 解題步驟</h3>
+                        <div id="steps-list" class="steps-list"></div>
+                    </div>
+
+                    <div class="current-step-area">
+                        <div id="step-guidance" class="step-guidance"></div>
+                        
+                        <div class="step-input-group">
+                            <label for="step-input">你的答案：</label>
+                            <input type="text" 
+                                   id="step-input" 
+                                   class="step-input"
+                                   placeholder="輸入你的答案...">
+                            
+                            <div class="step-buttons">
+                                <button id="submit-step-btn" class="btn-primary">
+                                    提交答案 ✓
+                                </button>
+                                <div class="hint-buttons">
+                                    <button id="hint-level-1-btn" class="btn-hint" data-level="1">
+                                        💡 溫和提示
+                                    </button>
+                                    <button id="hint-level-2-btn" class="btn-hint" data-level="2">
+                                        💡💡 中等提示
+                                    </button>
+                                    <button id="hint-level-3-btn" class="btn-hint" data-level="3">
+                                        💡💡💡 詳細提示
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="step-feedback" class="step-feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Completion Message -->
+                <div id="completion-area" class="completion-area" style="display: none;">
+                    <div class="completion-card">
+                        <div class="completion-icon">🎉</div>
+                        <h2>恭喜！你已完成題目</h2>
+                        <div id="final-solution" class="final-solution"></div>
+                        <div class="completion-buttons">
+                            <button id="try-another-btn" class="btn-primary">
+                                🚀 解答另一道題目
+                            </button>
+                            <button id="view-more-btn" class="btn-secondary">
+                                📚 查看其他模組
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚠️ 出錯了</h3>
+                <button class="modal-close" id="error-close-btn">✕</button>
+            </div>
+            <p id="error-message"></p>
+            <button class="btn-primary" id="error-ok-btn">確定</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.0.0/marked.min.js"></script>
+    <script src="problem-solver.js?v=20260330e"></script>
+</body>
+</html>
