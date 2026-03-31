@@ -119,6 +119,34 @@
     box-shadow: 0 0 10px rgba(100, 200, 255, 0.3);
 }
 
+.upload-area {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px dashed var(--glass-border);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.upload-label {
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    color: #9ddcff;
+    font-weight: 600;
+}
+
+.image-input {
+    display: block;
+    width: 100%;
+}
+
+.image-preview {
+    margin-top: 0.8rem;
+    max-width: 100%;
+    max-height: 260px;
+    border-radius: 0.5rem;
+    border: 1px solid var(--glass-border);
+}
+
 .button-group {
     display: flex;
     gap: 1rem;
@@ -275,6 +303,30 @@
     margin-bottom: 1.5rem;
     font-size: 1.1rem;
     line-height: 1.8;
+}
+
+.completed-steps-panel {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.5rem;
+}
+
+.completed-steps-panel h3 {
+    color: #8fd8ff;
+    margin-bottom: 0.8rem;
+    font-size: 1.05rem;
+}
+
+.completed-steps-list {
+    margin-left: 1.2rem;
+    line-height: 1.7;
+    color: #d7f3ff;
+}
+
+.completed-steps-list li {
+    margin-bottom: 0.3rem;
 }
 
 .ai-analysis {

@@ -12,6 +12,11 @@ CHAT_MODELS = [
     "CohereLabs/aya-expanse-32b:cohere",
 ]
 
+VISION_MODELS = [
+    "Qwen/Qwen3.5-9B:fastest",
+    "meta-llama/Llama-3.2-11B-Vision-Instruct:fastest",
+]
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -61,18 +66,28 @@ class AppHandler(SimpleHTTPRequestHandler):
             raw_body = self.rfile.read(content_length)
             request_data = json.loads(raw_body.decode("utf-8"))
             prompt = (request_data.get("prompt") or "").strip()
+            image_data_url = (request_data.get("imageDataUrl") or "").strip()
             if not prompt:
                 self._send_json(400, {"error": "Missing prompt"})
                 return
 
             last_error = None
-            for model in CHAT_MODELS:
+            model_pool = VISION_MODELS if image_data_url else CHAT_MODELS
+            for model in model_pool:
+                if image_data_url:
+                    content = [
+                        {"type": "text", "text": prompt},
+                        {"type": "image_url", "image_url": {"url": image_data_url}},
+                    ]
+                else:
+                    content = prompt
+
                 hf_req = urllib.request.Request(
                     url="https://router.huggingface.co/v1/chat/completions",
                     data=json.dumps(
                         {
                             "model": model,
-                            "messages": [{"role": "user", "content": prompt}],
+                            "messages": [{"role": "user", "content": content}],
                             "stream": False,
                         }
                     ).encode("utf-8"),

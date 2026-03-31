@@ -31,6 +31,13 @@
                     <textarea id="problem-input" 
                               placeholder="請輸入你的數學題目，例如：求解方程式 2x + 5 = 13..."
                               class="problem-textarea"></textarea>
+
+                    <div class="upload-area">
+                        <label for="problem-image-input" class="upload-label">📷 上傳題目圖片（可選）</label>
+                        <input type="file" id="problem-image-input" accept="image/*" class="image-input">
+                        <img id="problem-image-preview" class="image-preview" alt="題目圖片預覽" style="display: none;">
+                    </div>
+
                     <div class="button-group">
                         <button id="submit-problem-btn" class="btn-primary">
                             分析題目 ✨
@@ -82,6 +89,11 @@
                         <button id="restart-btn" class="btn-icon">🔄 重新開始</button>
                     </div>
                     <div id="problem-display" class="problem-display"></div>
+
+                    <div class="completed-steps-panel">
+                        <h3>✅ 已完成步驟</h3>
+                        <ol id="completed-steps-list" class="completed-steps-list"></ol>
+                    </div>
                 </div>
 
                 <!-- Step-by-Step Solving -->
@@ -106,14 +118,11 @@
                                     提交答案 ✓
                                 </button>
                                 <div class="hint-buttons">
-                                    <button id="hint-level-1-btn" class="btn-hint" data-level="1">
-                                        💡 溫和提示
+                                    <button id="hint-btn" class="btn-hint">
+                                        💡 提示
                                     </button>
-                                    <button id="hint-level-2-btn" class="btn-hint" data-level="2">
-                                        💡💡 中等提示
-                                    </button>
-                                    <button id="hint-level-3-btn" class="btn-hint" data-level="3">
-                                        💡💡💡 詳細提示
+                                    <button id="show-answer-btn" class="btn-secondary" style="display: none;">
+                                        👀 顯示答案
                                     </button>
                                 </div>
                             </div>
@@ -156,7 +165,8 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.0.0/marked.min.js"></script>
-    <script src="problem-solver.js?v=20260330e"></script>
+    <script src="problem-solver.js?v=20260331a"></script>
 </body>
 </html>

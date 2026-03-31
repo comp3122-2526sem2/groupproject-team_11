@@ -4,6 +4,11 @@ const MODELS = [
   "CohereLabs/aya-expanse-32b:cohere"
 ];
 
+const VISION_MODELS = [
+  "Qwen/Qwen3.5-9B:fastest",
+  "meta-llama/Llama-3.2-11B-Vision-Instruct:fastest"
+];
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -16,6 +21,7 @@ export default async function handler(req, res) {
   }
 
   const prompt = req.body && typeof req.body.prompt === "string" ? req.body.prompt.trim() : "";
+  const imageDataUrl = req.body && typeof req.body.imageDataUrl === "string" ? req.body.imageDataUrl.trim() : "";
   if (!prompt) {
     return res.status(400).json({ error: "Missing prompt" });
   }
@@ -23,7 +29,15 @@ export default async function handler(req, res) {
   try {
     let lastError = null;
 
-    for (const model of MODELS) {
+    const modelPool = imageDataUrl ? VISION_MODELS : MODELS;
+    for (const model of modelPool) {
+      const content = imageDataUrl
+        ? [
+            { type: "text", text: prompt },
+            { type: "image_url", image_url: { url: imageDataUrl } }
+          ]
+        : prompt;
+
       const hfResp = await fetch("https://router.huggingface.co/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -32,7 +46,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           model,
-          messages: [{ role: "user", content: prompt }],
+          messages: [{ role: "user", content }],
           stream: false
         })
       });
