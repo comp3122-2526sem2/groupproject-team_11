@@ -38,6 +38,7 @@ class MathProblemSolver {
         this.stepGuidance = document.getElementById('step-guidance');
         this.stepInput = document.getElementById('step-input');
         this.submitStepBtn = document.getElementById('submit-step-btn');
+        this.prevStepBtn = document.getElementById('prev-step-btn');
         this.hintBtn = document.getElementById('hint-btn');
         this.showAnswerBtn = document.getElementById('show-answer-btn');
         this.stepFeedback = document.getElementById('step-feedback');
@@ -84,10 +85,11 @@ class MathProblemSolver {
 
         this.submitStepBtn.addEventListener('click', () => this.handleSubmitStep());
         this.stepInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 this.handleSubmitStep();
             }
         });
+        this.prevStepBtn.addEventListener('click', () => this.handlePrevStep());
 
         this.hintBtn.addEventListener('click', () => this.handleHint());
         this.showAnswerBtn.addEventListener('click', () => this.handleShowAnswer());
@@ -201,9 +203,17 @@ class MathProblemSolver {
         `;
 
         this.showAnswerBtn.style.display = 'none';
+        this.prevStepBtn.disabled = this.completedSteps.length === 0;
         this.stepInput.value = '';
         this.stepFeedback.classList.remove('show', 'correct', 'incorrect', 'hint');
         this.stepFeedback.innerHTML = '';
+    }
+
+    getAnalysisContext() {
+        const completed = this.completedSteps.length ? this.completedSteps.join(' | ') : '無';
+        const currentDraft = this.stepInput.value.trim() || '無';
+        const wrongAttempt = this.lastWrongAttempt || '無';
+        return `題目：${this.problemText}\n已完成步驟：${completed}\n目前步驟：${this.currentStepNumber}\n目前輸入草稿：${currentDraft}\n最近錯誤作答：${wrongAttempt}`;
     }
 
     updateStepBadges() {
@@ -226,11 +236,9 @@ class MathProblemSolver {
     async handleHint() {
         try {
             this.setFeedback('hint', 'AI 正在生成提示...');
-            const prompt = `你是數學導師。請根據題目與學生已完成步驟，提供下一步提示。
+            const prompt = `你是數學導師。請重新分析題目與學生作答上下文，提供下一步提示。
 
-題目：${this.problemText}
-已完成步驟：${this.completedSteps.length ? this.completedSteps.join(' | ') : '無'}
-目前要做：步驟 ${this.currentStepNumber}
+${this.getAnalysisContext()}
 
 要求：
 1. 只能提示下一步方向，不可給答案。
@@ -242,6 +250,19 @@ class MathProblemSolver {
         } catch (error) {
             this.showError(`提示生成失敗: ${error.message}`);
         }
+    }
+
+    handlePrevStep() {
+        if (this.completedSteps.length === 0) {
+            this.setFeedback('hint', '目前已經是第一步，無法再返回。');
+            return;
+        }
+
+        this.completedSteps.pop();
+        this.currentStepNumber = Math.max(1, this.currentStepNumber - 1);
+        this.lastWrongAttempt = '';
+        this.setFeedback('hint', '已回到上一個步驟，請重新作答。');
+        this.renderContext();
     }
 
     async handleSubmitStep() {
@@ -296,7 +317,9 @@ class MathProblemSolver {
 規則：
 1. 若這一步邏輯與運算合理，is_correct=true。
 2. 若此步驟已足以完成整題，is_finished=true。
-3. feedback 不可直接給最終答案。`;
+3. feedback 不可直接給最終答案。
+4. 若你不確定，或學生步驟資訊不足，請判定 is_correct=false。
+5. 只輸出 JSON，不要輸出 markdown 或其他文字。`;
 
         const response = await this.callHuggingFaceAPI(prompt);
         const jsonObj = this.extractFirstJsonObject(response);
@@ -305,19 +328,39 @@ class MathProblemSolver {
         }
 
         return {
-            is_correct: Boolean(jsonObj.is_correct),
-            is_finished: Boolean(jsonObj.is_finished),
+            is_correct: this.normalizeBoolean(jsonObj.is_correct),
+            is_finished: this.normalizeBoolean(jsonObj.is_finished),
             feedback: this.trimUnsafeAnswer(jsonObj.feedback || '')
         };
     }
 
+    normalizeBoolean(value) {
+        if (typeof value === 'boolean') {
+            return value;
+        }
+
+        if (typeof value === 'number') {
+            return value === 1;
+        }
+
+        if (typeof value === 'string') {
+            const normalized = value.trim().toLowerCase();
+            if (['true', '1', 'yes', 'y', '正確', '是'].includes(normalized)) {
+                return true;
+            }
+            if (['false', '0', 'no', 'n', '錯誤', '否', '不正確'].includes(normalized)) {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
     async handleShowAnswer() {
         try {
-            const prompt = `你是數學導師。請只給出「下一步（步驟 ${this.currentStepNumber}）」的參考答案。
+            const prompt = `你是數學導師。請重新分析題目與學生作答上下文，然後只給出「下一步（步驟 ${this.currentStepNumber}）」的參考答案。
 
-題目：${this.problemText}
-已完成步驟：${this.completedSteps.length ? this.completedSteps.join(' | ') : '無'}
-學生錯誤嘗試：${this.lastWrongAttempt || '無'}
+${this.getAnalysisContext()}
 
 限制：
 1. 只給這一步，不要給整題最終答案。
@@ -469,6 +512,7 @@ class MathProblemSolver {
         this.problemImagePreview.style.display = 'none';
         this.examplesArea.style.display = 'none';
         this.showAnswerBtn.style.display = 'none';
+        this.prevStepBtn.disabled = true;
         this.stepFeedback.classList.remove('show', 'correct', 'incorrect', 'hint');
         this.stepFeedback.innerHTML = '';
     }

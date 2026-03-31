@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 數學題目求解助手 | Math Problem Solver</title>
+    <title>AI 數學解題助手 | Math Problem Solver</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="problem-solver.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
 
     <header class="solver-header">
         <a href="index.html" class="back-btn">← 返回首頁</a>
-        <h1>📚 AI 數學題目求解助手</h1>
+        <h1>📚 AI 數學解題助手</h1>
         <p>輸入你的數學題目，AI 將逐步引導你解答</p>
     </header>
 
@@ -108,15 +108,20 @@
                         
                         <div class="step-input-group">
                             <label for="step-input">你的答案：</label>
-                            <input type="text" 
-                                   id="step-input" 
-                                   class="step-input"
-                                   placeholder="輸入你的答案...">
+                            <textarea id="step-input"
+                                      class="step-input"
+                                      placeholder="輸入你的答案（可多行）..."
+                                      rows="5"></textarea>
                             
                             <div class="step-buttons">
-                                <button id="submit-step-btn" class="btn-primary">
-                                    提交答案 ✓
-                                </button>
+                                <div class="step-main-actions">
+                                    <button id="submit-step-btn" class="btn-primary">
+                                        提交答案 ✓
+                                    </button>
+                                    <button id="prev-step-btn" class="btn-secondary">
+                                        ⬅ 回到上一個步驟
+                                    </button>
+                                </div>
                                 <div class="hint-buttons">
                                     <button id="hint-btn" class="btn-hint">
                                         💡 提示
@@ -167,6 +172,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.0.0/marked.min.js"></script>
-    <script src="problem-solver.js?v=20260331a"></script>
+    <script src="problem-solver.js?v=20260331c"></script>
 </body>
 </html>
