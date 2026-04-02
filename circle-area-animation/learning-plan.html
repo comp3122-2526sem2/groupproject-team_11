@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Learning Planner | Math Exploration Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="learning-plan.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="learning-plan-body">
+    <nav class="hub-top-nav">
+        <a href="index.html" class="hub-nav-brand">Math Exploration Hub</a>
+        <div class="hub-nav-links">
+            <a href="problem-solver.html" class="hub-nav-link ai-link">AI Math Solver</a>
+            <a href="learning-plan.html" class="hub-nav-link ai-link active">AI Learning Planner</a>
+        </div>
+    </nav>
+
+    <div class="mesh-bg">
+        <div class="color-blob blob-1"></div>
+        <div class="color-blob blob-2"></div>
+        <div class="color-blob blob-3"></div>
+        <div class="color-blob blob-4"></div>
+    </div>
+
+    <main class="learning-plan-main">
+        <section id="assessment-section" class="plan-section active-section">
+            <div class="plan-container">
+                <div class="plan-header">
+                    <h1>AI Learning Plan Generator</h1>
+                    <p>Answer a few questions and we will generate a learning plan based on your current level and the topics already available on the homepage.</p>
+                </div>
+
+                <div class="questions-area">
+                    <form id="assessment-form">
+                        <div class="question-card">
+                            <div class="question-number">1</div>
+                            <label class="question-text">What is your current math level?</label>
+                            <div class="options">
+                                <label class="option"><input type="radio" name="level" value="beginner"> Beginner</label>
+                                <label class="option"><input type="radio" name="level" value="intermediate"> Intermediate</label>
+                                <label class="option"><input type="radio" name="level" value="advanced"> Advanced</label>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="question-number">2</div>
+                            <label class="question-text">Which topics interest you most? (Select all that apply)</label>
+                            <div class="options">
+                                <label class="checkbox"><input type="checkbox" name="interests" value="geometry"> Geometry</label>
+                                <label class="checkbox"><input type="checkbox" name="interests" value="algebra"> Algebra</label>
+                                <label class="checkbox"><input type="checkbox" name="interests" value="probability"> Probability</label>
+                                <label class="checkbox"><input type="checkbox" name="interests" value="calculus"> Calculus</label>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="question-number">3</div>
+                            <label class="question-text">What is the area of a circle with radius 5?</label>
+                            <div class="options">
+                                <label class="option"><input type="radio" name="q3" value="wrong1"> 5π</label>
+                                <label class="option"><input type="radio" name="q3" value="correct"> 25π</label>
+                                <label class="option"><input type="radio" name="q3" value="wrong2"> 10π</label>
+                                <label class="option"><input type="radio" name="q3" value="wrong3"> Not sure</label>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="question-number">4</div>
+                            <label class="question-text">In a right triangle with sides 3, 4, and c, what is c?</label>
+                            <div class="options">
+                                <label class="option"><input type="radio" name="q4" value="wrong1"> 6</label>
+                                <label class="option"><input type="radio" name="q4" value="wrong2"> 7</label>
+                                <label class="option"><input type="radio" name="q4" value="correct"> 5</label>
+                                <label class="option"><input type="radio" name="q4" value="wrong3"> I don't know</label>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="question-number">5</div>
+                            <label class="question-text">What does sqrt(2) approximately equal?</label>
+                            <div class="options">
+                                <label class="option"><input type="radio" name="q5" value="wrong1"> 1.0</label>
+                                <label class="option"><input type="radio" name="q5" value="correct"> 1.414</label>
+                                <label class="option"><input type="radio" name="q5" value="wrong2"> 2.0</label>
+                                <label class="option"><input type="radio" name="q5" value="wrong3"> Not sure</label>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="question-number">6</div>
+                            <label class="question-text">How much time can you dedicate each week?</label>
+                            <div class="options">
+                                <label class="option"><input type="radio" name="time" value="low"> 1-3 hours</label>
+                                <label class="option"><input type="radio" name="time" value="medium"> 3-7 hours</label>
+                                <label class="option"><input type="radio" name="time" value="high"> 7+ hours</label>
+                            </div>
+                        </div>
+
+                        <div class="question-card">
+                            <div class="question-number">7</div>
+                            <label class="question-text">What is your preferred learning style?</label>
+                            <div class="options">
+                                <label class="option"><input type="radio" name="style" value="visual"> Visual</label>
+                                <label class="option"><input type="radio" name="style" value="interactive"> Interactive</label>
+                                <label class="option"><input type="radio" name="style" value="mixed"> Mixed</label>
+                            </div>
+                        </div>
+
+                        <button type="button" id="submit-assessment" class="btn-primary">Generate My Learning Plan ✨</button>
+                        <div class="history-actions">
+                            <button type="button" id="view-saved-plan-btn" class="btn-secondary">View Last Saved Plan</button>
+                            <p id="saved-plan-meta" class="saved-plan-meta"></p>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="loading-spinner" id="loading-spinner" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>AI is analyzing your responses...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="plan-result-section" class="plan-section">
+            <div class="plan-container">
+                <div class="plan-header result-header">
+                    <h1>Your Personalized Learning Plan</h1>
+                    <button id="restart-plan-btn" class="btn-secondary">Start Over</button>
+                </div>
+
+                <div class="result-area">
+                    <div id="assessment-summary" class="assessment-summary"></div>
+                    <div id="learning-modules" class="learning-modules"></div>
+                    <div class="plan-actions">
+                        <button id="start-learning-btn" class="btn-primary">Start Learning 🚀</button>
+                        <button id="download-plan-btn" class="btn-secondary">Download Plan 📥</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="learning-plan.js?v=20260402b"></script>
+</body>
+</html>

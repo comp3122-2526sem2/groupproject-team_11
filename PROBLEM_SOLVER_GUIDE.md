@@ -1,4 +1,4 @@
-﻿# 🤖 AI Math Problem Solver - User Guide
+# 🤖 AI Math Problem Solver - User Guide
 
 ## 📌 Features
 
@@ -13,7 +13,7 @@ This module provides an **AI-powered interactive math learning system** where us
    - Images can be converted to problem text via OCR/AI
 
 3. **Step-by-Step Solutions** 📍
-   - Users input each "next step" themselves
+   - Users input each next step themselves
    - Get immediate feedback for each submission
    - See the problem and completed steps at each stage
 
@@ -26,19 +26,19 @@ This module provides an **AI-powered interactive math learning system** where us
 ### Step 1: Configure Server API
 
 1. Visit [Hugging Face](https://huggingface.co/)
-2. Register for a free account (or log in to existing account)
-3. Go to **Settings  Access Tokens**
-4. Create a new Token (select "read" permission)
-5. Set `HF_API_TOKEN` in server environment variables
+2. Register for a free account or log in to an existing account
+3. Go to **Settings → Access Tokens**
+4. Create a new token with the "read" permission
+5. Set `HF_API_TOKEN` in the server environment variables
 
-> **Cost**: Completely free! Hugging Face provides free API call quota.
+> **Cost**: Completely free. Hugging Face provides a free API call quota.
 
 ### Step 2: Use the Problem Solver
 
 1. Open `problem-solver.html`
-2. Users don't need to input the API Token
+2. Users do not need to enter the API token
 3. Input a problem or upload a problem image
-4. Submit your next step incrementally
+4. Submit each next step incrementally
 
 ### Local Startup (Windows PowerShell)
 
@@ -47,7 +47,7 @@ cd circle-area-animation
 python server.py
 ```
 
-After startup, browse: `http://localhost:8000/problem-solver.html`
+After startup, browse to `http://localhost:8000/problem-solver.html`.
 
 ### .env Local Configuration
 
@@ -58,27 +58,52 @@ cd circle-area-animation
 Copy-Item .env.example .env
 ```
 
-Add to `circle-area-animation/.env`:
+Add this to `circle-area-animation/.env`:
 
 ```env
 HF_API_TOKEN=your_huggingface_token
 ```
 
-`server.py` will automatically read `.env` on startup.
+`server.py` automatically reads `.env` on startup.
 
-Note: `.env` will not be committed to Git (already in `.gitignore`).
+Note: `.env` will not be committed to Git because it is already covered by `.gitignore`.
 
 ### Vercel Deployment Configuration
 
-1. Set Root Directory to `circle-area-animation` in Vercel project settings
-2. Go to Settings  Environment Variables in Vercel project page
-3. Add `HF_API_TOKEN` with your Hugging Face Token value
+1. Set Root Directory to `circle-area-animation` in the Vercel project settings
+2. Open Settings → Environment Variables in the Vercel project page
+3. Add `HF_API_TOKEN` with your Hugging Face token value
 4. Redeploy
 
 After deployment:
-- Frontend calls `/api/hf`
-- Vercel Serverless Function reads `process.env.HF_API_TOKEN` in `api/hf.js`
-- Users don't need to know or see the Token
+- The frontend calls `/api/hf`
+- The Vercel Serverless Function reads `process.env.HF_API_TOKEN` in `api/hf.js`
+- Users do not need to know or see the token
+
+## 🤖 AI Learning Planner
+
+The homepage now includes an **AI Learning Planner** entry in the navigation bar. It helps users answer a short assessment, then generates a personalized learning path based on their score, interests, and available study time.
+
+### What It Uses
+
+The planner recommends lessons from the homepage modules:
+- Circle Area
+- Cylinder Surface Area
+- Pythagorean Theorem
+- Law of Large Numbers
+- Irrational Number sqrt(2)
+- Exponential Growth vs Linear Growth
+
+### What It Stores
+
+After a user completes the assessment, the planner saves the latest result in the browser so the user can reopen the learning plan later without retaking the quiz.
+
+### Planner Entry
+
+- Open `learning-plan.html` from the homepage navigation bar
+- Complete the questionnaire
+- Generate the plan
+- Use **View Last Saved Plan** to reopen the latest saved result
 
 ## 📋 Usage Examples
 
@@ -86,10 +111,10 @@ After deployment:
 
 **Problem**: `Solve the linear equation: 3x - 7 = 11`
 
-1. AI will identify this as a linear equation problem
-2. Show solution approach: "Rearrange"  "Combine like terms"  "Solve for x"
-3. Guide you through inputting each step
-4. Verify correctness of each step
+1. AI identifies this as a linear equation problem
+2. It shows a solution approach such as "Rearrange" → "Combine like terms" → "Solve for x"
+3. It guides the user through each step
+4. It verifies the correctness of each step
 
 ### Example 2: Pythagorean Theorem
 
@@ -97,8 +122,8 @@ After deployment:
 
 AI will:
 - Identify this as a Pythagorean theorem problem
-- Show steps: Identify sides  Apply Pythagorean theorem  Calculate
-- Allow different ways to express answers (e.g., c² = 25 or c = 5)
+- Show steps such as Identify sides → Apply Pythagorean theorem → Calculate
+- Allow different ways to express answers, such as `c² = 25` or `c = 5`
 
 ## 🔧 Technical Details
 
@@ -106,11 +131,11 @@ AI will:
 
 ```
 problem-solver.html (UI Structure)
-    
+    ↓
 problem-solver.css (Visual Design)
-    
+    ↓
 problem-solver.js (Logic and API Calls)
-    
+    ↓
 Hugging Face API (AI Inference)
 ```
 
@@ -118,30 +143,30 @@ Hugging Face API (AI Inference)
 
 ```
 User inputs problem or uploads image
-    
+    ↓
 Frontend organizes problem + completed steps
-    
+    ↓
 User submits next step
-    
-AI judges if step is correct
-    
-Correct: Move to next step; Wrong: Retry and optionally show answer
-    
-Until problem complete, show summary
+    ↓
+AI judges whether the step is correct
+    ↓
+Correct: move to next step; Wrong: retry and optionally show answer
+    ↓
+Until the problem is complete, show the summary
 ```
 
 ### API Integration
 
 - **API Provider**: Hugging Face
-- **Models**: CohereLabs/tiny-aya-global:cohere (with fallback models)
-- **Format**: Uses JSON-formatted prompts for structured data return
-- **Storage**: API Token managed server-side via `HF_API_TOKEN` environment variable
+- **Models**: `CohereLabs/tiny-aya-global:cohere` with fallback models
+- **Format**: JSON-formatted prompts for structured responses
+- **Storage**: API token managed server-side via `HF_API_TOKEN`
 - **Vercel Routes**: `api/hf.js`, `api/health.js`
 - **Inference Endpoint**: `https://router.huggingface.co/v1/chat/completions`
 
 ## 🎓 Educational Advantages
 
-1. **Personalized Learning** - AI adjusts feedback based on user's steps
+1. **Personalized Learning** - AI adjusts feedback based on the user's steps
 2. **Immediate Feedback** - Each step receives validation and explanation
 3. **Progressive Difficulty** - Hints can escalate progressively
 4. **Diverse Topics** - Supports problems from various math domains
@@ -149,50 +174,53 @@ Until problem complete, show summary
 
 ## 🛠️ Troubleshooting
 
-### "Connection Failed"
+### Connection Failed
 
-- Check if `/api/health` is accessible
-- Verify environment variable `HF_API_TOKEN` is configured
-- Ensure network connection is working
+- Check whether `/api/health` is accessible
+- Verify that `HF_API_TOKEN` is configured
+- Ensure the network connection is working
 
-### "AI Response Format Incorrect"
+### AI Response Format Incorrect
 
-- This may happen if AI returns unexpected format
-- Try resubmitting with different wording
+- This may happen if AI returns an unexpected format
+- Try resubmitting with slightly different wording
 
-### Token Expired
+### Token Problems
 
-- Hugging Face Tokens don't expire, but if not working:
-  1. Regenerate Token in Hugging Face dashboard
-  2. Update server environment variable `HF_API_TOKEN`
-  3. Redeploy (Vercel) or restart local service
+- Hugging Face tokens do not expire, but if it stops working:
+  1. Regenerate the token in the Hugging Face dashboard
+  2. Update the server environment variable `HF_API_TOKEN`
+  3. Redeploy on Vercel or restart the local service
 
 ## 📁 File Structure
 
 ```
 circle-area-animation/
- index.html                    (Homepage)
- problem-solver.html           (Problem solver page)
- problem-solver.css            (Dedicated styles)
- problem-solver.js             (Core logic)
- .env                          (Local environment variables)
- api/
-    health.js                 (Health check)
-    hf.js                     (Hugging Face proxy)
- ...(Other existing modules)
+├── index.html                    (Homepage)
+├── learning-plan.html            (AI learning planner)
+├── learning-plan.css             (Planner styles)
+├── learning-plan.js              (Planner logic)
+├── problem-solver.html           (Problem solver page)
+├── problem-solver.css            (Dedicated styles)
+├── problem-solver.js             (Core logic)
+├── .env                          (Local environment variables)
+├── api/
+│   ├── health.js                 (Health check)
+│   └── hf.js                    (Hugging Face proxy)
+└── ...(Other existing modules)
 ```
 
 ## 🔐 Privacy and Security
 
-- API Token stored only in server environment variables, not exposed to frontend
-- Frontend only calls local backend API (`/api/hf`)
-- All problems and answers processed only on client side
+- The API token is stored only in server environment variables and is not exposed to the frontend
+- The frontend only calls the local backend API (`/api/hf`)
+- All problems and answers are processed only on the client side
 
 ## 💡 Tips
 
 - Complex problems may require multiple API adjustments
-- If AI can't understand your problem, try clearer wording
-- Try various math domains: algebra, geometry, calculus, statistics, etc.
+- If AI cannot understand your problem, try clearer wording
+- Try different math domains: algebra, geometry, calculus, statistics, and more
 
 ## 🚧 Future Feature Plans
 
@@ -204,8 +232,8 @@ circle-area-animation/
 
 ---
 
-**Version**: 1.0  
-**Last Updated**: March 30, 2026  
+**Version**: 1.1  
+**Last Updated**: April 2, 2026  
 **Developer**: Education 4.0 Team
 
 🎯 **Happy learning!**
