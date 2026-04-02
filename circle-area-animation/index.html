@@ -1,117 +1,294 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互動式數學探索首頁 | Math Exploration Hub</title>
+    <title>Math Exploration Hub — 互動式數學教育平台</title>
+    <meta name="description" content="透過互動視覺化、AI 數學求解器與智能學習規劃，以全新方式理解數學概念。">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
+
 <body class="hub-body">
-    <nav class="hub-top-nav">
-        <a href="index.html" class="hub-nav-brand">Math Exploration Hub</a>
-        <div class="hub-nav-links">
-            <a href="problem-solver.html" class="hub-nav-link ai-link">AI Math Solver</a>
-            <a href="learning-plan.html" class="hub-nav-link ai-link">AI Learning Planner</a>
+
+    <!-- ════════════════════════════════════════════
+         SIDEBAR NAVIGATION
+         ════════════════════════════════════════════ -->
+    <aside class="sidebar" role="navigation" aria-label="主導覽">
+
+        <!-- Brand -->
+        <div class="sidebar-brand">
+            <div class="sidebar-logo" aria-hidden="true">∑</div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Math Hub</span>
+                <span class="sidebar-brand-sub">Education Platform</span>
+            </div>
         </div>
-    </nav>
 
-    <div class="mesh-bg">
-        <div class="color-blob blob-1"></div>
-        <div class="color-blob blob-2"></div>
-        <div class="color-blob blob-3"></div>
-        <div class="color-blob blob-4"></div>
-    </div>
+        <!-- Main Navigation -->
+        <nav class="sidebar-nav">
 
-    <header class="hub-header">
-        <h1>數學之美<br><span class="gradient-text">探索與視覺化</span></h1>
-        <p>跟著我們一起透過動態圖形，解開隱藏在數學公式背後的秘密吧！</p>
-    </header>
+            <span class="nav-section-label">學習模組</span>
 
-    <main class="hub-main">
-        <section class="category-section">
-            <h2 class="category-title">📐 幾何與測量 (Geometry & Measurement)</h2>
-            <div class="hub-container">
-                <a href="circle.html" class="math-card">
-                    <div class="card-glow"></div>
-                    <div class="card-icon">🔵</div>
-                    <h3>圓形面積</h3>
-                    <div class="formula">A = πr²</div>
-                    <p>透過將圓形切片展開並重新組合，視覺化體驗這個最經典的從圓到長方形的數學轉換過程。</p>
-                    <span class="btn-explore">開始探索 ➔</span>
+            <!-- Active: Interactive Math -->
+            <a href="index.html" class="nav-item active" id="nav-math-viz" aria-current="page">
+                <span class="nav-item-icon" aria-hidden="true">📐</span>
+                <span class="nav-item-label">互動數學視覺化</span>
+            </a>
+
+            <!-- AI Math Solver -->
+            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+                <span class="nav-item-icon" aria-hidden="true">🤖</span>
+                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+
+            <!-- AI Learning Planner -->
+            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
+                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+
+            <span class="nav-section-label">即將推出</span>
+
+            <!-- Online Classroom — Locked -->
+            <div class="nav-item locked" id="nav-classroom" title="即將推出" aria-disabled="true">
+                <span class="nav-item-icon" aria-hidden="true">🖥️</span>
+                <span class="nav-item-label">在線課堂</span>
+                <span class="nav-lock-icon" aria-hidden="true">🔒</span>
+            </div>
+
+        </nav>
+
+        <!-- Footer -->
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
+        </div>
+    </aside>
+
+    <!-- ════════════════════════════════════════════
+         MAIN CONTENT AREA
+         ════════════════════════════════════════════ -->
+    <div class="content-area">
+
+        <!-- Top Bar -->
+        <div class="content-topbar">
+            <div class="topbar-breadcrumb">
+                <span>Math Hub</span>
+                <span aria-hidden="true">›</span>
+                <span class="current">互動數學視覺化</span>
+            </div>
+            <div class="topbar-actions">
+                <a href="problem-solver.html" class="topbar-btn secondary" id="btn-solver-shortcut">
+                    🤖 AI Solver
                 </a>
-
-                <a href="cylinder.html" class="math-card">
-                    <div class="card-glow"></div>
-                    <div class="card-icon">🛢️</div>
-                    <h3>圓柱側表面積</h3>
-                    <div class="formula">A = 2πrh</div>
-                    <p>將立體的圓柱沿著側面剪開攤平，你會發現原本彎曲的表面原來只是一個簡單的長方形。</p>
-                    <span class="btn-explore">開始探索 ➔</span>
-                </a>
-                <a href="pythagoras.html" class="math-card">
-                    <div class="card-glow"></div>
-                    <div class="card-icon">📐</div>
-                    <h3>畢氏定理</h3>
-                    <div class="formula">a² + b² = c²</div>
-                    <p>透過面積拼湊法和倒水實驗，親眼見證直角三角形三邊的神奇關係。</p>
-                    <span class="btn-explore">開始探索 ➔</span>
+                <a href="learning-plan.html" class="topbar-btn primary" id="btn-planner-shortcut">
+                    🗂️ Learning Planner
                 </a>
             </div>
-        </section>
+        </div>
 
-        <section class="category-section">
-            <h2 class="category-title">🎲 概率與統計 (Probability & Statistics)</h2>
-            <div class="hub-container">
-                <a href="probability.html" class="math-card">
-                    <div class="card-glow"></div>
-                    <div class="card-icon">🎲</div>
-                    <h3>大數法則</h3>
-                    <div class="formula">P(正面) → 0.5</div>
-                    <p>擲硬幣時，正面比例一開始會大幅震盪，但隨著次數增加，曲線會肉眼可見地收斂到 0.5。親手體驗隨機性中的規律！</p>
-                    <span class="btn-explore">開始探索 ➔</span>
-                </a>
+        <!-- Page Hero -->
+        <header class="page-hero" id="main-hero">
+            <div class="hero-eyebrow">
+                <span aria-hidden="true">✦</span> 互動式數學學習平台
             </div>
-        </section>
+            <h1>透過<span class="accent-word">視覺化</span>，<br>看見數學之美</h1>
+            <p>跟著動態圖形一起探索幾何、概率、代數背後的數學直覺——<br>搭配 AI 求解器與智能學習規劃，讓每一次學習都更高效。</p>
 
-        <section class="category-section">
-            <h2 class="category-title">🔢 數與代數 (Numbers & Algebra)</h2>
-            <div class="hub-container">
-                <a href="sqrt2.html" class="math-card">
-                    <div class="card-glow"></div>
-                    <div class="card-icon">📏</div>
-                    <h3>無理數 √2</h3>
-                    <div class="formula">√2 = 1.414…</div>
-                    <p>在數線上用圓規作圖精確標出 √2，並透過無限放大，親眼看見無理數確實存在！</p>
-                    <span class="btn-explore">開始探索 ➔</span>
+            <div class="hero-badges" role="list">
+                <div class="hero-badge" role="listitem">
+                    <span class="badge-icon" aria-hidden="true">📐</span>
+                    <span>互動視覺化</span>
+                    <span class="badge-count">6</span>
+                </div>
+                <a href="problem-solver.html" class="hero-badge" role="listitem" id="hero-badge-solver">
+                    <span class="badge-icon" aria-hidden="true">🤖</span>
+                    <span>AI Math Solver</span>
                 </a>
-                <a href="exponential.html" class="math-card">
-                    <div class="card-glow"></div>
-                    <div class="card-icon">📈</div>
-                    <h3>指數增長 vs 線性增長</h3>
-                    <div class="formula">2ⁿ vs n</div>
-                    <p>在 8×8 棋盤上放米粒，每格翻倍。親眼見證指數增長如何令線性增長完全「消失」，理解複利與病毒傳播的數學直覺。</p>
-                    <span class="btn-explore">開始探索 ➔</span>
+                <a href="learning-plan.html" class="hero-badge" role="listitem" id="hero-badge-planner">
+                    <span class="badge-icon" aria-hidden="true">🗂️</span>
+                    <span>AI Learning Planner</span>
                 </a>
-                <div class="math-card disabled-card">
-                    <div class="card-icon">🌀</div>
-                    <h3>微積分基礎 (開發中...)</h3>
-                    <div class="formula">∫ f(x)dx</div>
-                    <p>體驗極限與無窮分割的概念，看著曲線下的面積如何被精確計算。</p>
-                    <span class="btn-explore waiting">敬請期待</span>
+                <div class="hero-badge" role="listitem">
+                    <span class="badge-icon" aria-hidden="true">🖥️</span>
+                    <span>在線課堂（即將推出）</span>
                 </div>
             </div>
-        </section>
+        </header>
 
-    </main>
+        <!-- ──────────────────────────────────────
+             Module Grid
+             ────────────────────────────────────── -->
+        <main class="hub-main" id="module-grid">
+
+            <!-- Category 1: Geometry -->
+            <section class="category-section" aria-labelledby="cat-geometry">
+                <div class="category-header">
+                    <div class="category-icon-wrap" aria-hidden="true">📐</div>
+                    <h2 class="category-title" id="cat-geometry">幾何與測量</h2>
+                    <span class="category-subtitle">Geometry &amp; Measurement</span>
+                </div>
+
+                <div class="hub-container">
+
+                    <!-- Circle Area -->
+                    <a href="circle.html" class="math-card" id="card-circle" aria-label="圓形面積：開始探索">
+                        <div class="card-top">
+                            <div class="card-icon" aria-hidden="true">🔵</div>
+                            <div class="formula" aria-label="圓形面積公式">A = πr²</div>
+                        </div>
+                        <h3>圓形面積</h3>
+                        <p>透過將圓形切片展開並重新組合，視覺化體驗這個最經典的從圓到長方形的數學轉換過程。</p>
+                        <span class="btn-explore">
+                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                        </span>
+                    </a>
+
+                    <!-- Cylinder -->
+                    <a href="cylinder.html" class="math-card" id="card-cylinder" aria-label="圓柱側表面積：開始探索">
+                        <div class="card-top">
+                            <div class="card-icon" aria-hidden="true">🛢️</div>
+                            <div class="formula" aria-label="圓柱側面積公式">A = 2πrh</div>
+                        </div>
+                        <h3>圓柱側表面積</h3>
+                        <p>將立體的圓柱沿著側面剪開攤平，你會發現原本彎曲的表面原來只是一個簡單的長方形。</p>
+                        <span class="btn-explore">
+                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                        </span>
+                    </a>
+
+                    <!-- Pythagoras -->
+                    <a href="pythagoras.html" class="math-card" id="card-pythagoras" aria-label="畢氏定理：開始探索">
+                        <div class="card-top">
+                            <div class="card-icon" aria-hidden="true">📐</div>
+                            <div class="formula" aria-label="畢氏定理公式">a² + b² = c²</div>
+                        </div>
+                        <h3>畢氏定理</h3>
+                        <p>透過面積拼湊法和倒水實驗，親眼見證直角三角形三邊的神奇關係。</p>
+                        <span class="btn-explore">
+                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                        </span>
+                    </a>
+
+                </div>
+            </section>
+
+            <!-- Category 2: Probability -->
+            <section class="category-section" aria-labelledby="cat-probability">
+                <div class="category-header">
+                    <div class="category-icon-wrap" aria-hidden="true">🎲</div>
+                    <h2 class="category-title" id="cat-probability">概率與統計</h2>
+                    <span class="category-subtitle">Probability &amp; Statistics</span>
+                </div>
+
+                <div class="hub-container">
+
+                    <!-- Law of Large Numbers -->
+                    <a href="probability.html" class="math-card" id="card-probability" aria-label="大數法則：開始探索">
+                        <div class="card-top">
+                            <div class="card-icon" aria-hidden="true">🎲</div>
+                            <div class="formula" aria-label="概率公式">P(H) → 0.5</div>
+                        </div>
+                        <h3>大數法則</h3>
+                        <p>擲硬幣時，正面比例一開始會大幅震盪，但隨著次數增加，曲線會肉眼可見地收斂到 0.5。親手體驗隨機性中的規律！</p>
+                        <span class="btn-explore">
+                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                        </span>
+                    </a>
+
+                </div>
+            </section>
+
+            <!-- Category 3: Numbers & Algebra -->
+            <section class="category-section" aria-labelledby="cat-algebra">
+                <div class="category-header">
+                    <div class="category-icon-wrap" aria-hidden="true">🔢</div>
+                    <h2 class="category-title" id="cat-algebra">數與代數</h2>
+                    <span class="category-subtitle">Numbers &amp; Algebra</span>
+                </div>
+
+                <div class="hub-container">
+
+                    <!-- √2 -->
+                    <a href="sqrt2.html" class="math-card" id="card-sqrt2" aria-label="無理數根號2：開始探索">
+                        <div class="card-top">
+                            <div class="card-icon" aria-hidden="true">📏</div>
+                            <div class="formula" aria-label="根號2">√2 = 1.414…</div>
+                        </div>
+                        <h3>無理數 √2</h3>
+                        <p>在數線上用圓規作圖精確標出 √2，並透過無限放大，親眼看見無理數確實存在！</p>
+                        <span class="btn-explore">
+                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                        </span>
+                    </a>
+
+                    <!-- Exponential Growth -->
+                    <a href="exponential.html" class="math-card" id="card-exponential" aria-label="指數增長：開始探索">
+                        <div class="card-top">
+                            <div class="card-icon" aria-hidden="true">📈</div>
+                            <div class="formula" aria-label="指數公式">2ⁿ vs n</div>
+                        </div>
+                        <h3>指數增長 vs 線性增長</h3>
+                        <p>在 8×8 棋盤上放米粒，每格翻倍。親眼見證指數增長如何令線性增長完全消失，理解複利與病毒傳播的數學直覺。</p>
+                        <span class="btn-explore">
+                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                        </span>
+                    </a>
+
+                    <!-- Calculus — Coming Soon -->
+                    <div class="math-card disabled-card" id="card-calculus" aria-label="微積分基礎（開發中）" aria-disabled="true">
+                        <div class="card-top">
+                            <div class="card-icon" aria-hidden="true">🌀</div>
+                            <div class="formula">∫ f(x)dx</div>
+                        </div>
+                        <h3>微積分基礎</h3>
+                        <p>體驗極限與無窮分割的概念，看著曲線下的面積如何被精確計算。</p>
+                        <span class="locked-badge">
+                            🔒 開發中
+                        </span>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+        <!-- end hub-main -->
+
+    </div>
+    <!-- end content-area -->
 
     <script>
-        // Use MathJax for formula rendering
+        // MathJax configuration
         window.MathJax = {
             tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
             svg: { fontCache: 'global' }
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script>
+        // Highlight active sidebar item based on current page
+        (function () {
+            const path = window.location.pathname.split('/').pop() || 'index.html';
+            const map = {
+                'index.html': 'nav-math-viz',
+                'problem-solver.html': 'nav-solver',
+                'learning-plan.html': 'nav-planner'
+            };
+            const activeId = map[path];
+            if (activeId) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                const el = document.getElementById(activeId);
+                if (el) el.classList.add('active');
+            }
+        })();
+    </script>
+
 </body>
+
 </html>
