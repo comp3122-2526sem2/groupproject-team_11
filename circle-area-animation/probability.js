@@ -42,12 +42,12 @@
                 {
                     label: '正面比例',
                     data: chartData,
-                    borderColor: '#818cf8',
-                    backgroundColor: 'rgba(129, 140, 248, 0.08)',
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.08)',
                     borderWidth: 2.5,
                     pointRadius: 0,
                     pointHoverRadius: 4,
-                    fill: false,
+                    fill: true,
                     tension: 0.15,
                 },
                 {
@@ -74,17 +74,17 @@
                     title: {
                         display: true,
                         text: '擲幣次數',
-                        color: '#707070',
-                        font: { size: 13, weight: '700', family: "'Noto Sans TC', sans-serif" },
-                        padding: { top: 12 },
+                        color: '#6B7280',
+                        font: { size: 12, weight: '700', family: "'Inter', 'Noto Sans TC', sans-serif" },
+                        padding: { top: 10 },
                     },
                     ticks: {
-                        color: '#606060',
+                        color: '#9CA3AF',
                         maxTicksLimit: 10,
                         font: { size: 11 },
-                        padding: 8,
+                        padding: 6,
                     },
-                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    grid: { color: 'rgba(0,0,0,0.05)' },
                 },
                 y: {
                     min: 0,
@@ -92,25 +92,25 @@
                     title: {
                         display: true,
                         text: '正面比例',
-                        color: '#707070',
-                        font: { size: 13, weight: '700', family: "'Noto Sans TC', sans-serif" },
-                        padding: { bottom: 12 },
+                        color: '#6B7280',
+                        font: { size: 12, weight: '700', family: "'Inter', 'Noto Sans TC', sans-serif" },
+                        padding: { bottom: 10 },
                     },
                     ticks: {
-                        color: '#606060',
+                        color: '#9CA3AF',
                         stepSize: 0.1,
                         font: { size: 11 },
-                        padding: 8,
+                        padding: 6,
                         callback: (v) => v.toFixed(1),
                     },
-                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    grid: { color: 'rgba(0,0,0,0.05)' },
                 },
             },
             plugins: {
                 legend: {
                     labels: {
-                        color: '#909090',
-                        font: { size: 12, family: "'Noto Sans TC', sans-serif" },
+                        color: '#6B7280',
+                        font: { size: 12, family: "'Inter', 'Noto Sans TC', sans-serif" },
                         padding: 20,
                         usePointStyle: true,
                         pointStyleWidth: 16,
@@ -118,13 +118,13 @@
                     position: 'bottom',
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(20,20,20,0.92)',
-                    titleColor: '#fff',
-                    bodyColor: '#c0c0c0',
+                    backgroundColor: 'rgba(17, 24, 39, 0.92)',
+                    titleColor: '#F9FAFB',
+                    bodyColor: '#D1D5DB',
                     padding: 12,
                     cornerRadius: 10,
-                    titleFont: { size: 13, weight: '700' },
-                    bodyFont: { size: 12 },
+                    titleFont: { size: 13, weight: '700', family: "'Inter', sans-serif" },
+                    bodyFont: { size: 12, family: "'Inter', sans-serif" },
                     callbacks: {
                         label: function (context) {
                             if (context.datasetIndex === 0) {

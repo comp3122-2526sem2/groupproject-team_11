@@ -3,165 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>概率與大數法則 | Probability & Law of Large Numbers</title>
+    <title>概率與大數法則 — Math Exploration Hub</title>
+    <meta name="description" content="透過擲硬幣模擬，視覺化體驗大數法則：隨著次數增加，正面比例如何收斂到 0.5。">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <style>
-        /* ==========================================
-           PROBABILITY PAGE — LAYOUT
-           ========================================== */
-        .prob-page {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background: #0d0d0d;
+        /* ══════════════════════════════════════════════
+           Probability Page — Emerald Green Theme
+           ══════════════════════════════════════════════ */
+        :root {
+            --page-brand:       #10B981;
+            --page-brand-dark:  #059669;
+            --page-brand-light: #D1FAE5;
+            --page-brand-glow:  rgba(16, 185, 129, 0.15);
         }
 
-        .prob-nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            background: rgba(13, 13, 13, 0.92);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .prob-nav a {
-            color: #909090;
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 700;
-            transition: color 0.3s;
-        }
-
-        .prob-nav a:hover { color: #fff; }
-
-        .prob-nav .nav-title {
-            color: #fff;
-            font-size: 1.2rem;
-            font-weight: 900;
-        }
-
-        /* Main content area */
-        .prob-content {
+        /* ── Split Layout ── */
+        .prob-split {
             display: flex;
             flex: 1;
-            margin-top: 60px;
-            min-height: calc(100vh - 60px);
+            min-height: calc(100vh - 57px);
+            overflow: hidden;
         }
 
-        /* ==========================================
-           LEFT — EXPLANATION PANEL
-           ========================================== */
-        .prob-text-panel {
-            width: 33%;
-            min-width: 320px;
-            padding: 3rem 2.5rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-right: 1px solid rgba(255,255,255,0.08);
+        /* ── LEFT: Info Panel ── */
+        .prob-info-panel {
+            width: 320px;
+            min-width: 280px;
+            flex-shrink: 0;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.75rem;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 1.25rem;
         }
 
-        .prob-text-panel h1 {
-            font-size: 2rem;
-            font-weight: 900;
-            color: #fff;
-            line-height: 1.3;
+        .prob-info-panel .panel-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .prob-info-panel .panel-title .accent {
+            color: var(--page-brand);
+        }
+
+        .panel-subtitle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--page-brand);
+            background: var(--page-brand-light);
+            padding: 0.25rem 0.85rem;
+            border-radius: 999px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        /* Concept Cards */
+        .concept-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.1rem 1.25rem;
+            transition: border-color 0.2s var(--ease);
+        }
+
+        .concept-card:hover {
+            border-color: var(--page-brand);
+        }
+
+        .concept-card h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
-        }
-
-        .prob-text-panel .subtitle {
-            font-size: 1rem;
-            color: #707070;
-            margin-bottom: 0.5rem;
-        }
-
-        .concept-box {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 1.5rem;
-        }
-
-        .concept-box h3 {
-            font-size: 1.1rem;
-            color: #e0e0e0;
-            margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
 
-        .concept-box p {
-            font-size: 0.95rem;
-            color: #a0a0a0;
+        .concept-card p, .concept-card ul {
+            font-size: 0.865rem;
+            color: var(--text-secondary);
             line-height: 1.7;
-            margin-bottom: 0;
+            margin: 0;
         }
 
-        .concept-highlight {
-            color: #fff;
+        .concept-hl {
+            color: var(--page-brand-dark);
             font-weight: 700;
         }
 
-        .insight-box {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(168, 85, 247, 0.08));
-            border: 1px solid rgba(139, 92, 246, 0.25);
-            border-radius: 16px;
-            padding: 1.5rem;
+        /* Insight Card (themed) */
+        .insight-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.04) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: var(--radius-md);
+            padding: 1.1rem 1.25rem;
         }
 
-        .insight-box h3 {
-            font-size: 1.1rem;
-            color: #c4b5fd;
-            margin-bottom: 0.75rem;
+        .insight-card h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--page-brand-dark);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
-        .insight-box p {
-            font-size: 0.95rem;
-            color: #a5b4fc;
+        .insight-card p {
+            font-size: 0.865rem;
+            color: #065F46;
             line-height: 1.7;
         }
 
-        /* ==========================================
-           RIGHT — INTERACTIVE PANEL
-           ========================================== */
+        /* ── RIGHT: Interactive Panel ── */
         .prob-interactive {
             flex: 1;
-            padding: 2.5rem 3rem;
+            background: var(--bg);
+            padding: 2rem 2.5rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1.25rem;
             overflow-y: auto;
         }
 
-        /* — Coin display */
+        /* Section header inside interactive */
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* ── Coin Display ── */
         .coin-area {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 2rem;
-            padding: 1.5rem 0;
+            gap: 2.5rem;
+            padding: 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
         }
 
         .coin-container {
             perspective: 600px;
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
         }
 
         .coin {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -185,10 +194,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 900;
             backface-visibility: hidden;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.15);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12), inset 0 2px 4px rgba(255,255,255,0.5);
         }
 
         .coin-heads {
@@ -198,84 +207,99 @@
         }
 
         .coin-tails {
-            background: linear-gradient(145deg, #c0c0c0, #a0a0a0);
-            color: #404040;
-            border: 3px solid #b0b0b0;
+            background: linear-gradient(145deg, #d1d5db, #9ca3af);
+            color: #374151;
+            border: 3px solid #c0c0c0;
             transform: rotateY(180deg);
         }
 
         .last-result {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            min-width: 100px;
+            min-width: 110px;
             text-align: center;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
+            padding: 0.6rem 1.1rem;
+            border-radius: var(--radius-md);
         }
 
         .last-result.heads {
-            color: #fbbf24;
-            background: rgba(251, 191, 36, 0.1);
-            border: 1px solid rgba(251, 191, 36, 0.25);
+            color: #D97706;
+            background: #FEF3C7;
+            border: 1px solid rgba(217, 119, 6, 0.25);
         }
 
         .last-result.tails {
-            color: #94a3b8;
-            background: rgba(148, 163, 184, 0.1);
-            border: 1px solid rgba(148, 163, 184, 0.25);
+            color: var(--text-secondary);
+            background: var(--bg);
+            border: 1px solid var(--border);
         }
 
         .last-result.waiting {
-            color: #555;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-tertiary);
+            background: var(--bg);
+            border: 1px solid var(--border);
         }
 
-        /* — Statistics grid */
+        /* ── Stats Grid ── */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
+            gap: 0.875rem;
         }
 
         .stat-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 14px;
-            padding: 1.25rem 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1rem 0.875rem;
             text-align: center;
+            transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-strong);
+            box-shadow: var(--shadow-sm);
         }
 
         .stat-card .stat-label {
-            font-size: 0.8rem;
-            color: #707070;
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
         }
 
         .stat-card .stat-value {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #fff;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+        }
+
+        .stat-card.highlight {
+            background: var(--page-brand-light);
+            border-color: rgba(16, 185, 129, 0.3);
         }
 
         .stat-card.highlight .stat-value {
-            background: linear-gradient(135deg, #818cf8, #a78bfa);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--page-brand-dark);
         }
 
-        /* — Chart area */
+        .stat-card.highlight .stat-label {
+            color: var(--page-brand);
+        }
+
+        /* ── Chart Wrapper ── */
         .chart-wrapper {
             flex: 1;
-            min-height: 320px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 1.5rem;
+            min-height: 280px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
             position: relative;
+            box-shadow: var(--shadow-sm);
         }
 
         .chart-wrapper canvas {
@@ -287,78 +311,69 @@
             position: absolute;
             top: 1rem;
             left: 1.5rem;
-            font-size: 0.85rem;
-            color: #707070;
-            letter-spacing: 1px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-tertiary);
             text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
-        /* — Button bar */
+        /* ── Button Bar ── */
         .btn-bar {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             flex-wrap: wrap;
-            padding: 0.5rem 0;
         }
 
         .btn {
-            padding: 0.85rem 1.8rem;
+            padding: 0.7rem 1.4rem;
             border: none;
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
             font-weight: 700;
-            font-family: 'Noto Sans TC', sans-serif;
+            font-family: var(--font-sans);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s var(--ease);
             position: relative;
             overflow: hidden;
         }
 
-        .btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .btn:hover::after { opacity: 1; }
-
         .btn-primary {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            background: var(--page-brand);
             color: #fff;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+            box-shadow: 0 4px 16px var(--page-brand-glow);
         }
 
         .btn-primary:hover {
+            background: var(--page-brand-dark);
             transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(99, 102, 241, 0.5);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
         }
 
-        .btn-primary:active {
-            transform: translateY(0);
-        }
+        .btn-primary:active { transform: translateY(0); }
 
         .btn-secondary {
-            background: rgba(255,255,255,0.08);
-            color: #e0e0e0;
-            border: 1px solid rgba(255,255,255,0.12);
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-secondary:hover {
-            background: rgba(255,255,255,0.14);
+            background: var(--surface-hover);
+            border-color: var(--page-brand);
+            color: var(--page-brand-dark);
             transform: translateY(-2px);
         }
 
         .btn-danger {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.25);
+            background: #FEF2F2;
+            color: #DC2626;
+            border: 1px solid rgba(220, 38, 38, 0.2);
         }
 
         .btn-danger:hover {
-            background: rgba(239, 68, 68, 0.25);
+            background: #FEE2E2;
             transform: translateY(-2px);
         }
 
@@ -368,157 +383,199 @@
             transform: none !important;
         }
 
-        /* — Speed indicator */
+        /* ── Speed Indicator ── */
         .speed-indicator {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.85rem;
-            color: #707070;
-            padding: 0.25rem 0;
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
         }
 
         .speed-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #22c55e;
-            animation: pulse 1s infinite;
+            background: var(--page-brand);
+            animation: pulse-dot 1.2s infinite;
         }
 
-        .speed-dot.idle { 
-            background: #555; 
-            animation: none; 
+        .speed-dot.idle {
+            background: var(--border-strong);
+            animation: none;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
         }
 
-        /* ==========================================
-           RESPONSIVE
-           ========================================== */
-        @media (max-width: 900px) {
-            .prob-content {
-                flex-direction: column;
-            }
+        /* ── Topbar non-sticky ── */
+        .content-topbar { position: relative !important; }
 
-            .prob-text-panel {
-                width: 100%;
-                min-width: auto;
-                border-right: none;
-                border-bottom: 1px solid rgba(255,255,255,0.08);
-                max-height: 40vh;
-            }
-
-            .prob-interactive {
-                padding: 1.5rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .coin-container, .coin {
-                width: 80px;
-                height: 80px;
-            }
-
-            .coin-face { font-size: 1.8rem; }
+        /* ── Responsive ── */
+        @media (max-width: 1100px) {
+            .prob-split { flex-direction: column; overflow: auto; }
+            .prob-info-panel { width: 100%; min-width: auto; border-right: none; border-bottom: 1px solid var(--border); max-height: 42vh; }
+            .prob-interactive { padding: 1.25rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
-<body class="prob-page">
-    <!-- Navigation -->
-    <nav class="prob-nav">
-        <a href="index.html">← 返回首頁</a>
-        <span class="nav-title">🎲 概率與大數法則</span>
-    </nav>
 
-    <div class="prob-content">
-        <!-- LEFT: Explanation Panel -->
-        <aside class="prob-text-panel">
-            <div>
-                <h1>🎲 概率與<br>大數法則</h1>
-                <p class="subtitle">中三 · Probability & Law of Large Numbers</p>
+<body class="hub-body">
+
+    <!-- ════ SIDEBAR ════ -->
+    <aside class="sidebar" role="navigation" aria-label="主導覽">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo" aria-hidden="true">∑</div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Math Hub</span>
+                <span class="sidebar-brand-sub">Education Platform</span>
             </div>
-
-            <div class="concept-box">
-                <h3>🤔 常見疑問</h3>
-                <p>「擲硬幣明明可以連續 10 次出正面，為什麼說機率是 <span class="concept-highlight">50%</span>？」</p>
+        </div>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">學習模組</span>
+            <a href="index.html" class="nav-item active" id="nav-math-viz" aria-current="page">
+                <span class="nav-item-icon" aria-hidden="true">📐</span>
+                <span class="nav-item-label">互動數學視覺化</span>
+            </a>
+            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+                <span class="nav-item-icon" aria-hidden="true">🤖</span>
+                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
+                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <span class="nav-section-label">即將推出</span>
+            <div class="nav-item locked" id="nav-classroom" title="即將推出" aria-disabled="true">
+                <span class="nav-item-icon" aria-hidden="true">🖥️</span>
+                <span class="nav-item-label">在線課堂</span>
+                <span class="nav-lock-icon" aria-hidden="true">🔒</span>
             </div>
+        </nav>
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
+        </div>
+    </aside>
 
-            <div class="concept-box">
-                <h3>🔑 關鍵概念</h3>
-                <p>單次結果是<span class="concept-highlight">隨機</span>的，但大量重複實驗後，正面出現的<span class="concept-highlight">比例</span>會越來越接近理論機率 <span class="concept-highlight">0.5</span>。這就是<span class="concept-highlight">大數法則</span>。</p>
+    <!-- ════ CONTENT AREA ════ -->
+    <div class="content-area">
+
+        <!-- Topbar Breadcrumb -->
+        <div class="content-topbar">
+            <div class="topbar-breadcrumb">
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">Math Hub</a>
+                <span aria-hidden="true">›</span>
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">概率與統計</a>
+                <span aria-hidden="true">›</span>
+                <span class="current">大數法則</span>
             </div>
-
-            <div class="concept-box">
-                <h3>📊 如何觀察</h3>
-                <p>按下「擲一次」觀察<span class="concept-highlight">短期震盪</span>。再按「快速擲 1000 次」，親眼看折線圖如何<span class="concept-highlight">收斂到 0.5</span>。</p>
+            <div class="topbar-actions">
+                <a href="index.html" class="topbar-btn secondary" id="btn-back">← 返回首頁</a>
             </div>
+        </div>
 
-            <div class="insight-box">
-                <h3>💡 深層洞見</h3>
-                <p>隨機性中隱藏著規律 — 這不是矛盾，而是數學最美妙的地方之一。次數越多，規律越明顯。</p>
-            </div>
-        </aside>
+        <!-- Split Layout -->
+        <div class="prob-split">
 
-        <!-- RIGHT: Interactive Panel -->
-        <main class="prob-interactive">
-            <!-- Coin display -->
-            <div class="coin-area">
-                <div class="coin-container">
-                    <div class="coin" id="coin">
-                        <div class="coin-face coin-heads">正</div>
-                        <div class="coin-face coin-tails">反</div>
+            <!-- LEFT: Info Panel -->
+            <aside class="prob-info-panel" aria-label="概念說明">
+                <div>
+                    <h1 class="panel-title">🎲 概率與<br><span class="accent">大數法則</span></h1>
+                    <div class="panel-subtitle">🎲 &nbsp;中三 · Probability &amp; Statistics</div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>🤔 常見疑問</h3>
+                    <p>「擲硬幣明明可以連續 10 次出正面，為什麼說機率是 <span class="concept-hl">50%</span>？」</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>🔑 關鍵概念</h3>
+                    <p>單次結果是<span class="concept-hl">隨機</span>的，但大量重複實驗後，正面出現的<span class="concept-hl">比例</span>會越來越接近理論機率 <span class="concept-hl">0.5</span>。這就是<span class="concept-hl">大數法則</span>。</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📊 如何觀察</h3>
+                    <p>按下「擲一次」觀察<span class="concept-hl">短期震盪</span>。再按「快速擲 1000 次」，親眼看折線圖如何<span class="concept-hl">收斂到 0.5</span>。</p>
+                </div>
+
+                <div class="insight-card">
+                    <h3>💡 深層洞見</h3>
+                    <p>隨機性中隱藏著規律 — 這不是矛盾，而是數學最美妙的地方之一。次數越多，規律越明顯。</p>
+                </div>
+            </aside>
+
+            <!-- RIGHT: Interactive Panel -->
+            <main class="prob-interactive">
+
+                <!-- Coin display -->
+                <div class="coin-area">
+                    <div class="coin-container">
+                        <div class="coin" id="coin">
+                            <div class="coin-face coin-heads">正</div>
+                            <div class="coin-face coin-tails">反</div>
+                        </div>
+                    </div>
+                    <div class="last-result waiting" id="lastResult">等待擲幣...</div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid" role="region" aria-label="統計數據">
+                    <div class="stat-card">
+                        <div class="stat-label">總次數</div>
+                        <div class="stat-value" id="totalCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">正面 🪙</div>
+                        <div class="stat-value" id="headsCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">反面</div>
+                        <div class="stat-value" id="tailsCount">0</div>
+                    </div>
+                    <div class="stat-card highlight">
+                        <div class="stat-label">正面比例</div>
+                        <div class="stat-value" id="headsRatio">—</div>
                     </div>
                 </div>
-                <div class="last-result waiting" id="lastResult">等待擲幣...</div>
-            </div>
 
-            <!-- Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">總次數</div>
-                    <div class="stat-value" id="totalCount">0</div>
+                <!-- Chart -->
+                <div class="chart-wrapper">
+                    <span class="chart-label">正面出現比例 vs 擲幣次數</span>
+                    <canvas id="ratioChart"></canvas>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">正面 🪙</div>
-                    <div class="stat-value" id="headsCount">0</div>
+
+                <!-- Buttons -->
+                <div class="btn-bar">
+                    <button class="btn btn-primary" id="btnFlipOne">🪙 擲一次</button>
+                    <button class="btn btn-secondary" id="btnFlip100">⚡ 快速擲 100 次</button>
+                    <button class="btn btn-secondary" id="btnFlip1000">🚀 快速擲 1000 次</button>
+                    <button class="btn btn-danger" id="btnReset">🔄 重置</button>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">反面</div>
-                    <div class="stat-value" id="tailsCount">0</div>
+
+                <div class="speed-indicator">
+                    <div class="speed-dot idle" id="speedDot"></div>
+                    <span id="speedText">就緒</span>
                 </div>
-                <div class="stat-card highlight">
-                    <div class="stat-label">正面比例</div>
-                    <div class="stat-value" id="headsRatio">—</div>
-                </div>
-            </div>
 
-            <!-- Chart -->
-            <div class="chart-wrapper">
-                <span class="chart-label">正面出現比例 vs 擲幣次數</span>
-                <canvas id="ratioChart"></canvas>
-            </div>
+            </main>
+        </div>
 
-            <!-- Buttons -->
-            <div class="btn-bar">
-                <button class="btn btn-primary" id="btnFlipOne">🪙 擲一次</button>
-                <button class="btn btn-secondary" id="btnFlip100">⚡ 快速擲 100 次</button>
-                <button class="btn btn-secondary" id="btnFlip1000">🚀 快速擲 1000 次</button>
-                <button class="btn btn-danger" id="btnReset">🔄 重置</button>
-            </div>
+    </div><!-- end content-area -->
 
-            <div class="speed-indicator">
-                <div class="speed-dot idle" id="speedDot"></div>
-                <span id="speedText">就緒</span>
-            </div>
-        </main>
-    </div>
-
+    <script>
+        // ─── Chart.js override: use Emerald theme ───
+        window.__PROB_THEME__ = {
+            lineColor: '#10B981',
+            lineGlow: 'rgba(16,185,129,0.12)',
+            refColor: '#E5E7EB',
+        };
+    </script>
     <script src="probability.js"></script>
 </body>
 </html>

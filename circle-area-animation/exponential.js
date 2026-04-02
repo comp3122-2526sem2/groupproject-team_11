@@ -180,15 +180,15 @@
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#a0a0a0',
-                            font: { size: 11, family: "'Noto Sans TC', sans-serif" },
+                            color: '#6B7280',
+                            font: { size: 11, family: "'Inter', 'Noto Sans TC', sans-serif" },
                             padding: 12,
                         }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(0,0,0,0.85)',
-                        titleColor: '#fff',
-                        bodyColor: '#d0d0d0',
+                        backgroundColor: 'rgba(17, 24, 39, 0.92)',
+                        titleColor: '#F9FAFB',
+                        bodyColor: '#D1D5DB',
                         padding: 10,
                         cornerRadius: 8,
                         callbacks: {
@@ -207,15 +207,15 @@
                         type: 'linear',
                         title: { display: true, text: '格子編號', color: '#707070', font: { size: 11 }, padding: { top: 6 } },
                         min: 1, max: 64,
-                        ticks: { color: '#606060', stepSize: 8, font: { size: 10 }, padding: 4 },
-                        grid: { color: 'rgba(255,255,255,0.05)' }
+                        ticks: { color: '#9CA3AF', stepSize: 8, font: { size: 10 }, padding: 4 },
+                        grid: { color: 'rgba(0,0,0,0.06)' }
                     },
                     y: {
                         type: 'logarithmic',
                         title: { display: true, text: '米粒數量', color: '#707070', font: { size: 11 }, padding: { bottom: 6 } },
                         min: 1,
                         ticks: {
-                            color: '#606060',
+                            color: '#9CA3AF',
                             font: { size: 10 },
                             padding: 6,
                             callback: val => {
@@ -226,7 +226,7 @@
                                 return val.toLocaleString();
                             }
                         },
-                        grid: { color: 'rgba(255,255,255,0.05)' }
+                        grid: { color: 'rgba(0,0,0,0.06)' }
                     }
                 },
                 animation: { duration: 200 }

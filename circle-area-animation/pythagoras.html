@@ -3,23 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>畢氏定理 — 為什麼 a² + b² = c²？</title>
+    <title>畢氏定理視覺化 — Math Exploration Hub</title>
+    <meta name="description" content="透過面積拼湊法與倒水實驗，視覺化體驗畢氏定理 a² + b² = c² 的幾何意義。">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        #pyth-canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
+        /* ══════════════════════════════════════════════
+           Pythagoras Page — Violet / Indigo Theme  #7C3AED
+           ══════════════════════════════════════════════ */
+        :root {
+            --page-brand:       #7C3AED;
+            --page-brand-dark:  #6D28D9;
+            --page-brand-light: #EDE9FE;
+            --page-brand-glow:  rgba(124, 58, 237, 0.15);
         }
+
+        #pyth-canvas { width: 100%; height: 100%; display: block; }
+
+        /* Light violet animation panel */
         .animation-panel {
-            background: radial-gradient(circle at 50% 45%, #1a1a2e 0%, #0d0d0d 100%);
+            background: linear-gradient(135deg, #F5F3FF 0%, #DDD6FE 55%, #C4B5FD 100%) !important;
         }
-        .scroll-container {
-            height: 1200vh;
+
+        .scroll-container { height: 1200vh; }
+
+        /* Topbar non-sticky */
+        .content-topbar { position: relative !important; }
+
+        /* ── Compact Page Hero ── */
+        .page-hero-inner {
+            padding: 2.5rem 3rem 2rem;
+            background: linear-gradient(135deg, #ffffff 55%, #EDE9FE 100%);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
         }
-        /* Phase progress indicator */
+        .page-hero-inner::after {
+            content: '';
+            position: absolute;
+            right: -80px; top: -80px;
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--page-brand-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-eyebrow-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--page-brand);
+            background: var(--page-brand-light);
+            border: 1px solid rgba(124,58,237,0.15);
+            padding: 0.25rem 0.85rem;
+            border-radius: 999px;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .page-hero-inner h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            margin-bottom: 0.5rem;
+        }
+        .page-hero-inner h1 .accent-word { color: var(--page-brand); }
+        .page-hero-inner p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        .inner-scroll-hint {
+            margin-top: 0.875rem !important;
+            font-size: 0.82rem;
+            color: var(--page-brand) !important;
+            font-weight: 600;
+            animation: hint-pulse 2.2s ease-in-out infinite;
+        }
+        @keyframes hint-pulse {
+            0%, 100% { opacity: 0.5; }
+            50%       { opacity: 1; }
+        }
+
+        /* ── Phase Progress Dots ── */
         .phase-dots {
             position: fixed;
             right: 2rem;
@@ -31,50 +104,53 @@
             z-index: 50;
         }
         .phase-dot {
-            width: 10px;
-            height: 10px;
+            width: 10px; height: 10px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(124, 58, 237, 0.14);
+            border: 1px solid rgba(124, 58, 237, 0.24);
             transition: all 0.4s ease;
         }
         .phase-dot.active {
-            background: #ffffff;
-            box-shadow: 0 0 10px rgba(255,255,255,0.6);
+            background: var(--page-brand);
+            box-shadow: 0 0 12px rgba(124, 58, 237, 0.45);
             transform: scale(1.4);
         }
-        /* Highlight chips */
+
+        /* ── Light Chips ── */
         .chip {
             display: inline-block;
-            background: rgba(255,255,255,0.12);
-            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(124, 58, 237, 0.07);
+            border: 1px solid rgba(124, 58, 237, 0.20);
             border-radius: 6px;
             padding: 0.1em 0.5em;
-            font-weight: bold;
-            color: #ffffff;
+            font-weight: 700;
+            color: #5B21B6;
         }
-        .chip-red    { background: rgba(239,68,68,0.2);  border-color: rgba(239,68,68,0.4);  color: #fca5a5; }
-        .chip-blue   { background: rgba(96,165,250,0.2); border-color: rgba(96,165,250,0.4); color: #93c5fd; }
-        .chip-purple { background: rgba(167,139,250,0.2); border-color: rgba(167,139,250,0.4); color: #c4b5fd; }
-        .chip-green  { background: rgba(52,211,153,0.2); border-color: rgba(52,211,153,0.4); color: #6ee7b7; }
-        .chip-amber  { background: rgba(251,191,36,0.2); border-color: rgba(251,191,36,0.4); color: #fde68a; }
+        .chip-red    { background: rgba(239,68,68,0.08);  border-color: rgba(239,68,68,0.25);  color: #DC2626; }
+        .chip-blue   { background: rgba(14,165,233,0.09); border-color: rgba(14,165,233,0.28); color: #0284C7; }
+        .chip-purple { background: rgba(124,58,237,0.10); border-color: rgba(124,58,237,0.30); color: #6D28D9; }
+        .chip-green  { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.25); color: #047857; }
+        .chip-amber  { background: rgba(245,158,11,0.10); border-color: rgba(245,158,11,0.30); color: #B45309; }
 
-        /* Formula box */
+        /* ── Light Formula Box ── */
         .formula-box {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.18);
+            background: #ffffff;
+            border: 2px solid rgba(124, 58, 237, 0.28);
             border-radius: 12px;
             padding: 1.2rem 1.5rem;
             margin-top: 1.2rem;
             text-align: center;
             font-size: 1.5rem;
-            color: #ffffff;
+            color: #5B21B6;
             font-weight: 900;
             letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.10);
         }
+
         .step p { line-height: 1.9; }
         .step p br { margin-bottom: 0.3em; }
-        /* Override shared .step transition: sharp fade to avoid ghost text overlap */
+
+        /* Visibility transition for pythagoras steps */
         .step {
             transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s 0.35s;
             visibility: hidden;
@@ -83,200 +159,266 @@
             transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s 0s;
             visibility: visible;
         }
+
+        /* Step h2 */
+        .step h2 { color: var(--page-brand-dark); }
+
+        /* Math highlight */
+        .math-hl { color: var(--page-brand); font-weight: 700; }
     </style>
 </head>
-<body>
-    <nav class="top-nav" style="justify-content: flex-start;">
-        <a href="index.html" class="nav-link">🏠 返回數學概念首頁</a>
-    </nav>
 
-    <!-- Phase progress dots -->
-    <div class="phase-dots" id="phase-dots">
-        <div class="phase-dot active" data-phase="0" title="認識直角三角形"></div>
-        <div class="phase-dot" data-phase="1" title="三邊外接正方形"></div>
-        <div class="phase-dot" data-phase="2" title="觀察面積"></div>
-        <div class="phase-dot" data-phase="3" title="切割 a²"></div>
-        <div class="phase-dot" data-phase="4" title="切割 b²"></div>
-        <div class="phase-dot" data-phase="5" title="拼湊到 c²"></div>
-        <div class="phase-dot" data-phase="6" title="面積證明"></div>
-        <div class="phase-dot" data-phase="7" title="裝水"></div>
-        <div class="phase-dot" data-phase="8" title="倒水"></div>
-        <div class="phase-dot" data-phase="9" title="結論"></div>
-    </div>
+<body class="hub-body">
 
-    <header class="page-header">
-        <div class="glow-orb orb-1" style="opacity: 0.08;"></div>
-        <div class="glow-orb orb-2" style="opacity: 0.08;"></div>
-        <h1>畢氏定理<br><span style="font-size:0.6em; color:#888; letter-spacing:2px;">為什麼 a² + b² = c²？</span></h1>
-        <p class="scroll-hint">請往下滾動 👇</p>
-    </header>
-
-    <div class="scroll-container">
-        <div class="sticky-layout">
-            <div class="text-panel">
-                <!-- Phase 0: 認識直角三角形 -->
-                <div class="step step-0 active">
-                    <h2>📐 認識直角三角形</h2>
-                    <p>
-                        這是一個<strong>直角三角形</strong>。<br><br>
-                        它有三條邊：<br>
-                        <span class="chip chip-red">a = 3</span> 和 <span class="chip chip-blue">b = 4</span> 是兩條<strong>直角邊</strong>，<br>
-                        <span class="chip chip-purple">c = 5</span> 是最長的邊，叫做<strong>斜邊</strong>。<br><br>
-                        你可能聽過一個公式：<br>
-                        <span class="math-hl">\( a^2 + b^2 = c^2 \)</span><br><br>
-                        但<strong>為什麼</strong>它是對的呢？🤔<br>
-                        讓我們用<strong>眼睛</strong>來驗證！
-                    </p>
-                </div>
-
-                <!-- Phase 1: 三邊外接正方形 -->
-                <div class="step step-1">
-                    <h2>🔲 三邊外接正方形</h2>
-                    <p>
-                        在三角形的每條邊外側，<br>
-                        各畫一個<strong>正方形</strong>。<br><br>
-                        <span class="chip chip-red">a 邊</span> → 正方形面積 = \( a^2 = 9 \)<br>
-                        <span class="chip chip-blue">b 邊</span> → 正方形面積 = \( b^2 = 16 \)<br>
-                        <span class="chip chip-purple">c 邊</span> → 正方形面積 = \( c^2 = 25 \)<br><br>
-                        如果 \( a^2 + b^2 = c^2 \)，<br>
-                        那就是說 \( 9 + 16 = 25 \)。<br><br>
-                        兩個小正方形的面積之和，<br>
-                        應該剛好等於大正方形的面積！
-                    </p>
-                </div>
-
-                <!-- Phase 2: 觀察面積 -->
-                <div class="step step-2">
-                    <h2>🔍 觀察面積關係</h2>
-                    <p>
-                        仔細觀察閃爍的正方形。<br><br>
-                        <span class="chip chip-red">紅色 a² = 9</span> 加上
-                        <span class="chip chip-blue">藍色 b² = 16</span><br><br>
-                        真的等於 <span class="chip chip-purple">紫色 c² = 25</span> 嗎？<br><br>
-                        光看數字你可能半信半疑……<br>
-                        讓我們用<strong>面積拼湊法</strong>來證明！<br><br>
-                        我們要把兩個小正方形<strong>切開</strong>，<br>
-                        然後拼進大正方形裡面。
-                    </p>
-                </div>
-
-                <!-- Phase 3: 切割 a² -->
-                <div class="step step-3">
-                    <h2>✂️ 切割 a² 正方形</h2>
-                    <p>
-                        先來處理<span class="chip chip-red">小正方形 a²</span>。<br><br>
-                        它的面積只有 9，比較小，<br>
-                        所以我們<strong>整塊保留</strong>，不用切割。<br><br>
-                        等一下會把它直接放進大正方形裡。<br><br>
-                        注意看它被標記為<br>
-                        <span class="chip chip-amber">第 1 塊</span>。
-                    </p>
-                </div>
-
-                <!-- Phase 4: 切割 b² -->
-                <div class="step step-4">
-                    <h2>✂️ 切割 b² 正方形</h2>
-                    <p>
-                        接下來處理<span class="chip chip-blue">大一點的 b² 正方形</span>。<br><br>
-                        我們在它的<strong>中心</strong>畫一個十字，<br>
-                        把它切成 <strong>4 塊</strong>完全相同的 L 形。<br><br>
-                        十字線的角度是特別設計的——<br>
-                        與斜邊的角度一致。<br><br>
-                        <span class="chip chip-amber">第 2～5 塊</span>就是這四個部分。<br><br>
-                        現在我們總共有 <strong>5 塊拼圖</strong>！
-                    </p>
-                </div>
-
-                <!-- Phase 5: 拼湊到 c² -->
-                <div class="step step-5">
-                    <h2>🧩 完美拼合！</h2>
-                    <p>
-                        見證奇蹟的時刻！<br><br>
-                        5 塊拼圖正在飛向<br>
-                        <span class="chip chip-purple">大正方形 c²</span> ……<br><br>
-                        <span class="chip chip-red">a² 整塊</span>放在正中央，<br>
-                        <span class="chip chip-blue">b² 的 4 塊</span>圍繞在四周。<br><br>
-                        它們<strong>完美地</strong>填滿了整個 c²！<br>
-                        沒有重疊，沒有空隙！ 🎯
-                    </p>
-                </div>
-
-                <!-- Phase 6: 面積證明完成 -->
-                <div class="step step-6">
-                    <h2>✅ 面積證明完成！</h2>
-                    <p>
-                        我們剛剛<strong>親眼見證</strong>了：<br><br>
-                        把 <span class="chip chip-red">a²</span> 和 <span class="chip chip-blue">b²</span>
-                        的面積切割重組後，<br>
-                        恰好完全填滿 <span class="chip chip-purple">c²</span>。<br><br>
-                        這就是畢氏定理的幾何意義！
-                    </p>
-                    <div class="formula-box">
-                        \( a^2 + b^2 = c^2 \)
-                    </div>
-                    <p style="margin-top:1rem; font-size:1.05rem; color:#aaa;">
-                        接下來，讓我們用另一種更直觀的方式<br>
-                        再驗證一次 —— <strong>倒水實驗</strong>！ 🌊
-                    </p>
-                </div>
-
-                <!-- Phase 7: 裝水 -->
-                <div class="step step-7">
-                    <h2>🌊 水流實驗 — 裝水</h2>
-                    <p>
-                        想像三個正方形都是<strong>透明的水箱</strong>。<br><br>
-                        我們在 <span class="chip chip-red">a² 水箱</span> 和
-                        <span class="chip chip-blue">b² 水箱</span><br>
-                        裡面裝滿<strong>藍色的水</strong> 💧<br><br>
-                        注意看水位正在慢慢上升……<br><br>
-                        兩個水箱都裝得滿滿的！<br>
-                        而 <span class="chip chip-purple">c² 水箱</span> 現在是空的。
-                    </p>
-                </div>
-
-                <!-- Phase 8: 倒水 -->
-                <div class="step step-8">
-                    <h2>💧 倒水到 c²！</h2>
-                    <p>
-                        現在打開水管——<br><br>
-                        <span class="chip chip-red">a²</span> 和
-                        <span class="chip chip-blue">b²</span> 的水<br>
-                        正在沿著管道流向 <span class="chip chip-purple">c² 水箱</span>！<br><br>
-                        看著水慢慢注入大水箱……<br><br>
-                        兩個小水箱的水全部倒完後，<br>
-                        大水箱的水位剛好到達<strong>頂部</strong>！<br><br>
-                        不多不少，<strong>剛剛好</strong>！ 😲
-                    </p>
-                </div>
-
-                <!-- Phase 9: 結論 -->
-                <div class="step step-9">
-                    <h2>🎉 畢氏定理成立！</h2>
-                    <p>
-                        無論是<strong>面積拼湊法</strong>還是<strong>倒水法</strong>，<br>
-                        結論都是一樣的：<br><br>
-                        兩條直角邊上的正方形面積之和，<br>
-                        <strong>恰好等於</strong>斜邊上的正方形面積。
-                    </p>
-                    <div class="formula-box" style="font-size:1.8rem;">
-                        \( a^2 + b^2 = c^2 \)
-                    </div>
-                    <p style="margin-top:1rem; font-size:1.05rem; color:#aaa;">
-                        💡 記憶技巧：<br>
-                        兩個小正方形的水，<br>
-                        剛好倒滿一個大正方形！
-                    </p>
-                </div>
-            </div>
-
-            <div class="animation-panel">
-                <canvas id="pyth-canvas"></canvas>
+    <!-- ════ SIDEBAR ════ -->
+    <aside class="sidebar" role="navigation" aria-label="主導覽">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo" aria-hidden="true">∑</div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Math Hub</span>
+                <span class="sidebar-brand-sub">Education Platform</span>
             </div>
         </div>
-    </div>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">學習模組</span>
+            <a href="index.html" class="nav-item active" id="nav-math-viz" aria-current="page">
+                <span class="nav-item-icon" aria-hidden="true">📐</span>
+                <span class="nav-item-label">互動數學視覺化</span>
+            </a>
+            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+                <span class="nav-item-icon" aria-hidden="true">🤖</span>
+                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
+                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <span class="nav-section-label">即將推出</span>
+            <div class="nav-item locked" id="nav-classroom" title="即將推出" aria-disabled="true">
+                <span class="nav-item-icon" aria-hidden="true">🖥️</span>
+                <span class="nav-item-label">在線課堂</span>
+                <span class="nav-lock-icon" aria-hidden="true">🔒</span>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
+        </div>
+    </aside>
+
+    <!-- ════ CONTENT AREA ════ -->
+    <div class="content-area">
+
+        <!-- Phase progress dots -->
+        <div class="phase-dots" id="phase-dots">
+            <div class="phase-dot active" data-phase="0" title="認識直角三角形"></div>
+            <div class="phase-dot" data-phase="1" title="三邊外接正方形"></div>
+            <div class="phase-dot" data-phase="2" title="觀察面積"></div>
+            <div class="phase-dot" data-phase="3" title="切割 a²"></div>
+            <div class="phase-dot" data-phase="4" title="切割 b²"></div>
+            <div class="phase-dot" data-phase="5" title="拼湊到 c²"></div>
+            <div class="phase-dot" data-phase="6" title="面積證明"></div>
+            <div class="phase-dot" data-phase="7" title="裝水"></div>
+            <div class="phase-dot" data-phase="8" title="倒水"></div>
+            <div class="phase-dot" data-phase="9" title="結論"></div>
+        </div>
+
+        <!-- Topbar Breadcrumb -->
+        <div class="content-topbar">
+            <div class="topbar-breadcrumb">
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">Math Hub</a>
+                <span aria-hidden="true">›</span>
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">幾何與測量</a>
+                <span aria-hidden="true">›</span>
+                <span class="current">畢氏定理</span>
+            </div>
+        </div>
+
+        <!-- Compact Hero -->
+        <header class="page-hero-inner">
+            <div class="hero-eyebrow-inner">📐 &nbsp;畢氏定理 &nbsp;·&nbsp; a² + b² = c²</div>
+            <h1>為什麼 <span class="accent-word">a² + b² = c²</span>？</h1>
+            <p>透過面積拼湊法和倒水實驗，親眼見證直角三角形三邊的神奇關係。</p>
+            <p class="inner-scroll-hint">↓ 往下滾動以開始互動動畫</p>
+        </header>
+
+        <!-- Scroll Container -->
+        <div class="scroll-container">
+            <div class="sticky-layout">
+
+                <!-- Text Panel -->
+                <div class="text-panel">
+
+                    <!-- Phase 0: 認識直角三角形 -->
+                    <div class="step step-0 active">
+                        <h2>📐 認識直角三角形</h2>
+                        <p>
+                            這是一個<strong>直角三角形</strong>。<br><br>
+                            它有三條邊：<br>
+                            <span class="chip chip-red">a = 3</span> 和 <span class="chip chip-blue">b = 4</span> 是兩條<strong>直角邊</strong>，<br>
+                            <span class="chip chip-purple">c = 5</span> 是最長的邊，叫做<strong>斜邊</strong>。<br><br>
+                            你可能聽過一個公式：<br>
+                            <span class="math-hl">\( a^2 + b^2 = c^2 \)</span><br><br>
+                            但<strong>為什麼</strong>它是對的呢？🤔<br>
+                            讓我們用<strong>眼睛</strong>來驗證！
+                        </p>
+                    </div>
+
+                    <!-- Phase 1: 三邊外接正方形 -->
+                    <div class="step step-1">
+                        <h2>🔲 三邊外接正方形</h2>
+                        <p>
+                            在三角形的每條邊外側，<br>
+                            各畫一個<strong>正方形</strong>。<br><br>
+                            <span class="chip chip-red">a 邊</span> → 正方形面積 = \( a^2 = 9 \)<br>
+                            <span class="chip chip-blue">b 邊</span> → 正方形面積 = \( b^2 = 16 \)<br>
+                            <span class="chip chip-purple">c 邊</span> → 正方形面積 = \( c^2 = 25 \)<br><br>
+                            如果 \( a^2 + b^2 = c^2 \)，<br>
+                            那就是說 \( 9 + 16 = 25 \)。<br><br>
+                            兩個小正方形的面積之和，<br>
+                            應該剛好等於大正方形的面積！
+                        </p>
+                    </div>
+
+                    <!-- Phase 2: 觀察面積 -->
+                    <div class="step step-2">
+                        <h2>🔍 觀察面積關係</h2>
+                        <p>
+                            仔細觀察閃爍的正方形。<br><br>
+                            <span class="chip chip-red">紅色 a² = 9</span> 加上
+                            <span class="chip chip-blue">藍色 b² = 16</span><br><br>
+                            真的等於 <span class="chip chip-purple">紫色 c² = 25</span> 嗎？<br><br>
+                            光看數字你可能半信半疑……<br>
+                            讓我們用<strong>面積拼湊法</strong>來證明！<br><br>
+                            我們要把兩個小正方形<strong>切開</strong>，<br>
+                            然後拼進大正方形裡面。
+                        </p>
+                    </div>
+
+                    <!-- Phase 3: 切割 a² -->
+                    <div class="step step-3">
+                        <h2>✂️ 切割 a² 正方形</h2>
+                        <p>
+                            先來處理<span class="chip chip-red">小正方形 a²</span>。<br><br>
+                            它的面積只有 9，比較小，<br>
+                            所以我們<strong>整塊保留</strong>，不用切割。<br><br>
+                            等一下會把它直接放進大正方形裡。<br><br>
+                            注意看它被標記為<br>
+                            <span class="chip chip-amber">第 1 塊</span>。
+                        </p>
+                    </div>
+
+                    <!-- Phase 4: 切割 b² -->
+                    <div class="step step-4">
+                        <h2>✂️ 切割 b² 正方形</h2>
+                        <p>
+                            接下來處理<span class="chip chip-blue">大一點的 b² 正方形</span>。<br><br>
+                            我們在它的<strong>中心</strong>畫一個十字，<br>
+                            把它切成 <strong>4 塊</strong>完全相同的 L 形。<br><br>
+                            十字線的角度是特別設計的——<br>
+                            與斜邊的角度一致。<br><br>
+                            <span class="chip chip-amber">第 2～5 塊</span>就是這四個部分。<br><br>
+                            現在我們總共有 <strong>5 塊拼圖</strong>！
+                        </p>
+                    </div>
+
+                    <!-- Phase 5: 拼湊到 c² -->
+                    <div class="step step-5">
+                        <h2>🧩 完美拼合！</h2>
+                        <p>
+                            見證奇蹟的時刻！<br><br>
+                            5 塊拼圖正在飛向<br>
+                            <span class="chip chip-purple">大正方形 c²</span> ……<br><br>
+                            <span class="chip chip-red">a² 整塊</span>放在正中央，<br>
+                            <span class="chip chip-blue">b² 的 4 塊</span>圍繞在四周。<br><br>
+                            它們<strong>完美地</strong>填滿了整個 c²！<br>
+                            沒有重疊，沒有空隙！ 🎯
+                        </p>
+                    </div>
+
+                    <!-- Phase 6: 面積證明完成 -->
+                    <div class="step step-6">
+                        <h2>✅ 面積證明完成！</h2>
+                        <p>
+                            我們剛剛<strong>親眼見證</strong>了：<br><br>
+                            把 <span class="chip chip-red">a²</span> 和 <span class="chip chip-blue">b²</span>
+                            的面積切割重組後，<br>
+                            恰好完全填滿 <span class="chip chip-purple">c²</span>。<br><br>
+                            這就是畢氏定理的幾何意義！
+                        </p>
+                        <div class="formula-box">
+                            \( a^2 + b^2 = c^2 \)
+                        </div>
+                        <p style="margin-top:1rem; font-size:1.05rem; color:var(--text-tertiary);">
+                            接下來，讓我們用另一種更直觀的方式<br>
+                            再驗證一次 —— <strong>倒水實驗</strong>！ 🌊
+                        </p>
+                    </div>
+
+                    <!-- Phase 7: 裝水 -->
+                    <div class="step step-7">
+                        <h2>🌊 水流實驗 — 裝水</h2>
+                        <p>
+                            想像三個正方形都是<strong>透明的水箱</strong>。<br><br>
+                            我們在 <span class="chip chip-red">a² 水箱</span> 和
+                            <span class="chip chip-blue">b² 水箱</span><br>
+                            裡面裝滿<strong>藍色的水</strong> 💧<br><br>
+                            注意看水位正在慢慢上升……<br><br>
+                            兩個水箱都裝得滿滿的！<br>
+                            而 <span class="chip chip-purple">c² 水箱</span> 現在是空的。
+                        </p>
+                    </div>
+
+                    <!-- Phase 8: 倒水 -->
+                    <div class="step step-8">
+                        <h2>💧 倒水到 c²！</h2>
+                        <p>
+                            現在打開水管——<br><br>
+                            <span class="chip chip-red">a²</span> 和
+                            <span class="chip chip-blue">b²</span> 的水<br>
+                            正在沿著管道流向 <span class="chip chip-purple">c² 水箱</span>！<br><br>
+                            看著水慢慢注入大水箱……<br><br>
+                            兩個小水箱的水全部倒完後，<br>
+                            大水箱的水位剛好到達<strong>頂部</strong>！<br><br>
+                            不多不少，<strong>剛剛好</strong>！ 😲
+                        </p>
+                    </div>
+
+                    <!-- Phase 9: 結論 -->
+                    <div class="step step-9">
+                        <h2>🎉 畢氏定理成立！</h2>
+                        <p>
+                            無論是<strong>面積拼湊法</strong>還是<strong>倒水法</strong>，<br>
+                            結論都是一樣的：<br><br>
+                            兩條直角邊上的正方形面積之和，<br>
+                            <strong>恰好等於</strong>斜邊上的正方形面積。
+                        </p>
+                        <div class="formula-box" style="font-size:1.8rem;">
+                            \( a^2 + b^2 = c^2 \)
+                        </div>
+                        <p style="margin-top:1rem; font-size:1.05rem; color:var(--text-tertiary);">
+                            💡 記憶技巧：<br>
+                            兩個小正方形的水，<br>
+                            剛好倒滿一個大正方形！
+                        </p>
+                    </div>
+
+                </div><!-- end text-panel -->
+
+                <!-- Animation Panel -->
+                <div class="animation-panel">
+                    <canvas id="pyth-canvas"></canvas>
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- end content-area -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="pythagoras.js"></script>
+
 </body>
 </html>

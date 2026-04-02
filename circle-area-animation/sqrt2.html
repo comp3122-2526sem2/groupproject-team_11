@@ -3,26 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>無理數 √2 — 它真的存在於數線上！</title>
+    <title>無理數 √2 — Math Exploration Hub</title>
+    <meta name="description" content="用幾何方法在數線上精確定位 √2，親眼見證無理數確實真實存在於數學世界中。">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
+        /* ══════════════════════════════════════════════
+           √2 Page — Amber Orange Theme (Numbers & Algebra)
+           ══════════════════════════════════════════════ */
+        :root {
+            --page-brand:       #F59E0B;
+            --page-brand-dark:  #D97706;
+            --page-brand-light: #FEF3C7;
+            --page-brand-glow:  rgba(245, 158, 11, 0.18);
+        }
+
         #sqrt2-canvas {
             width: 100%;
             height: 100%;
             display: block;
         }
+
+        /* Canvas panel keeps dark bg for contrast */
         .animation-panel {
-            background: radial-gradient(circle at 50% 45%, #1a1a2e 0%, #0d0d0d 100%);
+            background: radial-gradient(circle at 50% 45%, #1a1a2e 0%, #0d0d1f 100%) !important;
         }
+
         .scroll-container {
             height: 800vh;
         }
-        /* Phase progress indicator */
+
+        /* Topbar non-sticky (scrolls with page) */
+        .content-topbar { position: relative !important; }
+
+        /* ── Compact Hero ── */
+        .page-hero-inner {
+            padding: 2rem 3rem 1.75rem;
+            background: linear-gradient(135deg, #ffffff 55%, var(--page-brand-light) 100%);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .page-hero-inner::after {
+            content: '';
+            position: absolute;
+            right: -80px;
+            top: -80px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--page-brand-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-eyebrow-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--page-brand-dark);
+            background: var(--page-brand-light);
+            padding: 0.25rem 0.85rem;
+            border-radius: 999px;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .page-hero-inner h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            margin-bottom: 0.4rem;
+        }
+
+        .page-hero-inner h1 .accent-word { color: var(--page-brand-dark); }
+
+        .page-hero-inner p {
+            font-size: 0.93rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .inner-scroll-hint {
+            margin-top: 0.75rem !important;
+            font-size: 0.82rem;
+            color: var(--page-brand-dark) !important;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            animation: hint-pulse 2.2s ease-in-out infinite;
+        }
+
+        @keyframes hint-pulse {
+            0%, 100% { opacity: 0.55; }
+            50%       { opacity: 1; }
+        }
+
+        /* ── Step text overrides ── */
+        .step h2 {
+            color: var(--page-brand-dark) !important;
+        }
+
+        .step p {
+            color: var(--text-secondary) !important;
+            font-size: 1rem !important;
+        }
+
+        /* ── Phase Progress Dots (repositioned for sidebar) ── */
         .phase-dots {
             position: fixed;
-            right: 2rem;
+            right: 1.75rem;
             top: 50%;
             transform: translateY(-50%);
             display: flex;
@@ -30,197 +128,300 @@
             gap: 0.6rem;
             z-index: 50;
         }
+
         .phase-dot {
-            width: 10px;
-            height: 10px;
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: var(--border-strong);
+            border: 1.5px solid var(--border);
             transition: all 0.4s ease;
+            cursor: pointer;
         }
+
         .phase-dot.active {
-            background: #ffffff;
-            box-shadow: 0 0 10px rgba(255,255,255,0.6);
+            background: var(--page-brand);
+            border-color: var(--page-brand-dark);
+            box-shadow: 0 0 10px var(--page-brand-glow);
             transform: scale(1.4);
         }
-        /* Highlight chips */
+
+        /* ── Amber Chips ── */
         .chip {
             display: inline-block;
-            background: rgba(255,255,255,0.12);
-            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.12);
             border-radius: 6px;
             padding: 0.1em 0.5em;
-            font-weight: bold;
-            color: #ffffff;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 0.9em;
         }
-        .chip-gold   { background: rgba(251,191,36,0.2);  border-color: rgba(251,191,36,0.4);  color: #fde68a; }
-        .chip-green  { background: rgba(52,211,153,0.2);  border-color: rgba(52,211,153,0.4);  color: #6ee7b7; }
-        .chip-cyan   { background: rgba(34,211,238,0.2);  border-color: rgba(34,211,238,0.4);  color: #67e8f9; }
-        .chip-purple { background: rgba(167,139,250,0.2); border-color: rgba(167,139,250,0.4); color: #c4b5fd; }
-        .chip-amber  { background: rgba(251,146,60,0.2);  border-color: rgba(251,146,60,0.4);  color: #fed7aa; }
 
-        /* Formula box */
+        .chip-gold {
+            background: var(--page-brand-light);
+            border-color: rgba(245, 158, 11, 0.35);
+            color: var(--page-brand-dark);
+        }
+
+        .chip-green {
+            background: #D1FAE5;
+            border-color: rgba(16, 185, 129, 0.35);
+            color: #065F46;
+        }
+
+        .chip-cyan {
+            background: #CFFAFE;
+            border-color: rgba(6, 182, 212, 0.35);
+            color: #164E63;
+        }
+
+        .chip-purple {
+            background: #EDE9FE;
+            border-color: rgba(139, 92, 246, 0.35);
+            color: #4C1D95;
+        }
+
+        .chip-amber {
+            background: var(--page-brand-light);
+            border-color: rgba(245, 158, 11, 0.4);
+            color: #92400E;
+        }
+
+        /* ── Formula Box ── */
         .formula-box {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.18);
-            border-radius: 12px;
-            padding: 1.2rem 1.5rem;
-            margin-top: 1.2rem;
+            background: var(--page-brand-light);
+            border: 1.5px solid rgba(245, 158, 11, 0.35);
+            border-radius: var(--radius-md);
+            padding: 1.1rem 1.5rem;
+            margin-top: 1rem;
             text-align: center;
-            font-size: 1.5rem;
-            color: #ffffff;
+            font-size: 1.4rem;
+            color: var(--page-brand-dark);
             font-weight: 900;
             letter-spacing: 1px;
         }
+
         .step p { line-height: 1.9; }
         .step p br { margin-bottom: 0.3em; }
-        /* Override shared .step transition: sharp fade to avoid ghost text overlap */
+
+        /* Override shared step transition for sharp visibility change */
         .step {
             transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s 0.35s;
             visibility: hidden;
         }
+
         .step.active {
             transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s 0s;
             visibility: visible;
         }
+
+        /* Math highlight override */
+        .math-hl {
+            color: var(--page-brand-dark) !important;
+        }
     </style>
 </head>
-<body>
-    <nav class="top-nav" style="justify-content: flex-start;">
-        <a href="index.html" class="nav-link">🏠 返回數學概念首頁</a>
-    </nav>
 
-    <!-- Phase progress dots -->
-    <div class="phase-dots" id="phase-dots">
-        <div class="phase-dot active" data-phase="0" title="認識數線"></div>
-        <div class="phase-dot" data-phase="1" title="正方形與對角線"></div>
-        <div class="phase-dot" data-phase="2" title="圓規作圖"></div>
-        <div class="phase-dot" data-phase="3" title="放大觀察"></div>
-        <div class="phase-dot" data-phase="4" title="無理數的意義"></div>
-        <div class="phase-dot" data-phase="5" title="總結"></div>
-    </div>
+<body class="hub-body">
 
-    <header class="page-header">
-        <div class="glow-orb orb-1" style="opacity: 0.08;"></div>
-        <div class="glow-orb orb-2" style="opacity: 0.08;"></div>
-        <h1>無理數 √2<br><span style="font-size:0.6em; color:#888; letter-spacing:2px;">它真的存在於數線上！</span></h1>
-        <p class="scroll-hint">請往下滾動 👇</p>
-    </header>
-
-    <div class="scroll-container">
-        <div class="sticky-layout">
-            <div class="text-panel">
-                <!-- Phase 0: 認識數線 -->
-                <div class="step step-0 active">
-                    <h2>📏 認識數線</h2>
-                    <p>
-                        這是一條<strong>數線</strong>。<br><br>
-                        上面標著 <span class="chip chip-green">0</span> 和 <span class="chip chip-green">1</span>。<br><br>
-                        你知道 <span class="chip chip-gold">√2 ≈ 1.414</span>，<br>
-                        但一個<strong>永遠不會停</strong>的小數，<br>
-                        怎麼可能對應一個<strong>確切的點</strong>？🤔<br><br>
-                        讓我們用<strong>幾何</strong>來證明<br>
-                        √2 是一個真實的長度！
-                    </p>
-                </div>
-
-                <!-- Phase 1: 正方形與對角線 -->
-                <div class="step step-1">
-                    <h2>🔲 正方形與對角線</h2>
-                    <p>
-                        我們在數線上<br>
-                        以 <span class="chip chip-green">0</span> 到 <span class="chip chip-green">1</span> 為底邊，<br>
-                        畫一個<strong>邊長為 1 的正方形</strong>。<br><br>
-                        現在拉出它的<span class="chip chip-gold">對角線</span>！<br><br>
-                        根據<strong>畢氏定理</strong>：
-                    </p>
-                    <div class="formula-box">
-                        \( \sqrt{1^2 + 1^2} = \sqrt{2} \)
-                    </div>
-                    <p style="margin-top:1rem;">
-                        這條對角線的長度，<br>
-                        就<strong>精確地</strong>等於 √2！
-                    </p>
-                </div>
-
-                <!-- Phase 2: 圓規作圖 -->
-                <div class="step step-2">
-                    <h2>🧭 圓規作圖</h2>
-                    <p>
-                        想像你拿著一把<strong>圓規</strong>——<br><br>
-                        針腳固定在 <span class="chip chip-green">0</span>，<br>
-                        筆尖張開到<span class="chip chip-gold">對角線的頂端</span>。<br><br>
-                        然後畫一個弧……<br><br>
-                        這段弧會<strong>精確地</strong>碰到<br>
-                        數線上的某一點。<br><br>
-                        那個點，就是 <span class="chip chip-purple">√2</span>！<br><br>
-                        一個用圓規就能<strong>作出</strong>的長度！
-                    </p>
-                </div>
-
-                <!-- Phase 3: 放大觀察 -->
-                <div class="step step-3">
-                    <h2>🔍 放大觀察</h2>
-                    <p>
-                        讓我們 zoom in 這個點……<br><br>
-                        <span class="chip chip-amber">1.4</span> → <span class="chip chip-amber">1.41</span> → <span class="chip chip-amber">1.414</span> → <span class="chip chip-amber">1.4142</span>…<br><br>
-                        小數<strong>永遠不會停止</strong>，<br>
-                        也<strong>永遠不會循環</strong>。<br><br>
-                        但無論你放大多少倍，<br>
-                        那個點就<strong>穩穩地</strong>待在那裡。<br><br>
-                        它不會消失，不會移動。<br>
-                        它是一個<strong>確確實實</strong>的位置！📍
-                    </p>
-                </div>
-
-                <!-- Phase 4: 無理數的意義 -->
-                <div class="step step-4">
-                    <h2>💡 無理數的意義</h2>
-                    <p>
-                        <span class="chip chip-purple">√2</span> 是一個<strong>無理數</strong>。<br><br>
-                        它的小數展開<strong>無窮無盡</strong>，<br>
-                        且<strong>沒有任何規律</strong>。<br><br>
-                        但它不是虛幻的——<br>
-                        你剛剛親眼看到了：<br><br>
-                        ✅ 它是一條<strong>真實的對角線</strong>長度<br><br>
-                        ✅ 用<strong>圓規</strong>就能精確作圖<br><br>
-                        ✅ 數線上有一個<strong>確切的點</strong>屬於它<br><br>
-                        無理數和有理數一樣<strong>真實</strong>。<br>
-                        數線上<strong>沒有空隙</strong>！
-                    </p>
-                </div>
-
-                <!-- Phase 5: 總結 -->
-                <div class="step step-5">
-                    <h2>🎉 √2 確實存在！</h2>
-                    <p>
-                        我們用<strong>幾何方法</strong>證明了：<br><br>
-                        一個邊長為 1 的正方形，<br>
-                        它的對角線長度就是 √2。<br><br>
-                        用圓規把這個長度<br>
-                        搬到數線上，<br>
-                        就能精確標出 √2 的位置。
-                    </p>
-                    <div class="formula-box" style="font-size:1.4rem;">
-                        \( \sqrt{2} = 1.41421356\ldots \in \mathbb{R} \)
-                    </div>
-                    <p style="margin-top:1.2rem; font-size:1.05rem; color:#aaa;">
-                        💭 記住：<br>
-                        無理數不是「不存在」的數，<br>
-                        而是「無法用分數表示」的數。<br>
-                        它們在數線上佔有<strong>精確的位置</strong>！
-                    </p>
-                </div>
-            </div>
-
-            <div class="animation-panel">
-                <canvas id="sqrt2-canvas"></canvas>
+    <!-- ════ SIDEBAR ════ -->
+    <aside class="sidebar" role="navigation" aria-label="主導覽">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo" aria-hidden="true">∑</div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Math Hub</span>
+                <span class="sidebar-brand-sub">Education Platform</span>
             </div>
         </div>
-    </div>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">學習模組</span>
+            <a href="index.html" class="nav-item active" id="nav-math-viz" aria-current="page">
+                <span class="nav-item-icon" aria-hidden="true">📐</span>
+                <span class="nav-item-label">互動數學視覺化</span>
+            </a>
+            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+                <span class="nav-item-icon" aria-hidden="true">🤖</span>
+                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
+                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <span class="nav-section-label">即將推出</span>
+            <div class="nav-item locked" id="nav-classroom" title="即將推出" aria-disabled="true">
+                <span class="nav-item-icon" aria-hidden="true">🖥️</span>
+                <span class="nav-item-label">在線課堂</span>
+                <span class="nav-lock-icon" aria-hidden="true">🔒</span>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
+        </div>
+    </aside>
+
+    <!-- ════ CONTENT AREA ════ -->
+    <div class="content-area">
+
+        <!-- Topbar Breadcrumb -->
+        <div class="content-topbar">
+            <div class="topbar-breadcrumb">
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">Math Hub</a>
+                <span aria-hidden="true">›</span>
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">數與代數</a>
+                <span aria-hidden="true">›</span>
+                <span class="current">無理數 √2</span>
+            </div>
+            <div class="topbar-actions">
+                <a href="index.html" class="topbar-btn secondary" id="btn-back">← 返回首頁</a>
+            </div>
+        </div>
+
+        <!-- Phase Progress Dots -->
+        <div class="phase-dots" id="phase-dots">
+            <div class="phase-dot active" data-phase="0" title="認識數線"></div>
+            <div class="phase-dot" data-phase="1" title="正方形與對角線"></div>
+            <div class="phase-dot" data-phase="2" title="圓規作圖"></div>
+            <div class="phase-dot" data-phase="3" title="放大觀察"></div>
+            <div class="phase-dot" data-phase="4" title="無理數的意義"></div>
+            <div class="phase-dot" data-phase="5" title="總結"></div>
+        </div>
+
+        <!-- Compact Hero -->
+        <header class="page-hero-inner">
+            <div class="hero-eyebrow-inner">📏 &nbsp;無理數 √2 &nbsp;·&nbsp; Numbers &amp; Algebra</div>
+            <h1>數學之美：<span class="accent-word">√2 真實存在</span>於數線上！</h1>
+            <p>透過幾何作圖，親眼見證一個「永遠不會停止的小數」如何對應數線上的確切位置。</p>
+            <p class="inner-scroll-hint">↓ 往下滾動以開始互動動畫</p>
+        </header>
+
+        <!-- Scroll Container -->
+        <div class="scroll-container">
+            <div class="sticky-layout">
+
+                <!-- Text Panel -->
+                <div class="text-panel">
+
+                    <!-- Phase 0: 認識數線 -->
+                    <div class="step step-0 active">
+                        <h2>📏 認識數線</h2>
+                        <p>
+                            這是一條<strong>數線</strong>。<br><br>
+                            上面標著 <span class="chip chip-green">0</span> 和 <span class="chip chip-green">1</span>。<br><br>
+                            你知道 <span class="chip chip-gold">√2 ≈ 1.414</span>，<br>
+                            但一個<strong>永遠不會停</strong>的小數，<br>
+                            怎麼可能對應一個<strong>確切的點</strong>？🤔<br><br>
+                            讓我們用<strong>幾何</strong>來證明<br>
+                            √2 是一個真實的長度！
+                        </p>
+                    </div>
+
+                    <!-- Phase 1: 正方形與對角線 -->
+                    <div class="step step-1">
+                        <h2>🔲 正方形與對角線</h2>
+                        <p>
+                            我們在數線上<br>
+                            以 <span class="chip chip-green">0</span> 到 <span class="chip chip-green">1</span> 為底邊，<br>
+                            畫一個<strong>邊長為 1 的正方形</strong>。<br><br>
+                            現在拉出它的<span class="chip chip-gold">對角線</span>！<br><br>
+                            根據<strong>畢氏定理</strong>：
+                        </p>
+                        <div class="formula-box">
+                            \( \sqrt{1^2 + 1^2} = \sqrt{2} \)
+                        </div>
+                        <p style="margin-top:1rem;">
+                            這條對角線的長度，<br>
+                            就<strong>精確地</strong>等於 √2！
+                        </p>
+                    </div>
+
+                    <!-- Phase 2: 圓規作圖 -->
+                    <div class="step step-2">
+                        <h2>🧭 圓規作圖</h2>
+                        <p>
+                            想像你拿著一把<strong>圓規</strong>——<br><br>
+                            針腳固定在 <span class="chip chip-green">0</span>，<br>
+                            筆尖張開到<span class="chip chip-gold">對角線的頂端</span>。<br><br>
+                            然後畫一個弧……<br><br>
+                            這段弧會<strong>精確地</strong>碰到<br>
+                            數線上的某一點。<br><br>
+                            那個點，就是 <span class="chip chip-purple">√2</span>！<br><br>
+                            一個用圓規就能<strong>作出</strong>的長度！
+                        </p>
+                    </div>
+
+                    <!-- Phase 3: 放大觀察 -->
+                    <div class="step step-3">
+                        <h2>🔍 放大觀察</h2>
+                        <p>
+                            讓我們 zoom in 這個點……<br><br>
+                            <span class="chip chip-amber">1.4</span> → <span class="chip chip-amber">1.41</span> → <span class="chip chip-amber">1.414</span> → <span class="chip chip-amber">1.4142</span>…<br><br>
+                            小數<strong>永遠不會停止</strong>，<br>
+                            也<strong>永遠不會循環</strong>。<br><br>
+                            但無論你放大多少倍，<br>
+                            那個點就<strong>穩穩地</strong>待在那裡。<br><br>
+                            它不會消失，不會移動。<br>
+                            它是一個<strong>確確實實</strong>的位置！📍
+                        </p>
+                    </div>
+
+                    <!-- Phase 4: 無理數的意義 -->
+                    <div class="step step-4">
+                        <h2>💡 無理數的意義</h2>
+                        <p>
+                            <span class="chip chip-purple">√2</span> 是一個<strong>無理數</strong>。<br><br>
+                            它的小數展開<strong>無窮無盡</strong>，<br>
+                            且<strong>沒有任何規律</strong>。<br><br>
+                            但它不是虛幻的——<br>
+                            你剛剛親眼看到了：<br><br>
+                            ✅ 它是一條<strong>真實的對角線</strong>長度<br><br>
+                            ✅ 用<strong>圓規</strong>就能精確作圖<br><br>
+                            ✅ 數線上有一個<strong>確切的點</strong>屬於它<br><br>
+                            無理數和有理數一樣<strong>真實</strong>。<br>
+                            數線上<strong>沒有空隙</strong>！
+                        </p>
+                    </div>
+
+                    <!-- Phase 5: 總結 -->
+                    <div class="step step-5">
+                        <h2>🎉 √2 確實存在！</h2>
+                        <p>
+                            我們用<strong>幾何方法</strong>證明了：<br><br>
+                            一個邊長為 1 的正方形，<br>
+                            它的對角線長度就是 √2。<br><br>
+                            用圓規把這個長度<br>
+                            搬到數線上，<br>
+                            就能精確標出 √2 的位置。
+                        </p>
+                        <div class="formula-box" style="font-size:1.25rem;">
+                            \( \sqrt{2} = 1.41421356\ldots \in \mathbb{R} \)
+                        </div>
+                        <p style="margin-top:1.1rem; font-size:0.95rem; color:var(--text-tertiary);">
+                            💭 記住：<br>
+                            無理數不是「不存在」的數，<br>
+                            而是「無法用分數表示」的數。<br>
+                            它們在數線上佔有<strong>精確的位置</strong>！
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Animation Panel (dark canvas kept for contrast) -->
+                <div class="animation-panel">
+                    <canvas id="sqrt2-canvas"></canvas>
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- end content-area -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="sqrt2.js"></script>
+
 </body>
 </html>

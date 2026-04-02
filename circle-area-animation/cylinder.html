@@ -3,23 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>圓柱側面積 = 長方形</title>
+    <title>圓柱側面積視覺化 — Math Exploration Hub</title>
+    <meta name="description" content="將圓柱側面展開攤平，視覺化理解圓柱側面積公式 A = 2πrh 的由來。">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        #cyl-canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
+        /* ══════════════════════════════════════════════
+           Cylinder Page — Steel Slate Theme  #475569
+           ══════════════════════════════════════════════ */
+        :root {
+            --page-brand:       #475569;
+            --page-brand-dark:  #334155;
+            --page-brand-light: #F1F5F9;
+            --page-brand-glow:  rgba(71, 85, 105, 0.14);
         }
+
+        #cyl-canvas { width: 100%; height: 100%; display: block; }
+
+        /* Light steel-gray animation panel */
         .animation-panel {
-            background: radial-gradient(circle at 55% 45%, #111827 0%, #0d0d0d 100%);
+            background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 55%, #CBD5E1 100%) !important;
         }
-        .scroll-container {
-            height: 800vh;
+
+        .scroll-container { height: 800vh; }
+
+        /* Topbar non-sticky */
+        .content-topbar { position: relative !important; }
+
+        /* ── Compact Page Hero ── */
+        .page-hero-inner {
+            padding: 2.5rem 3rem 2rem;
+            background: linear-gradient(135deg, #ffffff 55%, #F1F5F9 100%);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
         }
-        /* Phase progress indicator */
+        .page-hero-inner::after {
+            content: '';
+            position: absolute;
+            right: -80px; top: -80px;
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--page-brand-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-eyebrow-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--page-brand);
+            background: var(--page-brand-light);
+            border: 1px solid rgba(71,85,105,0.15);
+            padding: 0.25rem 0.85rem;
+            border-radius: 999px;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .page-hero-inner h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            margin-bottom: 0.5rem;
+        }
+        .page-hero-inner h1 .accent-word { color: var(--page-brand); }
+        .page-hero-inner p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        .inner-scroll-hint {
+            margin-top: 0.875rem !important;
+            font-size: 0.82rem;
+            color: var(--page-brand) !important;
+            font-weight: 600;
+            animation: hint-pulse 2.2s ease-in-out infinite;
+        }
+        @keyframes hint-pulse {
+            0%, 100% { opacity: 0.5; }
+            50%       { opacity: 1; }
+        }
+
+        /* ── Phase Progress Dots ── */
         .phase-dots {
             position: fixed;
             right: 2rem;
@@ -31,201 +104,275 @@
             z-index: 50;
         }
         .phase-dot {
-            width: 10px;
-            height: 10px;
+            width: 10px; height: 10px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(71, 85, 105, 0.18);
+            border: 1px solid rgba(71, 85, 105, 0.28);
             transition: all 0.4s ease;
         }
         .phase-dot.active {
-            background: #ffffff;
-            box-shadow: 0 0 10px rgba(255,255,255,0.6);
+            background: var(--page-brand);
+            box-shadow: 0 0 10px rgba(71, 85, 105, 0.45);
             transform: scale(1.4);
         }
-        /* Highlight chips for key terms */
+
+        /* ── Light Chips ── */
         .chip {
             display: inline-block;
-            background: rgba(255,255,255,0.12);
-            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(71, 85, 105, 0.08);
+            border: 1px solid rgba(71, 85, 105, 0.22);
             border-radius: 6px;
             padding: 0.1em 0.5em;
-            font-weight: bold;
-            color: #ffffff;
+            font-weight: 700;
+            color: #334155;
         }
-        .chip-blue { background: rgba(96,165,250,0.2); border-color: rgba(96,165,250,0.4); color: #93c5fd; }
-        .chip-green { background: rgba(52,211,153,0.2); border-color: rgba(52,211,153,0.4); color: #6ee7b7; }
+        .chip-blue  { background: rgba(14,165,233,0.10); border-color: rgba(14,165,233,0.30); color: #0284C7; }
+        .chip-green { background: rgba(16,185,129,0.10); border-color: rgba(16,185,129,0.30); color: #047857; }
 
-        /* Formula box */
+        /* Override inline yellow text (low contrast on white) */
+        span[style*="color:#fcd34d"] {
+            color: var(--page-brand) !important;
+            font-weight: 700;
+        }
+
+        /* ── Light Formula Box ── */
         .formula-box {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.18);
+            background: #ffffff;
+            border: 2px solid rgba(71, 85, 105, 0.25);
             border-radius: 12px;
             padding: 1.2rem 1.5rem;
             margin-top: 1.2rem;
             text-align: center;
             font-size: 1.5rem;
-            color: #ffffff;
+            color: #334155;
             font-weight: 900;
             letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(71, 85, 105, 0.10);
         }
+
         .step p { line-height: 1.9; }
         .step p br { margin-bottom: 0.3em; }
+
+        /* Step h2 */
+        .step h2 { color: var(--page-brand-dark); }
+
+        /* Math highlight */
+        .math-hl { color: var(--page-brand); font-weight: 700; }
     </style>
 </head>
-<body>
-    <nav class="top-nav" style="justify-content: flex-start;">
-        <a href="index.html" class="nav-link">🏠 返回數學概念首頁</a>
-    </nav>
 
-    <!-- Phase progress dots -->
-    <div class="phase-dots" id="phase-dots">
-        <div class="phase-dot active" data-phase="0" title="認識圓柱"></div>
-        <div class="phase-dot" data-phase="1" title="底面周長"></div>
-        <div class="phase-dot" data-phase="2" title="剪開側面"></div>
-        <div class="phase-dot" data-phase="3" title="攤平展開"></div>
-        <div class="phase-dot" data-phase="4" title="認識長方形"></div>
-        <div class="phase-dot" data-phase="5" title="標注尺寸"></div>
-        <div class="phase-dot" data-phase="6" title="公式推導"></div>
-        <div class="phase-dot" data-phase="7" title="捲回圓柱"></div>
-    </div>
+<body class="hub-body">
 
-    <header class="page-header">
-        <div class="glow-orb orb-1" style="opacity: 0.08;"></div>
-        <div class="glow-orb orb-2" style="opacity: 0.08;"></div>
-        <h1>圓柱側面積<br><span style="font-size:0.6em; color:#888; letter-spacing:2px;">= 一個長方形</span></h1>
-        <p class="scroll-hint">請往下滾動 👇</p>
-    </header>
-
-    <div class="scroll-container">
-        <div class="sticky-layout">
-            <div class="text-panel">
-                <!-- Phase 0: Intro -->
-                <div class="step step-0 active">
-                    <h2>🔵 認識圓柱體</h2>
-                    <p>
-                        這是一個<strong>圓柱體</strong>。<br>
-                        高度為 <span class="chip">h</span>，底面半徑為 <span class="chip">r</span>。<br><br>
-                        圓柱的「側面」就是它圓滾滾的外皮。<br>
-                        你有沒有想過——<br>
-                        <strong>這片彎曲的表面，其實是一個長方形？</strong> 🤯<br><br>
-                        讓我們一起來發現這個秘密！
-                    </p>
-                </div>
-
-                <!-- Phase 1: Circumference -->
-                <div class="step step-1">
-                    <h2>⭕ 底面圓的周長</h2>
-                    <p>
-                        在展開之前，先看看底面的圓。<br><br>
-                        底面是一個半徑為 <span class="chip chip-blue">r</span> 的圓，<br>
-                        它的<strong>周長</strong>等於：
-                        <span class="math-hl" style="font-size:1.6rem; display:block; text-align:center; margin: 0.5em 0;">
-                            \( 2\pi r \)
-                        </span>
-                        👀 看圓柱底部那條亮線了嗎？<br>
-                        那就是底面圓一圈的長度。<br><br>
-                        記住這個數字——接下來你會再見到它。
-                    </p>
-                </div>
-
-                <!-- Phase 2: Cut -->
-                <div class="step step-2">
-                    <h2>✂️ 沿側面剪一刀</h2>
-                    <p>
-                        想像你手上拿著剪刀，<br>
-                        沿著圓柱側面的一條<strong>豎直線</strong>，<br>
-                        從頂部一直剪到底部。<br><br>
-                        就像剪開一個<strong>紙筒</strong>（紙巾捲）一樣！🧻<br><br>
-                        一刀剪開後，整個側面就可以被展開了。
-                    </p>
-                </div>
-
-                <!-- Phase 3: Unroll -->
-                <div class="step step-3">
-                    <h2>📄 向外攤平展開</h2>
-                    <p>
-                        剪開之後，想像用雙手把側面<br>
-                        向兩邊<strong>輕輕推開攤平</strong>……<br><br>
-                        原本彎彎的曲面，<br>
-                        就像一張紙一樣變得<strong>完全平坦</strong>！<br><br>
-                        注意看上面的網格線——<br>
-                        原本<span class="chip" style="color:#fb923c; border-color:#fb923c; background:rgba(251,146,60,0.15)">彎曲</span>的線，全部變成了<span class="chip chip-green">筆直</span>的線。<br>
-                        這就是一個貨真價實的<strong>長方形</strong>！
-                    </p>
-                </div>
-
-                <!-- Phase 4: Rectangle -->
-                <div class="step step-4">
-                    <h2>📐 這是一個長方形！</h2>
-                    <p>
-                        展開後的側面就是一個長方形。<br><br>
-                        仔細看它的邊：<br><br>
-                        <span class="chip chip-blue">長邊（頂部 / 底部）</span><br>
-                        = 底面圓的<strong>周長</strong> = \( 2\pi r \)<br><br>
-                        <span class="chip chip-green">短邊（左側 / 右側）</span><br>
-                        = 圓柱的<strong>高度</strong> = \( h \)<br><br>
-                        明白了嗎？讓我們把標籤貼上去👇
-                    </p>
-                </div>
-
-                <!-- Phase 5: Labels -->
-                <div class="step step-5">
-                    <h2>🏷️ 標注長方形的尺寸</h2>
-                    <p>
-                        <span class="chip chip-blue">長</span> = 圓周長 = <span class="math-hl">\( 2\pi r \)</span><br>
-                        <span class="chip chip-green">寬（高）</span> = 圓柱高度 = <span class="math-hl">\( h \)</span><br><br>
-                        長方形的面積公式是：<br>
-                        <span class="math-hl" style="display:block; text-align:center; font-size:1.5rem; margin:0.4em 0;">
-                            面積 = 長 × 寬
-                        </span>
-                        把這兩個尺寸代入，就得到了<br>
-                        圓柱側面積的計算公式！
-                    </p>
-                </div>
-
-                <!-- Phase 6: Formula -->
-                <div class="step step-6">
-                    <h2>🎉 側面積公式</h2>
-                    <p>
-                        側面展開 = 長方形<br>
-                        <span class="chip chip-blue">長</span> = \( 2\pi r \)（底圓周長）<br>
-                        <span class="chip chip-green">寬</span> = \( h \)（圓柱高）
-                    </p>
-                    <div class="formula-box">
-                        \( A_\text{側} = 2\pi r \times h \)
-                    </div>
-                    <p style="margin-top:1rem; font-size:1.05rem; color:#aaa;">
-                        💡 記憶技巧：<br>
-                        把側面「剝開」→ 長方形<br>
-                        用<strong>周長 × 高</strong>就搞定了！
-                    </p>
-                </div>
-
-                <!-- Phase 7: Re-roll -->
-                <div class="step step-7">
-                    <h2>🔄 還原成圓柱！</h2>
-                    <p>
-                        現在讓我們反過來——<br>
-                        把這個長方形<strong>重新捲起來</strong>……<br><br>
-                        長方形的<span class="chip chip-blue">長邊（2πr）</span>首尾相接，<br>
-                        剛好圍成原來圓柱的底面圓。<br><br>
-                        上下兩圓蓋子一扣，<br>
-                        圓柱又完整地<strong>回來了</strong>！ 🎊<br><br>
-                        <span style="color:#fcd34d;">這就證明了：</span><br>
-                        <strong>圓柱側面 = 長方形（周長 × 高）</strong>
-                    </p>
-                </div>
-            </div>
-
-            <div class="animation-panel">
-                <canvas id="cyl-canvas"></canvas>
+    <!-- ════ SIDEBAR ════ -->
+    <aside class="sidebar" role="navigation" aria-label="主導覽">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo" aria-hidden="true">∑</div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Math Hub</span>
+                <span class="sidebar-brand-sub">Education Platform</span>
             </div>
         </div>
-    </div>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">學習模組</span>
+            <a href="index.html" class="nav-item active" id="nav-math-viz" aria-current="page">
+                <span class="nav-item-icon" aria-hidden="true">📐</span>
+                <span class="nav-item-label">互動數學視覺化</span>
+            </a>
+            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+                <span class="nav-item-icon" aria-hidden="true">🤖</span>
+                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
+                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <span class="nav-section-label">即將推出</span>
+            <div class="nav-item locked" id="nav-classroom" title="即將推出" aria-disabled="true">
+                <span class="nav-item-icon" aria-hidden="true">🖥️</span>
+                <span class="nav-item-label">在線課堂</span>
+                <span class="nav-lock-icon" aria-hidden="true">🔒</span>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
+        </div>
+    </aside>
+
+    <!-- ════ CONTENT AREA ════ -->
+    <div class="content-area">
+
+        <!-- Phase progress dots -->
+        <div class="phase-dots" id="phase-dots">
+            <div class="phase-dot active" data-phase="0" title="認識圓柱"></div>
+            <div class="phase-dot" data-phase="1" title="底面周長"></div>
+            <div class="phase-dot" data-phase="2" title="剪開側面"></div>
+            <div class="phase-dot" data-phase="3" title="攤平展開"></div>
+            <div class="phase-dot" data-phase="4" title="認識長方形"></div>
+            <div class="phase-dot" data-phase="5" title="標注尺寸"></div>
+            <div class="phase-dot" data-phase="6" title="公式推導"></div>
+            <div class="phase-dot" data-phase="7" title="捲回圓柱"></div>
+        </div>
+
+        <!-- Topbar Breadcrumb -->
+        <div class="content-topbar">
+            <div class="topbar-breadcrumb">
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">Math Hub</a>
+                <span aria-hidden="true">›</span>
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">幾何與測量</a>
+                <span aria-hidden="true">›</span>
+                <span class="current">圓柱側面積</span>
+            </div>
+        </div>
+
+        <!-- Compact Hero -->
+        <header class="page-hero-inner">
+            <div class="hero-eyebrow-inner">🛢️ &nbsp;圓柱側面積 &nbsp;·&nbsp; A = 2πrh</div>
+            <h1>圓柱側面積：<span class="accent-word">= 一個長方形</span></h1>
+            <p>將圓柱側面沿線剪開攤平，你會發現那彎曲的表面其實只是一個簡單的長方形。</p>
+            <p class="inner-scroll-hint">↓ 往下滾動以開始互動動畫</p>
+        </header>
+
+        <!-- Scroll Container -->
+        <div class="scroll-container">
+            <div class="sticky-layout">
+
+                <!-- Text Panel -->
+                <div class="text-panel">
+
+                    <!-- Phase 0: Intro -->
+                    <div class="step step-0 active">
+                        <h2>🔵 認識圓柱體</h2>
+                        <p>
+                            這是一個<strong>圓柱體</strong>。<br>
+                            高度為 <span class="chip">h</span>，底面半徑為 <span class="chip">r</span>。<br><br>
+                            圓柱的「側面」就是它圓滾滾的外皮。<br>
+                            你有沒有想過——<br>
+                            <strong>這片彎曲的表面，其實是一個長方形？</strong> 🤯<br><br>
+                            讓我們一起來發現這個秘密！
+                        </p>
+                    </div>
+
+                    <!-- Phase 1: Circumference -->
+                    <div class="step step-1">
+                        <h2>⭕ 底面圓的周長</h2>
+                        <p>
+                            在展開之前，先看看底面的圓。<br><br>
+                            底面是一個半徑為 <span class="chip chip-blue">r</span> 的圓，<br>
+                            它的<strong>周長</strong>等於：
+                            <span class="math-hl" style="font-size:1.6rem; display:block; text-align:center; margin: 0.5em 0;">
+                                \( 2\pi r \)
+                            </span>
+                            👀 看圓柱底部那條亮線了嗎？<br>
+                            那就是底面圓一圈的長度。<br><br>
+                            記住這個數字——接下來你會再見到它。
+                        </p>
+                    </div>
+
+                    <!-- Phase 2: Cut -->
+                    <div class="step step-2">
+                        <h2>✂️ 沿側面剪一刀</h2>
+                        <p>
+                            想像你手上拿著剪刀，<br>
+                            沿著圓柱側面的一條<strong>豎直線</strong>，<br>
+                            從頂部一直剪到底部。<br><br>
+                            就像剪開一個<strong>紙筒</strong>（紙巾捲）一樣！🧻<br><br>
+                            一刀剪開後，整個側面就可以被展開了。
+                        </p>
+                    </div>
+
+                    <!-- Phase 3: Unroll -->
+                    <div class="step step-3">
+                        <h2>📄 向外攤平展開</h2>
+                        <p>
+                            剪開之後，想像用雙手把側面<br>
+                            向兩邊<strong>輕輕推開攤平</strong>……<br><br>
+                            原本彎彎的曲面，<br>
+                            就像一張紙一樣變得<strong>完全平坦</strong>！<br><br>
+                            注意看上面的網格線——<br>
+                            原本<span class="chip" style="color:#fb923c; border-color:#fb923c; background:rgba(251,146,60,0.12)">彎曲</span>的線，全部變成了<span class="chip chip-green">筆直</span>的線。<br>
+                            這就是一個貨真價實的<strong>長方形</strong>！
+                        </p>
+                    </div>
+
+                    <!-- Phase 4: Rectangle -->
+                    <div class="step step-4">
+                        <h2>📐 這是一個長方形！</h2>
+                        <p>
+                            展開後的側面就是一個長方形。<br><br>
+                            仔細看它的邊：<br><br>
+                            <span class="chip chip-blue">長邊（頂部 / 底部）</span><br>
+                            = 底面圓的<strong>周長</strong> = \( 2\pi r \)<br><br>
+                            <span class="chip chip-green">短邊（左側 / 右側）</span><br>
+                            = 圓柱的<strong>高度</strong> = \( h \)<br><br>
+                            明白了嗎？讓我們把標籤貼上去👇
+                        </p>
+                    </div>
+
+                    <!-- Phase 5: Labels -->
+                    <div class="step step-5">
+                        <h2>🏷️ 標注長方形的尺寸</h2>
+                        <p>
+                            <span class="chip chip-blue">長</span> = 圓周長 = <span class="math-hl">\( 2\pi r \)</span><br>
+                            <span class="chip chip-green">寬（高）</span> = 圓柱高度 = <span class="math-hl">\( h \)</span><br><br>
+                            長方形的面積公式是：<br>
+                            <span class="math-hl" style="display:block; text-align:center; font-size:1.4rem; margin:0.5em 0;">
+                                面積 = 長 × 寬
+                            </span>
+                            把這兩個尺寸代入，就得到了<br>
+                            圓柱側面積的計算公式！
+                        </p>
+                    </div>
+
+                    <!-- Phase 6: Formula -->
+                    <div class="step step-6">
+                        <h2>🎉 側面積公式</h2>
+                        <p>
+                            側面展開 = 長方形<br>
+                            <span class="chip chip-blue">長</span> = \( 2\pi r \)（底圓周長）<br>
+                            <span class="chip chip-green">寬</span> = \( h \)（圓柱高）
+                        </p>
+                        <div class="formula-box">
+                            \( A_\text{側} = 2\pi r \times h \)
+                        </div>
+                        <p style="margin-top:1rem; font-size:1.05rem; color:var(--text-tertiary);">
+                            💡 記憶技巧：<br>
+                            把側面「剝開」→ 長方形<br>
+                            用<strong>周長 × 高</strong>就搞定了！
+                        </p>
+                    </div>
+
+                    <!-- Phase 7: Re-roll -->
+                    <div class="step step-7">
+                        <h2>🔄 還原成圓柱！</h2>
+                        <p>
+                            現在讓我們反過來——<br>
+                            把這個長方形<strong>重新捲起來</strong>……<br><br>
+                            長方形的<span class="chip chip-blue">長邊（2πr）</span>首尾相接，<br>
+                            剛好圍成原來圓柱的底面圓。<br><br>
+                            上下兩圓蓋子一扣，<br>
+                            圓柱又完整地<strong>回來了</strong>！ 🎊<br><br>
+                            <strong style="color:var(--page-brand);">這就證明了：</strong><br>
+                            <strong>圓柱側面 = 長方形（周長 × 高）</strong>
+                        </p>
+                    </div>
+
+                </div><!-- end text-panel -->
+
+                <!-- Animation Panel -->
+                <div class="animation-panel">
+                    <canvas id="cyl-canvas"></canvas>
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- end content-area -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="cylinder.js"></script>
+
 </body>
 </html>

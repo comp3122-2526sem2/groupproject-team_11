@@ -3,97 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>圓面積公式視覺化 — 3D 互動動畫</title>
+    <title>圓面積公式視覺化 — Math Exploration Hub</title>
+    <meta name="description" content="透過動態切片動畫，視覺化理解圓面積公式 A = πr² 的由來。">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        #circle-canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
+        /* ══════════════════════════════════════════════
+           Circle Page — Sky Blue Theme  #0EA5E9
+           ══════════════════════════════════════════════ */
+        :root {
+            --page-brand:       #0EA5E9;
+            --page-brand-dark:  #0284C7;
+            --page-brand-light: #E0F2FE;
+            --page-brand-glow:  rgba(14, 165, 233, 0.18);
         }
+
+        #circle-canvas { width: 100%; height: 100%; display: block; }
+
+        /* Light sky-blue animation panel */
         .animation-panel {
-            background: radial-gradient(circle at 50% 45%, #1a1a1a 0%, #0d0d0d 100%);
+            background: linear-gradient(135deg, #F0F9FF 0%, #BAE6FD 55%, #7DD3FC 100%) !important;
         }
-        .scroll-container {
-            height: 700vh !important;
+
+        .scroll-container { height: 700vh !important; }
+
+        /* Topbar non-sticky so it scrolls away cleanly */
+        .content-topbar { position: relative !important; }
+
+        /* ── Compact Page Hero ── */
+        .page-hero-inner {
+            padding: 2.5rem 3rem 2rem;
+            background: linear-gradient(135deg, #ffffff 55%, #E0F2FE 100%);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
         }
+        .page-hero-inner::after {
+            content: '';
+            position: absolute;
+            right: -80px; top: -80px;
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--page-brand-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-eyebrow-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--page-brand);
+            background: var(--page-brand-light);
+            padding: 0.25rem 0.85rem;
+            border-radius: 999px;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .page-hero-inner h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            margin-bottom: 0.5rem;
+        }
+        .page-hero-inner h1 .accent-word { color: var(--page-brand); }
+        .page-hero-inner p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        .inner-scroll-hint {
+            margin-top: 0.875rem !important;
+            font-size: 0.82rem;
+            color: var(--page-brand) !important;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            animation: hint-pulse 2.2s ease-in-out infinite;
+        }
+        @keyframes hint-pulse {
+            0%, 100% { opacity: 0.55; }
+            50%       { opacity: 1; }
+        }
+
+        /* ── Step overrides ── */
+        .math-hl {
+            color: var(--page-brand) !important;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .step h2 { color: var(--page-brand-dark); }
     </style>
 </head>
-<body>
-    <nav class="top-nav" style="justify-content: flex-start;">
-        <a href="index.html" class="nav-link">🏠 返回數學概念首頁</a>
-    </nav>
 
-    <header class="page-header">
-        <div class="glow-orb orb-1" style="opacity: 0.2;"></div>
-        <div class="glow-orb orb-2" style="opacity: 0.2;"></div>
-        <h1>數學之美：圓面積公式的由來</h1>
-        <p class="scroll-hint">請往下滾動 👇</p>
-    </header>
+<body class="hub-body">
 
-    <div class="scroll-container">
-        <div class="sticky-layout">
-            <!-- Text content fixed on the left -->
-            <div class="text-panel">
-                <div class="step step-0 active">
-                    <h2>一個完整的圓</h2>
-                    <p>這是一個半徑為 <span class="math-hl">\(r\)</span> 的圓。<br><br>
-                    你想知道它的面積公式 <span class="math-hl">\(A = \pi r^2\)</span> 是怎麼來的嗎？<br><br>
-                    讓我們一步步拆解這個秘密。</p>
-                </div>
-                <div class="step step-1">
-                    <h2>✂️ 切割線出現</h2>
-                    <p>想像我們拿起一把刀，<br>從圓心出發，沿著半徑方向切出 <span class="math-hl">16</span> 條等距的線...<br><br>
-                    把圓形切割成 16 個大小完全相同的「扇形」。</p>
-                </div>
-                <div class="step step-2">
-                    <h2>切片微微分開</h2>
-                    <p>切割完成後，16 個扇形微微鬆開。<br><br>
-                    每一片都像一塊披薩🍕！<br>
-                    注意它們的 3D 深度效果——每片扇形彷彿從圓盤上「浮」了起來。</p>
-                </div>
-                <div class="step step-3">
-                    <h2>扇形散開</h2>
-                    <p>所有扇形沿著各自的方向向外飛散！<br><br>
-                    每一片的尖端都指向圓心的方向。<br>
-                    觀察它們在空間中是如何分布的。</p>
-                </div>
-                <div class="step step-4">
-                    <h2>分成兩組</h2>
-                    <p>接著，我們將 16 個扇形分成兩組：<br><br>
-                    🔵 <strong>雙數扇形</strong>——尖端朝下，排在上方<br>
-                    🟣 <strong>單數扇形</strong>——尖端朝上，排在下方<br><br>
-                    為下一步的拼合做好準備。</p>
-                </div>
-                <div class="step step-5">
-                    <h2>交錯拼合！</h2>
-                    <p>兩組扇形像齒輪一樣交錯咬合——<br><br>
-                    上面一片（尖端朝下）、下面一片（尖端朝上）...<br>
-                    它們完美的拼成了一個近似的<strong>長方形</strong>！</p>
-                </div>
-                <div class="step step-6">
-                    <h2>公式揭曉 🎉</h2>
-                    <p>這個長方形的：<br><br>
-                    長 = 圓周長的一半 = <span class="math-hl">\(\pi r\)</span><br>
-                    高 = 半徑 = <span class="math-hl">\(r\)</span><br><br>
-                    所以圓的面積：<br><br>
-                    <span class="math-hl">\(A = \pi r \times r = \pi r^2\)</span></p>
-                </div>
-            </div>
-
-            <!-- Animation panel fixed on the right -->
-            <div class="animation-panel">
-                <canvas id="circle-canvas"></canvas>
+    <!-- ════ SIDEBAR ════ -->
+    <aside class="sidebar" role="navigation" aria-label="主導覽">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo" aria-hidden="true">∑</div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Math Hub</span>
+                <span class="sidebar-brand-sub">Education Platform</span>
             </div>
         </div>
-    </div>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">學習模組</span>
+            <a href="index.html" class="nav-item active" id="nav-math-viz" aria-current="page">
+                <span class="nav-item-icon" aria-hidden="true">📐</span>
+                <span class="nav-item-label">互動數學視覺化</span>
+            </a>
+            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+                <span class="nav-item-icon" aria-hidden="true">🤖</span>
+                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
+                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <span class="nav-section-label">即將推出</span>
+            <div class="nav-item locked" id="nav-classroom" title="即將推出" aria-disabled="true">
+                <span class="nav-item-icon" aria-hidden="true">🖥️</span>
+                <span class="nav-item-label">在線課堂</span>
+                <span class="nav-lock-icon" aria-hidden="true">🔒</span>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
+        </div>
+    </aside>
 
-    <!-- GSAP & ScrollTrigger -->
+    <!-- ════ CONTENT AREA ════ -->
+    <div class="content-area">
+
+        <!-- Topbar Breadcrumb -->
+        <div class="content-topbar">
+            <div class="topbar-breadcrumb">
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">Math Hub</a>
+                <span aria-hidden="true">›</span>
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">幾何與測量</a>
+                <span aria-hidden="true">›</span>
+                <span class="current">圓形面積</span>
+            </div>
+        </div>
+
+        <!-- Compact Hero -->
+        <header class="page-hero-inner">
+            <div class="hero-eyebrow-inner">🔵 &nbsp;圓形面積 &nbsp;·&nbsp; A = πr²</div>
+            <h1>數學之美：<span class="accent-word">圓面積公式</span>的由來</h1>
+            <p>透過將圓形切片展開並重新組合，視覺化體驗這個最經典的數學轉換過程。</p>
+            <p class="inner-scroll-hint">↓ 往下滾動以開始互動動畫</p>
+        </header>
+
+        <!-- Scroll Container -->
+        <div class="scroll-container">
+            <div class="sticky-layout">
+
+                <!-- Text Panel -->
+                <div class="text-panel">
+                    <div class="step step-0 active">
+                        <h2>一個完整的圓</h2>
+                        <p>這是一個半徑為 <span class="math-hl">\(r\)</span> 的圓。<br><br>
+                        你想知道它的面積公式 <span class="math-hl">\(A = \pi r^2\)</span> 是怎麼來的嗎？<br><br>
+                        讓我們一步步拆解這個秘密。</p>
+                    </div>
+                    <div class="step step-1">
+                        <h2>✂️ 切割線出現</h2>
+                        <p>想像我們拿起一把刀，<br>從圓心出發，沿著半徑方向切出 <span class="math-hl">16</span> 條等距的線...<br><br>
+                        把圓形切割成 16 個大小完全相同的「扇形」。</p>
+                    </div>
+                    <div class="step step-2">
+                        <h2>切片微微分開</h2>
+                        <p>切割完成後，16 個扇形微微鬆開。<br><br>
+                        每一片都像一塊披薩🍕！<br>
+                        注意它們的 3D 深度效果——每片扇形彷彿從圓盤上「浮」了起來。</p>
+                    </div>
+                    <div class="step step-3">
+                        <h2>扇形散開</h2>
+                        <p>所有扇形沿著各自的方向向外飛散！<br><br>
+                        每一片的尖端都指向圓心的方向。<br>
+                        觀察它們在空間中是如何分布的。</p>
+                    </div>
+                    <div class="step step-4">
+                        <h2>分成兩組</h2>
+                        <p>接著，我們將 16 個扇形分成兩組：<br><br>
+                        🔵 <strong>雙數扇形</strong>——尖端朝下，排在上方<br>
+                        🟣 <strong>單數扇形</strong>——尖端朝上，排在下方<br><br>
+                        為下一步的拼合做好準備。</p>
+                    </div>
+                    <div class="step step-5">
+                        <h2>交錯拼合！</h2>
+                        <p>兩組扇形像齒輪一樣交錯咬合——<br><br>
+                        上面一片（尖端朝下）、下面一片（尖端朝上）...<br>
+                        它們完美的拼成了一個近似的<strong>長方形</strong>！</p>
+                    </div>
+                    <div class="step step-6">
+                        <h2>公式揭曉 🎉</h2>
+                        <p>這個長方形的：<br><br>
+                        長 = 圓周長的一半 = <span class="math-hl">\(\pi r\)</span><br>
+                        高 = 半徑 = <span class="math-hl">\(r\)</span><br><br>
+                        所以圓的面積：<br><br>
+                        <span class="math-hl">\(A = \pi r \times r = \pi r^2\)</span></p>
+                    </div>
+                </div>
+
+                <!-- Animation Panel -->
+                <div class="animation-panel">
+                    <canvas id="circle-canvas"></canvas>
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- end content-area -->
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="circle-area.js"></script>
+
 </body>
 </html>

@@ -3,210 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>指數增長 vs 線性增長 | Exponential vs Linear Growth</title>
+    <title>指數增長 vs 線性增長 — Math Exploration Hub</title>
+    <meta name="description" content="透過棋盤米粒故事，直觀感受指數增長的驚人威力，並與線性增長進行視覺比較。">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <style>
-        /* ==========================================
-           EXPONENTIAL PAGE — LAYOUT
-           ========================================== */
-        .exp-page {
-            min-height: 100vh;
+        /* ══════════════════════════════════════════════
+           Exponential Page — Amber Orange Theme
+           ══════════════════════════════════════════════ */
+        :root {
+            --page-brand:       #F59E0B;
+            --page-brand-dark:  #D97706;
+            --page-brand-light: #FEF3C7;
+            --page-brand-glow:  rgba(245, 158, 11, 0.18);
+        }
+
+        /* ── Split Layout ── */
+        .exp-split {
             display: flex;
-            flex-direction: column;
-            background: #0d0d0d;
-        }
-
-        .exp-nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            background: rgba(13, 13, 13, 0.92);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .exp-nav a {
-            color: #909090;
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 700;
-            transition: color 0.3s;
-        }
-
-        .exp-nav a:hover { color: #fff; }
-
-        .exp-nav .nav-title {
-            color: #fff;
-            font-size: 1.2rem;
-            font-weight: 900;
-        }
-
-        /* Main content area — fixed height, no overflow growth */
-        .exp-content {
-            display: flex;
-            margin-top: 60px;
-            height: calc(100vh - 60px);
+            flex: 1;
+            height: calc(100vh - 57px);
             overflow: hidden;
         }
 
-        /* ==========================================
-           LEFT — EXPLANATION PANEL
-           ========================================== */
-        .exp-text-panel {
-            width: 30%;
-            min-width: 300px;
-            padding: 2rem 2rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-right: 1px solid rgba(255,255,255,0.08);
+        /* ── LEFT: Info Panel ── */
+        .exp-info-panel {
+            width: 300px;
+            min-width: 260px;
+            flex-shrink: 0;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 1.75rem 1.5rem;
             overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-
-        .exp-text-panel h1 {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #fff;
-            line-height: 1.3;
-            margin-bottom: 0.25rem;
-        }
-
-        .exp-text-panel .subtitle {
-            font-size: 0.95rem;
-            color: #707070;
-            margin-bottom: 0.25rem;
-        }
-
-        .concept-box {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 1.25rem 1.5rem;
-        }
-
-        .concept-box h3 {
-            font-size: 1.05rem;
-            color: #e0e0e0;
-            margin-bottom: 0.6rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .concept-box p, .concept-box ul {
-            font-size: 0.9rem;
-            color: #a0a0a0;
-            line-height: 1.7;
-            margin-bottom: 0;
-        }
-
-        .concept-box ul {
-            padding-left: 1.2rem;
-            margin-top: 0.5rem;
-        }
-
-        .concept-box li {
-            margin-bottom: 0.35rem;
-        }
-
-        .concept-highlight {
-            color: #fff;
-            font-weight: 700;
-        }
-
-        .insight-box {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.08));
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            border-radius: 16px;
-            padding: 1.25rem 1.5rem;
-        }
-
-        .insight-box h3 {
-            font-size: 1.05rem;
-            color: #fbbf24;
-            margin-bottom: 0.6rem;
-        }
-
-        .insight-box p {
-            font-size: 0.9rem;
-            color: #fcd34d;
-            line-height: 1.7;
-        }
-
-        /* ==========================================
-           RIGHT — INTERACTIVE PANEL
-           ========================================== */
-        .exp-interactive {
-            flex: 1;
-            padding: 1.5rem 2rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+        }
+
+        .exp-info-panel .panel-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .exp-info-panel .panel-title .accent {
+            color: var(--page-brand-dark);
+        }
+
+        .panel-subtitle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--page-brand-dark);
+            background: var(--page-brand-light);
+            padding: 0.25rem 0.85rem;
+            border-radius: 999px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        /* Concept Cards */
+        .concept-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.1rem;
+            transition: border-color 0.2s var(--ease);
+        }
+
+        .concept-card:hover {
+            border-color: var(--page-brand);
+        }
+
+        .concept-card h3 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.45rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .concept-card p, .concept-card ul {
+            font-size: 0.845rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .concept-card ul {
+            padding-left: 1.1rem;
+            margin-top: 0.4rem;
+        }
+
+        .concept-card li { margin-bottom: 0.3rem; }
+
+        .concept-hl {
+            color: var(--page-brand-dark);
+            font-weight: 700;
+        }
+
+        /* Insight Card */
+        .insight-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(239, 68, 68, 0.04) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.1rem;
+        }
+
+        .insight-card h3 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--page-brand-dark);
+            margin-bottom: 0.45rem;
+        }
+
+        .insight-card p {
+            font-size: 0.845rem;
+            color: #92400E;
+            line-height: 1.7;
+        }
+
+        /* ── RIGHT: Interactive Panel ── */
+        .exp-interactive {
+            flex: 1;
+            background: var(--bg);
+            padding: 1.25rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
             overflow-y: auto;
         }
 
-        /* — Big narrative display — the core "wow" element */
+        /* ── Narrative Display ── */
         .narrative-display {
             text-align: center;
-            padding: 1.25rem 1.5rem;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px;
-            min-height: 110px;
+            padding: 1.1rem 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            min-height: 100px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s var(--ease);
         }
 
         .narrative-display .narr-square {
-            font-size: 0.9rem;
-            color: #909090;
-            font-weight: 700;
+            font-size: 0.82rem;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            letter-spacing: 0.03em;
         }
 
         .narrative-display .narr-grains {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 900;
-            color: #fbbf24;
-            text-shadow: 0 0 20px rgba(251,191,36,0.3);
+            color: var(--page-brand-dark);
+            font-family: var(--font-mono);
             transition: font-size 0.3s;
         }
 
         .narrative-display .narr-comparison {
-            font-size: 0.95rem;
-            color: #a0a0a0;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
             line-height: 1.5;
-            max-width: 500px;
+            max-width: 480px;
         }
 
         .narrative-display .narr-comparison strong {
-            color: #f87171;
-            font-weight: 900;
+            color: #DC2626;
+            font-weight: 800;
         }
 
         .narrative-display.milestone {
-            border-color: rgba(239, 68, 68, 0.35);
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(245, 158, 11, 0.06));
+            border-color: rgba(245, 158, 11, 0.45);
+            background: var(--page-brand-light);
             animation: milestoneGlow 0.5s ease-out;
         }
 
         @keyframes milestoneGlow {
-            0% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
-            100% { box-shadow: none; }
+            0%   { box-shadow: 0 0 28px rgba(245, 158, 11, 0.35); }
+            100% { box-shadow: var(--shadow-sm); }
         }
 
-        /* — Chessboard */
+        /* ── Chessboard ── */
         .chessboard-wrapper {
             display: flex;
             justify-content: center;
@@ -218,12 +212,12 @@
             grid-template-columns: repeat(8, 1fr);
             gap: 2px;
             width: 100%;
-            max-width: 440px;
+            max-width: 400px;
             aspect-ratio: 1;
-            background: rgba(255,255,255,0.06);
-            border-radius: 10px;
+            background: var(--border);
+            border-radius: var(--radius-md);
             padding: 3px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid var(--border-strong);
         }
 
         .cell {
@@ -235,20 +229,21 @@
             border-radius: 3px;
             cursor: pointer;
             transition: all 0.2s ease;
-            padding: 0.2rem;
+            padding: 0.15rem;
             gap: 0.1rem;
             overflow: hidden;
         }
 
-        .cell.light { background: #1a1a2e; }
-        .cell.dark  { background: #16213e; }
+        .cell.light { background: #FEF3C7; }
+        .cell.dark  { background: #FDE68A; }
 
         .cell .cell-number {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 700;
-            color: rgba(255,255,255,0.3);
+            color: rgba(0,0,0,0.3);
             z-index: 2;
             line-height: 1;
+            font-family: var(--font-mono);
         }
 
         .cell .cell-fill {
@@ -260,243 +255,351 @@
             z-index: 1;
         }
 
-        .cell.visited .cell-number { color: rgba(255,255,255,0.8); }
+        .cell.visited .cell-number { color: rgba(0,0,0,0.65); }
+
         .cell.active {
-            box-shadow: 0 0 10px rgba(251,191,36,0.6);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
             transform: scale(1.08);
             z-index: 5;
         }
+
         .cell.active .cell-number {
-            color: #fff;
-            text-shadow: 0 0 6px rgba(251,191,36,0.6);
+            color: #7C2D12;
+            font-weight: 900;
         }
+
         .cell:hover:not(.active) {
-            box-shadow: 0 0 6px rgba(255,255,255,0.12);
+            box-shadow: 0 0 6px rgba(245, 158, 11, 0.3);
             transform: scale(1.04);
             z-index: 4;
         }
 
-        /* — Button bar + stats in one row */
+        /* ── Controls Row ── */
         .controls-row {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.65rem;
             flex-wrap: wrap;
             flex-shrink: 0;
         }
 
         .btn {
-            padding: 0.65rem 1.2rem;
+            padding: 0.6rem 1.1rem;
             border: none;
-            border-radius: 10px;
-            font-size: 0.9rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
             font-weight: 700;
-            font-family: 'Noto Sans TC', sans-serif;
+            font-family: var(--font-sans);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s var(--ease);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            background: var(--page-brand);
             color: #fff;
-            box-shadow: 0 4px 16px rgba(245,158,11,0.3);
+            box-shadow: 0 4px 14px var(--page-brand-glow);
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,0.45); }
+
+        .btn-primary:hover {
+            background: var(--page-brand-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(245, 158, 11, 0.35);
+        }
 
         .btn-secondary {
-            background: rgba(255,255,255,0.08);
-            color: #e0e0e0;
-            border: 1px solid rgba(255,255,255,0.12);
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
         }
-        .btn-secondary:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+
+        .btn-secondary:hover {
+            background: var(--surface-hover);
+            border-color: var(--page-brand);
+            color: var(--page-brand-dark);
+            transform: translateY(-2px);
+        }
 
         .btn-danger {
-            background: rgba(239,68,68,0.15);
-            color: #f87171;
-            border: 1px solid rgba(239,68,68,0.25);
+            background: #FEF2F2;
+            color: #DC2626;
+            border: 1px solid rgba(220, 38, 38, 0.2);
         }
-        .btn-danger:hover { background: rgba(239,68,68,0.25); transform: translateY(-2px); }
+
+        .btn-danger:hover {
+            background: #FEE2E2;
+            transform: translateY(-2px);
+        }
 
         .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
+        /* Speed Control */
         .speed-control {
             display: flex;
             align-items: center;
             gap: 0.4rem;
-            font-size: 0.8rem;
-            color: #707070;
+            font-size: 0.78rem;
+            color: var(--text-tertiary);
             margin-left: auto;
         }
 
-        .speed-control input[type="range"] { width: 70px; accent-color: #f59e0b; }
-        .speed-label { min-width: 30px; text-align: center; color: #fbbf24; font-weight: 700; }
+        .speed-control input[type="range"] {
+            width: 70px;
+            accent-color: var(--page-brand);
+        }
 
+        .speed-label {
+            min-width: 28px;
+            text-align: center;
+            color: var(--page-brand-dark);
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+
+        /* Inline Stats */
         .stat-inline {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.8rem;
-            color: #707070;
+            font-size: 0.78rem;
+            color: var(--text-tertiary);
             margin-left: 0.5rem;
             padding-left: 0.75rem;
-            border-left: 1px solid rgba(255,255,255,0.1);
+            border-left: 1px solid var(--border);
         }
 
         .stat-inline .stat-val {
-            color: #fff;
-            font-weight: 900;
-        }
-        .stat-inline .stat-val.accent {
-            color: #fbbf24;
+            color: var(--text-primary);
+            font-weight: 800;
+            font-family: var(--font-mono);
         }
 
-        /* — Chart area — FIXED height, never grows */
+        .stat-inline .stat-val.accent {
+            color: var(--page-brand-dark);
+        }
+
+        /* ── Chart Area ── */
         .chart-wrapper {
-            height: 280px;
-            min-height: 200px;
+            height: 240px;
+            min-height: 180px;
             flex-shrink: 0;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 14px;
-            padding: 1rem 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 0.875rem 1.1rem;
             position: relative;
+            box-shadow: var(--shadow-sm);
         }
 
         .chart-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
-            height: 28px;
+            margin-bottom: 0.4rem;
+            height: 26px;
         }
 
         .chart-label {
-            font-size: 0.8rem;
-            color: #707070;
-            letter-spacing: 0.5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
         }
 
         .axis-toggle {
-            display: flex; gap: 0;
-            border-radius: 6px; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.12);
+            display: flex;
+            gap: 0;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 1px solid var(--border);
         }
 
         .axis-toggle button {
-            padding: 0.25rem 0.7rem; font-size: 0.7rem; font-weight: 700;
-            font-family: 'Noto Sans TC', sans-serif; border: none; cursor: pointer;
-            background: rgba(255,255,255,0.05); color: #707070; transition: all 0.25s;
+            padding: 0.2rem 0.65rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            font-family: var(--font-sans);
+            border: none;
+            cursor: pointer;
+            background: var(--surface);
+            color: var(--text-tertiary);
+            transition: all 0.2s var(--ease);
         }
-        .axis-toggle button.active { background: rgba(245,158,11,0.25); color: #fbbf24; }
-        .axis-toggle button:hover:not(.active) { background: rgba(255,255,255,0.1); color: #c0c0c0; }
+
+        .axis-toggle button.active {
+            background: var(--page-brand-light);
+            color: var(--page-brand-dark);
+        }
+
+        .axis-toggle button:hover:not(.active) {
+            background: var(--surface-hover);
+            color: var(--text-secondary);
+        }
 
         .chart-canvas-container {
             position: relative;
             width: 100%;
-            height: calc(100% - 38px);
+            height: calc(100% - 34px);
         }
 
-        /* ==========================================
-           RESPONSIVE
-           ========================================== */
-        @media (max-width: 1000px) {
-            .exp-content { flex-direction: column; height: auto; min-height: calc(100vh - 60px); overflow: auto; }
-            .exp-text-panel { width: 100%; min-width: auto; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); max-height: 30vh; }
-            .exp-interactive { padding: 1.25rem; }
-            .chessboard { max-width: 320px; }
-            .cell .cell-number { font-size: 0.5rem; }
-            .chart-wrapper { height: 220px; min-height: 180px; }
+        /* ── Topbar non-sticky ── */
+        .content-topbar { position: relative !important; }
+
+        /* ── Responsive ── */
+        @media (max-width: 1100px) {
+            .exp-split { flex-direction: column; height: auto; overflow: auto; min-height: calc(100vh - 57px); }
+            .exp-info-panel { width: 100%; min-width: auto; border-right: none; border-bottom: 1px solid var(--border); max-height: 35vh; }
+            .exp-interactive { padding: 1rem; }
+            .chessboard { max-width: 300px; }
+            .chart-wrapper { height: 200px; }
         }
     </style>
 </head>
-<body class="exp-page">
-    <!-- Navigation -->
-    <nav class="exp-nav">
-        <a href="index.html">← 返回首頁</a>
-        <span class="nav-title">📈 指數增長 vs 線性增長</span>
-    </nav>
 
-    <div class="exp-content">
-        <!-- LEFT: Explanation Panel -->
-        <aside class="exp-text-panel">
-            <div>
-                <h1>📈 指數增長<br>vs 線性增長</h1>
-                <p class="subtitle">中三 · 直覺的崩塌</p>
+<body class="hub-body">
+
+    <!-- ════ SIDEBAR ════ -->
+    <aside class="sidebar" role="navigation" aria-label="主導覽">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo" aria-hidden="true">∑</div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Math Hub</span>
+                <span class="sidebar-brand-sub">Education Platform</span>
             </div>
-
-            <div class="concept-box">
-                <h3>🧠 為什麼這很抽象？</h3>
-                <p>人類大腦天生是<span class="concept-highlight">線性思維</span>。我們習慣「每次多一點」，卻完全無法直覺感受<span class="concept-highlight">每次翻倍</span>的驚人威力。</p>
+        </div>
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">學習模組</span>
+            <a href="index.html" class="nav-item active" id="nav-math-viz" aria-current="page">
+                <span class="nav-item-icon" aria-hidden="true">📐</span>
+                <span class="nav-item-label">互動數學視覺化</span>
+            </a>
+            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+                <span class="nav-item-icon" aria-hidden="true">🤖</span>
+                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
+                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <span class="nav-section-label">即將推出</span>
+            <div class="nav-item locked" id="nav-classroom" title="即將推出" aria-disabled="true">
+                <span class="nav-item-icon" aria-hidden="true">🖥️</span>
+                <span class="nav-item-label">在線課堂</span>
+                <span class="nav-lock-icon" aria-hidden="true">🔒</span>
             </div>
+        </nav>
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
+        </div>
+    </aside>
 
-            <div class="concept-box">
-                <h3>♟️ 棋盤放米粒</h3>
-                <p>傳說有位智者發明了棋盤，國王問他要什麼獎賞。</p>
-                <p style="margin-top:0.5rem">智者說：「在 8×8 棋盤上，第 1 格放 <span class="concept-highlight">1 粒米</span>，之後每格<span class="concept-highlight">翻倍</span>就好。」</p>
-                <p style="margin-top:0.5rem">國王笑了，覺得太少了 — 按「播放」你就知道為什麼國王<span class="concept-highlight">笑不出來</span>了。</p>
+    <!-- ════ CONTENT AREA ════ -->
+    <div class="content-area">
+
+        <!-- Topbar Breadcrumb -->
+        <div class="content-topbar">
+            <div class="topbar-breadcrumb">
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">Math Hub</a>
+                <span aria-hidden="true">›</span>
+                <a href="index.html" style="color:var(--text-secondary);transition:color .2s;">數與代數</a>
+                <span aria-hidden="true">›</span>
+                <span class="current">指數增長</span>
             </div>
-
-            <div class="concept-box">
-                <h3>📊 兩種增長公式</h3>
-                <ul>
-                    <li><span class="concept-highlight">指數：</span>第 n 格 = 2<sup>n−1</sup> 粒</li>
-                    <li><span class="concept-highlight">線性：</span>第 n 格 = n 粒</li>
-                </ul>
-                <p style="margin-top:0.5rem">右邊的<span class="concept-highlight">曲線圖</span>同時畫出兩者 — 切換「線性軸」看看效果！</p>
+            <div class="topbar-actions">
+                <a href="index.html" class="topbar-btn secondary" id="btn-back">← 返回首頁</a>
             </div>
+        </div>
 
-            <div class="insight-box">
-                <h3>💡 現實啟示</h3>
-                <p>理解指數增長 → 深刻領悟<span style="font-weight:700">複利投資</span>、<span style="font-weight:700">病毒傳播</span>、<span style="font-weight:700">人口增長</span>的數學直覺。</p>
-            </div>
-        </aside>
+        <!-- Split Layout -->
+        <div class="exp-split">
 
-        <!-- RIGHT: Interactive Panel -->
-        <main class="exp-interactive">
-            <!-- Big narrative display — tells the story -->
-            <div class="narrative-display" id="narrativeDisplay">
-                <div class="narr-square" id="narrSquare">按「▶ 播放」開始棋盤放米粒</div>
-                <div class="narr-grains" id="narrGrains">♟️</div>
-                <div class="narr-comparison" id="narrComparison">每一格的米粒數量翻倍，你覺得 64 格加起來有多少？</div>
-            </div>
-
-            <!-- Chessboard -->
-            <div class="chessboard-wrapper">
-                <div class="chessboard" id="chessboard"></div>
-            </div>
-
-            <!-- Controls + inline stats -->
-            <div class="controls-row">
-                <button class="btn btn-primary" id="btnPlay">▶ 播放</button>
-                <button class="btn btn-secondary" id="btnStep">⏭ 下一格</button>
-                <button class="btn btn-danger" id="btnReset">🔄 重置</button>
-                <div class="stat-inline" id="statInline" style="display:none">
-                    <span>指數 <span class="stat-val accent" id="expVal">—</span></span>
-                    <span>線性 <span class="stat-val" id="linVal">—</span></span>
-                    <span>差距 <span class="stat-val accent" id="ratioVal">—</span></span>
+            <!-- LEFT: Info Panel -->
+            <aside class="exp-info-panel" aria-label="概念說明">
+                <div>
+                    <h1 class="panel-title">📈 指數增長<br><span class="accent">vs 線性增長</span></h1>
+                    <div class="panel-subtitle">📈 &nbsp;中三 · 直覺的崩塌</div>
                 </div>
-                <div class="speed-control">
-                    <span>速度</span>
-                    <input type="range" id="speedSlider" min="1" max="10" value="5">
-                    <span class="speed-label" id="speedLabel">5x</span>
-                </div>
-            </div>
 
-            <!-- Chart — FIXED HEIGHT -->
-            <div class="chart-wrapper">
-                <div class="chart-header">
-                    <span class="chart-label">米粒數量 vs 格子編號</span>
-                    <div class="axis-toggle">
-                        <button id="btnLog" class="active" onclick="setAxisType('log')">對數軸</button>
-                        <button id="btnLinear" onclick="setAxisType('linear')">線性軸</button>
+                <div class="concept-card">
+                    <h3>🧠 為什麼這很抽象？</h3>
+                    <p>人類大腦天生是<span class="concept-hl">線性思維</span>。我們習慣「每次多一點」，卻完全無法直覺感受<span class="concept-hl">每次翻倍</span>的驚人威力。</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>♟️ 棋盤放米粒</h3>
+                    <p>傳說有位智者發明了棋盤，國王問他要什麼獎賞。</p>
+                    <p style="margin-top:0.4rem">智者說：「在 8×8 棋盤上，第 1 格放 <span class="concept-hl">1 粒米</span>，之後每格<span class="concept-hl">翻倍</span>就好。」</p>
+                    <p style="margin-top:0.4rem">國王笑了，覺得太少了 — 按「播放」你就知道為什麼國王<span class="concept-hl">笑不出來</span>了。</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📊 兩種增長公式</h3>
+                    <ul>
+                        <li><span class="concept-hl">指數：</span>第 n 格 = 2<sup>n−1</sup> 粒</li>
+                        <li><span class="concept-hl">線性：</span>第 n 格 = n 粒</li>
+                    </ul>
+                    <p style="margin-top:0.4rem">右邊的<span class="concept-hl">曲線圖</span>同時畫出兩者 — 切換「線性軸」看看效果！</p>
+                </div>
+
+                <div class="insight-card">
+                    <h3>💡 現實啟示</h3>
+                    <p>理解指數增長 → 深刻領悟<strong>複利投資</strong>、<strong>病毒傳播</strong>、<strong>人口增長</strong>的數學直覺。</p>
+                </div>
+            </aside>
+
+            <!-- RIGHT: Interactive Panel -->
+            <main class="exp-interactive">
+
+                <!-- Big narrative display -->
+                <div class="narrative-display" id="narrativeDisplay">
+                    <div class="narr-square" id="narrSquare">按「▶ 播放」開始棋盤放米粒</div>
+                    <div class="narr-grains" id="narrGrains">♟️</div>
+                    <div class="narr-comparison" id="narrComparison">每一格的米粒數量翻倍，你覺得 64 格加起來有多少？</div>
+                </div>
+
+                <!-- Chessboard -->
+                <div class="chessboard-wrapper">
+                    <div class="chessboard" id="chessboard"></div>
+                </div>
+
+                <!-- Controls + inline stats -->
+                <div class="controls-row">
+                    <button class="btn btn-primary" id="btnPlay">▶ 播放</button>
+                    <button class="btn btn-secondary" id="btnStep">⏭ 下一格</button>
+                    <button class="btn btn-danger" id="btnReset">🔄 重置</button>
+                    <div class="stat-inline" id="statInline" style="display:none">
+                        <span>指數 <span class="stat-val accent" id="expVal">—</span></span>
+                        <span>線性 <span class="stat-val" id="linVal">—</span></span>
+                        <span>差距 <span class="stat-val accent" id="ratioVal">—</span></span>
+                    </div>
+                    <div class="speed-control">
+                        <span>速度</span>
+                        <input type="range" id="speedSlider" min="1" max="10" value="5">
+                        <span class="speed-label" id="speedLabel">5x</span>
                     </div>
                 </div>
-                <div class="chart-canvas-container">
-                    <canvas id="growthChart"></canvas>
+
+                <!-- Chart -->
+                <div class="chart-wrapper">
+                    <div class="chart-header">
+                        <span class="chart-label">米粒數量 vs 格子編號</span>
+                        <div class="axis-toggle">
+                            <button id="btnLog" class="active" onclick="setAxisType('log')">對數軸</button>
+                            <button id="btnLinear" onclick="setAxisType('linear')">線性軸</button>
+                        </div>
+                    </div>
+                    <div class="chart-canvas-container">
+                        <canvas id="growthChart"></canvas>
+                    </div>
                 </div>
-            </div>
-        </main>
-    </div>
+
+            </main>
+        </div>
+
+    </div><!-- end content-area -->
 
     <script src="exponential.js"></script>
 </body>
