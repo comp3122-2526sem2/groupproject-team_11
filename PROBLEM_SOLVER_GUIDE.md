@@ -1,211 +1,211 @@
-# 🤖 AI 數學題目求解助手 - 使用指南
+﻿# 🤖 AI Math Problem Solver - User Guide
 
-## 📌 功能說明
+## 📌 Features
 
-該模組提供了一個 **AI 輔助的互動式數學學習系統**，用戶可以：
+This module provides an **AI-powered interactive math learning system** where users can:
 
-1. **上傳題目** 📝
-   - 輸入任何數學題目
-   - 或從提供的範例題目中選擇
+1. **Upload Problems** 📝
+   - Input any math problem
+   - Or choose from provided example problems
 
-2. **題目理解** 🧠
-    - 支援文字輸入或圖片上傳
-    - 圖片可先經 OCR / AI 轉為題目文字
+2. **Problem Understanding** 🧠
+   - Support text input or image upload
+   - Images can be converted to problem text via OCR/AI
 
-3. **逐步解答** 📍
-    - 用戶自行輸入「下一步」
-   - 每提交一個答案就得到即時反饋
-    - 每一步都會看到題目與已完成步驟
+3. **Step-by-Step Solutions** 📍
+   - Users input each "next step" themselves
+   - Get immediate feedback for each submission
+   - See the problem and completed steps at each stage
 
-4. **提示與答案機制** 💡
-    - **提示按鈕**：只提示下一步方向，不提供答案
-    - **顯示答案按鈕**：只有該步驟答錯時才出現，僅顯示該步驟答案
+4. **Hint & Answer Mechanism** 💡
+   - **Hint Button**: Provides direction only, not the answer
+   - **Show Answer Button**: Appears only when a step is wrong, shows only that step's answer
 
-## 🚀 快速開始
+## 🚀 Quick Start
 
-### 第一步：伺服器配置 API
+### Step 1: Configure Server API
 
-1. 訪問 [Hugging Face](https://huggingface.co/)
-2. 註冊免費帳戶（或登錄現有帳戶）
-3. 進入 **Settings → Access Tokens**
-4. 建立一個新的 Token（選擇 "read" 權限）
-5. 在伺服器環境變數設定 `HF_API_TOKEN`
+1. Visit [Hugging Face](https://huggingface.co/)
+2. Register for a free account (or log in to existing account)
+3. Go to **Settings  Access Tokens**
+4. Create a new Token (select "read" permission)
+5. Set `HF_API_TOKEN` in server environment variables
 
-> **成本**: 完全免費！Hugging Face 提供免費的 API 調用額度。
+> **Cost**: Completely free! Hugging Face provides free API call quota.
 
-### 第二步：使用求解助手
+### Step 2: Use the Problem Solver
 
-1. 打開 `problem-solver.html`
-2. 用戶無需輸入 API Token
-3. 輸入題目或上傳題目圖片
-4. 逐步提交你的下一步
+1. Open `problem-solver.html`
+2. Users don't need to input the API Token
+3. Input a problem or upload a problem image
+4. Submit your next step incrementally
 
-### 本地啟動方式（Windows PowerShell）
+### Local Startup (Windows PowerShell)
 
 ```powershell
 cd circle-area-animation
 python server.py
 ```
 
-啟動後瀏覽：`http://localhost:8000/problem-solver.html`
+After startup, browse: `http://localhost:8000/problem-solver.html`
 
-### .env 本地設定
+### .env Local Configuration
 
-先複製範本檔：
+First copy the template file:
 
 ```powershell
 cd circle-area-animation
 Copy-Item .env.example .env
 ```
 
-在 `circle-area-animation/.env` 放入：
+Add to `circle-area-animation/.env`:
 
 ```env
-HF_API_TOKEN=你的_huggingface_token
+HF_API_TOKEN=your_huggingface_token
 ```
 
-`server.py` 啟動時會自動讀取 `.env`。
+`server.py` will automatically read `.env` on startup.
 
-注意：`.env` 不會被提交到 Git（已在 `.gitignore`）。
+Note: `.env` will not be committed to Git (already in `.gitignore`).
 
-### Vercel 發佈設定
+### Vercel Deployment Configuration
 
-1. 在 Vercel 專案設定中把 Root Directory 設為 `circle-area-animation`
-2. 在 Vercel 專案頁面進入 Settings → Environment Variables
-3. 新增 `HF_API_TOKEN`，值填入你的 Hugging Face Token
-4. 重新部署
+1. Set Root Directory to `circle-area-animation` in Vercel project settings
+2. Go to Settings  Environment Variables in Vercel project page
+3. Add `HF_API_TOKEN` with your Hugging Face Token value
+4. Redeploy
 
-部署後：
-- 前端呼叫 `/api/hf`
-- Vercel Serverless Function 在 `api/hf.js` 讀取 `process.env.HF_API_TOKEN`
-- 用戶端不需要也看不到 Token
+After deployment:
+- Frontend calls `/api/hf`
+- Vercel Serverless Function reads `process.env.HF_API_TOKEN` in `api/hf.js`
+- Users don't need to know or see the Token
 
-## 📋 使用範例
+## 📋 Usage Examples
 
-### 範例 1：簡單方程式
+### Example 1: Simple Equation
 
-**題目**: `求解一元一次方程式：3x - 7 = 11`
+**Problem**: `Solve the linear equation: 3x - 7 = 11`
 
-1. AI 會分析這是一個一元一次方程題目
-2. 展示解題思路：「移項」 → 「合併同類項」 → 「求解 x」
-3. 引導你每一步輸入答案
-4. 驗證每一步是否正確
+1. AI will identify this as a linear equation problem
+2. Show solution approach: "Rearrange"  "Combine like terms"  "Solve for x"
+3. Guide you through inputting each step
+4. Verify correctness of each step
 
-### 範例 2：勾股定理
+### Example 2: Pythagorean Theorem
 
-**題目**: `一個直角三角形，兩條直角邊長分別為 3 和 4，求斜邊長度`
+**Problem**: `A right triangle has legs of length 3 and 4. Find the hypotenuse.`
 
-AI 會：
-- 識別這是勾股定理問題
-- 展示步驟：識別邊的類型 → 應用勾股定理 → 計算
-- 允許你用不同的表述方式提交答案（如 c² = 25 或 c = 5）
+AI will:
+- Identify this as a Pythagorean theorem problem
+- Show steps: Identify sides  Apply Pythagorean theorem  Calculate
+- Allow different ways to express answers (e.g., c² = 25 or c = 5)
 
-## 🔧 技術詳情
+## 🔧 Technical Details
 
-### 架構
-
-```
-problem-solver.html (UI 結構)
-    ↓
-problem-solver.css (視覺設計)
-    ↓
-problem-solver.js (邏輯和 API 調用)
-    ↓
-Hugging Face API (AI 推理)
-```
-
-### 工作流程
+### Architecture
 
 ```
-用戶輸入題目或上傳圖片
-    ↓
-前端整理題目 + 已完成步驟
-    ↓
-用戶提交下一步
-    ↓
-AI 判斷該步驟是否正確
-    ↓
-正確：進入下一步；錯誤：重答並可顯示該步驟答案
-    ↓
-直到完成整題，顯示總結
+problem-solver.html (UI Structure)
+    
+problem-solver.css (Visual Design)
+    
+problem-solver.js (Logic and API Calls)
+    
+Hugging Face API (AI Inference)
 ```
 
-### API 整合
+### Workflow
 
-- **API 提供商**: Hugging Face
-- **模型**: CohereLabs/tiny-aya-global:cohere（含備援模型）
-- **格式**: 使用 JSON 格式化提示返回結構化數據
-- **存儲**: API Token 由伺服器透過環境變數 `HF_API_TOKEN` 統一管理
-- **Vercel 路由**: `api/hf.js`、`api/health.js`
-- **推理端點**: `https://router.huggingface.co/v1/chat/completions`
+```
+User inputs problem or uploads image
+    
+Frontend organizes problem + completed steps
+    
+User submits next step
+    
+AI judges if step is correct
+    
+Correct: Move to next step; Wrong: Retry and optionally show answer
+    
+Until problem complete, show summary
+```
 
-## 🎓 教學優勢
+### API Integration
 
-1. **個性化學習** - AI 根據用戶的步驟調整反饋
-2. **立即反饋** - 每一步都得到驗證和解釋
-3. **循序漸進** - 可以逐步提升提示級別
-4. **多樣化題目** - 支持各種數學領域的題目
-5. **免費使用** - 沒有隱藏成本
+- **API Provider**: Hugging Face
+- **Models**: CohereLabs/tiny-aya-global:cohere (with fallback models)
+- **Format**: Uses JSON-formatted prompts for structured data return
+- **Storage**: API Token managed server-side via `HF_API_TOKEN` environment variable
+- **Vercel Routes**: `api/hf.js`, `api/health.js`
+- **Inference Endpoint**: `https://router.huggingface.co/v1/chat/completions`
 
-## 🛠️ 故障排除
+## 🎓 Educational Advantages
 
-### 「連接失敗」
+1. **Personalized Learning** - AI adjusts feedback based on user's steps
+2. **Immediate Feedback** - Each step receives validation and explanation
+3. **Progressive Difficulty** - Hints can escalate progressively
+4. **Diverse Topics** - Supports problems from various math domains
+5. **Free to Use** - No hidden costs
 
-- 檢查是否可訪問 `/api/health`
-- 檢查環境變數 `HF_API_TOKEN` 是否已設定
-- 確保網絡連接正常
+## 🛠️ Troubleshooting
 
-### 「AI 回應格式不正確」
+### "Connection Failed"
 
-- 這可能是因為 AI 返回了意外的格式
-- 嘗試用不同的表述方式重新提交問題
+- Check if `/api/health` is accessible
+- Verify environment variable `HF_API_TOKEN` is configured
+- Ensure network connection is working
 
-### Token 過期
+### "AI Response Format Incorrect"
 
-- Hugging Face Token 不會過期，但如果無法工作：
-    1. 在 Hugging Face 後台重新生成 Token
-    2. 更新伺服器環境變數 `HF_API_TOKEN`
-    3. 重新部署（Vercel）或重啟本地服務
+- This may happen if AI returns unexpected format
+- Try resubmitting with different wording
 
-## 📁 文件結構
+### Token Expired
+
+- Hugging Face Tokens don't expire, but if not working:
+  1. Regenerate Token in Hugging Face dashboard
+  2. Update server environment variable `HF_API_TOKEN`
+  3. Redeploy (Vercel) or restart local service
+
+## 📁 File Structure
 
 ```
 circle-area-animation/
-├── index.html                    (首頁 - 已更新，包含新卡片)
-├── problem-solver.html           (新增 - 求解助手頁面)
-├── problem-solver.css            (新增 - 專用樣式)
-├── problem-solver.js             (新增 - 核心邏輯)
-├── .env                          (新增 - 本地環境變數)
-├── api/
-│   ├── health.js                 (新增 - 健康檢查)
-│   └── hf.js                     (新增 - Hugging Face 代理)
-└── ...(其他現有模組)
+ index.html                    (Homepage)
+ problem-solver.html           (Problem solver page)
+ problem-solver.css            (Dedicated styles)
+ problem-solver.js             (Core logic)
+ .env                          (Local environment variables)
+ api/
+    health.js                 (Health check)
+    hf.js                     (Hugging Face proxy)
+ ...(Other existing modules)
 ```
 
-## 🔐 隱私和安全
+## 🔐 Privacy and Security
 
-- API Token 僅存儲在伺服器環境變數中，不暴露給前端用戶
-- 前端只調用本地後端 API（`/api/hf`）
-- 所有題目和答案都只在客戶端處理
+- API Token stored only in server environment variables, not exposed to frontend
+- Frontend only calls local backend API (`/api/hf`)
+- All problems and answers processed only on client side
 
-## 💡 提示
+## 💡 Tips
 
-- 對於複雜題目，可能需要多次調整 API 調用
-- 如果 AI 無法理解你的題目，試著用更清楚的表述方式
-- 可以嘗試各種數學領域：代數、幾何、微積分、統計等
+- Complex problems may require multiple API adjustments
+- If AI can't understand your problem, try clearer wording
+- Try various math domains: algebra, geometry, calculus, statistics, etc.
 
-## 🚧 未來功能計劃
+## 🚧 Future Feature Plans
 
-- [ ] 保存解題歷史
-- [ ] 題目難度級別分類
-- [ ] 練習統計和進度追蹤
-- [ ] 支持多個 AI 模型選擇
-- [ ] 本地 AI 模型支持（離線）
+- [ ] Save problem-solving history
+- [ ] Problem difficulty level classification
+- [ ] Practice statistics and progress tracking
+- [ ] Support multiple AI model options
+- [ ] Local AI model support (offline)
 
 ---
 
-**版本**: 1.0  
-**最後更新**: 2026 年 3 月 30 日  
-**開發者**: Education 4.0 Team
+**Version**: 1.0  
+**Last Updated**: March 30, 2026  
+**Developer**: Education 4.0 Team
 
-🎯 **祝你學習愉快！**
+🎯 **Happy learning!**

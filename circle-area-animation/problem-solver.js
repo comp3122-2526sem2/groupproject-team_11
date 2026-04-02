@@ -8,11 +8,13 @@
 
 class MathProblemSolver {
     constructor() {
+        this.correctFeedbackDelayMs = 2500;
         this.problemText = '';
         this.imageDataUrl = '';
         this.completedSteps = [];
         this.currentStepNumber = 1;
         this.lastWrongAttempt = '';
+        this.pendingAcceptedStep = '';
 
         this.initializeElements();
         this.attachEventListeners();
@@ -38,6 +40,7 @@ class MathProblemSolver {
         this.stepGuidance = document.getElementById('step-guidance');
         this.stepInput = document.getElementById('step-input');
         this.submitStepBtn = document.getElementById('submit-step-btn');
+        this.continueStepBtn = document.getElementById('continue-step-btn');
         this.prevStepBtn = document.getElementById('prev-step-btn');
         this.hintBtn = document.getElementById('hint-btn');
         this.showAnswerBtn = document.getElementById('show-answer-btn');
@@ -84,6 +87,7 @@ class MathProblemSolver {
         });
 
         this.submitStepBtn.addEventListener('click', () => this.handleSubmitStep());
+        this.continueStepBtn.addEventListener('click', () => this.handleContinueStep());
         this.stepInput.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 this.handleSubmitStep();
@@ -115,11 +119,11 @@ class MathProblemSolver {
     async checkServerHealth() {
         try {
             const response = await fetch('/api/health');
-            if (!response.ok) throw new Error('後端服務不可用');
+            if (!response.ok) throw new Error('Backend service unavailable');
             const data = await response.json();
-            if (!data.tokenConfigured) throw new Error('伺服器尚未設定 HF_API_TOKEN');
+            if (!data.tokenConfigured) throw new Error('Server has not configured HF_API_TOKEN');
         } catch (error) {
-            this.showError(`伺服器設定錯誤: ${error.message}`);
+            this.showError(`Server configuration error: ${error.message}`);
         }
     }
 
@@ -130,7 +134,7 @@ class MathProblemSolver {
     async handleSubmitProblem() {
         const typedProblem = this.problemInput.value.trim();
         if (!typedProblem && !this.imageDataUrl) {
-            this.showError('請輸入題目或上傳題目圖片');
+            this.showError('Please enter a problem or upload an image.');
             return;
         }
 
@@ -142,17 +146,18 @@ class MathProblemSolver {
             }
 
             if (!resolvedProblem) {
-                throw new Error('圖片未能辨識到有效題目，請補充文字題目。');
+                throw new Error('Could not extract a valid problem from the image. Please add text input.');
             }
 
             this.problemText = resolvedProblem;
             this.completedSteps = [];
             this.currentStepNumber = 1;
             this.lastWrongAttempt = '';
+            this.pendingAcceptedStep = '';
             this.switchToSolvingView();
             this.renderContext();
         } catch (error) {
-            this.showError(`題目初始化失敗: ${error.message}`);
+            this.showError(`Problem initialization failed: ${error.message}`);
         } finally {
             this.showLoading(false);
         }
@@ -173,36 +178,37 @@ class MathProblemSolver {
             }
         }
 
-        const prompt = '請讀取這張數學題目圖片，轉成純文字題目，不要解題，只回傳題目文字。';
+        const prompt = 'Read this math problem image and convert it into plain problem text. Do not solve it. Return only the problem text.';
         const aiText = await this.callHuggingFaceAPI(prompt, this.imageDataUrl);
         return aiText.replace(/```[\s\S]*?```/g, '').trim();
     }
 
     renderContext() {
         this.problemDisplay.innerHTML = `
-            <strong>📌 題目：</strong><br>${this.escapeHtml(this.problemText)}
+            <strong>📌 Problem:</strong><br>${this.escapeHtml(this.problemText)}
         `;
 
         this.completedStepsList.innerHTML = '';
         if (this.completedSteps.length === 0) {
             const li = document.createElement('li');
-            li.textContent = '尚未完成任何步驟';
+            li.textContent = 'No completed steps yet.';
             this.completedStepsList.appendChild(li);
         } else {
             this.completedSteps.forEach((step, index) => {
                 const li = document.createElement('li');
-                li.textContent = `步驟 ${index + 1}: ${step}`;
+                li.textContent = `Step ${index + 1}: ${step}`;
                 this.completedStepsList.appendChild(li);
             });
         }
 
         this.updateStepBadges();
         this.stepGuidance.innerHTML = `
-            <h4>請回答下一步（步驟 ${this.currentStepNumber}）</h4>
-            <p>請輸入你認為下一步應該做的運算或推理。</p>
+            <h4>Please provide the next step (Step ${this.currentStepNumber})</h4>
+            <p>Enter the operation or reasoning you think should come next.</p>
         `;
 
         this.showAnswerBtn.style.display = 'none';
+        this.continueStepBtn.style.display = 'none';
         this.prevStepBtn.disabled = this.completedSteps.length === 0;
         this.stepInput.value = '';
         this.stepFeedback.classList.remove('show', 'correct', 'incorrect', 'hint');
@@ -210,10 +216,10 @@ class MathProblemSolver {
     }
 
     getAnalysisContext() {
-        const completed = this.completedSteps.length ? this.completedSteps.join(' | ') : '無';
-        const currentDraft = this.stepInput.value.trim() || '無';
-        const wrongAttempt = this.lastWrongAttempt || '無';
-        return `題目：${this.problemText}\n已完成步驟：${completed}\n目前步驟：${this.currentStepNumber}\n目前輸入草稿：${currentDraft}\n最近錯誤作答：${wrongAttempt}`;
+        const completed = this.completedSteps.length ? this.completedSteps.join(' | ') : 'None';
+        const currentDraft = this.stepInput.value.trim() || 'None';
+        const wrongAttempt = this.lastWrongAttempt || 'None';
+        return `Problem: ${this.problemText}\nCompleted steps: ${completed}\nCurrent step: ${this.currentStepNumber}\nCurrent draft: ${currentDraft}\nMost recent wrong attempt: ${wrongAttempt}`;
     }
 
     updateStepBadges() {
@@ -224,10 +230,10 @@ class MathProblemSolver {
             badge.className = 'step-badge';
             if (i <= this.completedSteps.length) {
                 badge.classList.add('completed');
-                badge.textContent = `✓ 步驟 ${i}`;
+                badge.textContent = `✓ Step ${i}`;
             } else {
                 badge.classList.add('current');
-                badge.textContent = `▶ 步驟 ${i}`;
+                badge.textContent = `▶ Step ${i}`;
             }
             this.stepsList.appendChild(badge);
         }
@@ -235,40 +241,40 @@ class MathProblemSolver {
 
     async handleHint() {
         try {
-            this.setFeedback('hint', 'AI 正在生成提示...');
-            const prompt = `你是數學導師。請重新分析題目與學生作答上下文，提供下一步提示。
+            this.setFeedback('hint', 'AI is generating a hint...');
+            const prompt = `You are a math tutor. Re-analyze the problem and student context, then provide a hint for the next step.
 
 ${this.getAnalysisContext()}
 
-要求：
-1. 只能提示下一步方向，不可給答案。
-2. 不可出現最終答案、數值結果或完整算式解。
-3. 回覆 1-2 句中文。`;
+Requirements:
+1. Give direction only for the next step. Do not provide the direct answer.
+2. Do not reveal final answers, final numeric results, or full complete solutions.
+3. Reply in 1-2 concise English sentences.`;
 
             const hint = await this.callHuggingFaceAPI(prompt);
-            this.setFeedback('hint', `💡 提示：${this.trimUnsafeAnswer(hint)}`);
+            this.setFeedback('hint', `💡 Hint: ${this.trimUnsafeAnswer(hint)}`);
         } catch (error) {
-            this.showError(`提示生成失敗: ${error.message}`);
+            this.showError(`Hint generation failed: ${error.message}`);
         }
     }
 
     handlePrevStep() {
         if (this.completedSteps.length === 0) {
-            this.setFeedback('hint', '目前已經是第一步，無法再返回。');
+            this.setFeedback('hint', 'You are already at the first step.');
             return;
         }
 
         this.completedSteps.pop();
         this.currentStepNumber = Math.max(1, this.currentStepNumber - 1);
         this.lastWrongAttempt = '';
-        this.setFeedback('hint', '已回到上一個步驟，請重新作答。');
+        this.setFeedback('hint', 'Returned to the previous step. Please try again.');
         this.renderContext();
     }
 
     async handleSubmitStep() {
         const userStep = this.stepInput.value.trim();
         if (!userStep) {
-            this.showError('請先輸入你的下一步');
+            this.showError('Please enter your next step first.');
             return;
         }
 
@@ -277,54 +283,69 @@ ${this.getAnalysisContext()}
             const judgement = await this.validateNextStep(userStep);
 
             if (judgement.is_correct) {
-                this.completedSteps.push(userStep);
-                this.currentStepNumber += 1;
+                this.pendingAcceptedStep = userStep;
                 this.lastWrongAttempt = '';
                 this.showAnswerBtn.style.display = 'none';
-                this.setFeedback('correct', '{回答正確} ' + (judgement.feedback || '你可以繼續下一步。'));
+                this.setFeedback('correct', 'Correct. ' + (judgement.feedback || 'Review this feedback, then click Continue to move on.'));
 
                 if (judgement.is_finished) {
                     await this.showCompletion();
                 } else {
-                    setTimeout(() => this.renderContext(), 900);
+                    this.continueStepBtn.style.display = 'inline-flex';
+                    this.submitStepBtn.disabled = true;
+                    this.prevStepBtn.disabled = true;
                 }
             } else {
                 this.lastWrongAttempt = userStep;
                 this.showAnswerBtn.style.display = 'inline-flex';
-                this.setFeedback('incorrect', (judgement.feedback || '這一步不正確，請重試。'));
+                this.setFeedback('incorrect', (judgement.feedback || 'This step is not correct. Please try again.'));
             }
         } catch (error) {
-            this.showError(`步驟檢測失敗: ${error.message}`);
+            this.showError(`Step validation failed: ${error.message}`);
         } finally {
             this.submitStepBtn.disabled = false;
         }
     }
 
+    handleContinueStep() {
+        if (!this.pendingAcceptedStep) {
+            return;
+        }
+
+        this.completedSteps.push(this.pendingAcceptedStep);
+        this.currentStepNumber += 1;
+        this.pendingAcceptedStep = '';
+        this.continueStepBtn.style.display = 'none';
+        this.submitStepBtn.disabled = false;
+        this.prevStepBtn.disabled = this.completedSteps.length === 0;
+        this.renderContext();
+    }
+
     async validateNextStep(userStep) {
-        const prompt = `你是嚴謹的數學老師。請判斷學生提交的「下一步」是否正確。
+                const prompt = `You are a rigorous math teacher. Judge whether the student's submitted "next step" is correct.
 
-題目：${this.problemText}
-已完成步驟：${this.completedSteps.length ? this.completedSteps.join(' | ') : '無'}
-學生本次步驟：${userStep}
+Problem: ${this.problemText}
+Completed steps: ${this.completedSteps.length ? this.completedSteps.join(' | ') : 'None'}
+Student step this round: ${userStep}
 
-請只回傳 JSON：
+Return JSON only:
 {
   "is_correct": true/false,
   "is_finished": true/false,
-  "feedback": "中文簡短回饋（不要直接給最終答案）"
+    "feedback": "Short English feedback (do not give the final answer directly)"
 }
 
-規則：
-1. 若這一步邏輯與運算合理，is_correct=true。
-2. 若此步驟已足以完成整題，is_finished=true。
-3. feedback 不可直接給最終答案。
-4. 若你不確定，或學生步驟資訊不足，請判定 is_correct=false。
-5. 只輸出 JSON，不要輸出 markdown 或其他文字。`;
+Rules:
+1. If this step is logically and mathematically valid, set is_correct=true.
+2. If this step sufficiently completes the entire problem, set is_finished=true.
+3. feedback must not directly reveal the final answer.
+4. If uncertain, or if student information is insufficient, set is_correct=false.
+5. Output only JSON. Do not output markdown or extra text.`;
 
         const response = await this.callHuggingFaceAPI(prompt);
         const jsonObj = this.extractFirstJsonObject(response);
         if (!jsonObj || typeof jsonObj !== 'object') {
-            return { is_correct: false, is_finished: false, feedback: '格式無法判定，請重試。' };
+            return { is_correct: false, is_finished: false, feedback: 'Unable to parse AI response format. Please try again.' };
         }
 
         return {
@@ -345,10 +366,10 @@ ${this.getAnalysisContext()}
 
         if (typeof value === 'string') {
             const normalized = value.trim().toLowerCase();
-            if (['true', '1', 'yes', 'y', '正確', '是'].includes(normalized)) {
+            if (['true', '1', 'yes', 'y', 'correct'].includes(normalized)) {
                 return true;
             }
-            if (['false', '0', 'no', 'n', '錯誤', '否', '不正確'].includes(normalized)) {
+            if (['false', '0', 'no', 'n', 'incorrect'].includes(normalized)) {
                 return false;
             }
         }
@@ -358,18 +379,18 @@ ${this.getAnalysisContext()}
 
     async handleShowAnswer() {
         try {
-            const prompt = `你是數學導師。請重新分析題目與學生作答上下文，然後只給出「下一步（步驟 ${this.currentStepNumber}）」的參考答案。
+            const prompt = `You are a math tutor. Re-analyze the problem and student context, then provide only the reference answer for "next step (Step ${this.currentStepNumber})".
 
 ${this.getAnalysisContext()}
 
-限制：
-1. 只給這一步，不要給整題最終答案。
-2. 回覆最多 1-2 句。`;
+Constraints:
+1. Provide only this step, not the final answer for the entire problem.
+2. Reply in at most 1-2 sentences.`;
 
             const answer = await this.callHuggingFaceAPI(prompt);
-            this.setFeedback('hint', `👀 此步驟參考答案：${answer.trim()}`);
+            this.setFeedback('hint', `👀 Reference answer for this step: ${answer.trim()}`);
         } catch (error) {
-            this.showError(`顯示答案失敗: ${error.message}`);
+            this.showError(`Failed to show answer: ${error.message}`);
         }
     }
 
@@ -377,14 +398,14 @@ ${this.getAnalysisContext()}
         this.solvingSection.style.display = 'none';
         this.completionArea.style.display = 'block';
 
-        const summaryPrompt = `你是數學導師。請根據題目與學生已完成步驟，總結解題流程。
+        const summaryPrompt = `You are a math tutor. Based on the problem and the student's completed steps, summarize the solving process.
 
-題目：${this.problemText}
-已完成步驟：${this.completedSteps.join(' | ')}
+Problem: ${this.problemText}
+Completed steps: ${this.completedSteps.join(' | ')}
 
-請回覆簡短總結（中文）。`;
+Reply with a short English summary.`;
 
-        let summary = '你已完成所有關鍵步驟。';
+        let summary = 'You have completed all key steps.';
         try {
             summary = await this.callHuggingFaceAPI(summaryPrompt);
         } catch (_error) {
@@ -392,9 +413,9 @@ ${this.getAnalysisContext()}
         }
 
         document.getElementById('final-solution').innerHTML = `
-            <strong>✅ 題目：</strong><br>${this.escapeHtml(this.problemText)}<br><br>
-            <strong>✅ 你完成的步驟：</strong><br>${this.completedSteps.map((s, i) => `${i + 1}. ${this.escapeHtml(s)}`).join('<br>')}<br><br>
-            <strong>🎯 總結：</strong><br>${this.escapeHtml(summary)}
+            <strong>✅ Problem:</strong><br>${this.escapeHtml(this.problemText)}<br><br>
+            <strong>✅ Completed Steps:</strong><br>${this.completedSteps.map((s, i) => `${i + 1}. ${this.escapeHtml(s)}`).join('<br>')}<br><br>
+            <strong>🎯 Summary:</strong><br>${this.escapeHtml(summary)}
         `;
     }
 
@@ -411,7 +432,7 @@ ${this.getAnalysisContext()}
         });
 
         if (!response.ok) {
-            let message = `API 錯誤: ${response.status}`;
+            let message = `API error: ${response.status}`;
             try {
                 const err = await response.json();
                 if (err && err.error) message = err.error;
@@ -423,7 +444,7 @@ ${this.getAnalysisContext()}
 
         const data = await response.json();
         if (!data || !data.generated_text) {
-            throw new Error('AI 回應格式不正確');
+            throw new Error('Invalid AI response format');
         }
 
         return String(data.generated_text);
@@ -466,9 +487,9 @@ ${this.getAnalysisContext()}
 
     trimUnsafeAnswer(text) {
         const value = String(text || '').trim();
-        const leakPattern = /(最終答案|答案是|因此\s*[a-zA-Z]\s*=|[a-zA-Z]\s*=\s*[-+]?\d+(?:\.\d+)?)/i;
+        const leakPattern = /(final answer|the answer is|therefore\s*[a-zA-Z]\s*=|[a-zA-Z]\s*=\s*[-+]?\d+(?:\.\d+)?)/i;
         if (leakPattern.test(value)) {
-            return '先檢查你目前的式子，下一步應該做等式變形或代入。';
+            return 'Check your current equation first. The next step should be algebraic transformation or substitution.';
         }
         return value;
     }
@@ -483,7 +504,7 @@ ${this.getAnalysisContext()}
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result);
-            reader.onerror = () => reject(new Error('圖片讀取失敗'));
+            reader.onerror = () => reject(new Error('Failed to read image file'));
             reader.readAsDataURL(file);
         });
     }
@@ -504,6 +525,7 @@ ${this.getAnalysisContext()}
         this.completedSteps = [];
         this.currentStepNumber = 1;
         this.lastWrongAttempt = '';
+        this.pendingAcceptedStep = '';
 
         this.problemInput.value = '';
         this.stepInput.value = '';
