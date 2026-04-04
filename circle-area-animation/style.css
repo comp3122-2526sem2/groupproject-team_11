@@ -975,3 +975,15 @@ a {
         grid-template-columns: 1fr;
     }
 }
+
+/* ────────────────────────────────────────────────────────────
+   12. Temporary Hidden Entries (Math Solver & Learning Planner)
+   ──────────────────────────────────────────────────────────── */
+#nav-solver,
+#nav-planner,
+#btn-solver-shortcut,
+#btn-planner-shortcut,
+#hero-badge-solver,
+#hero-badge-planner {
+    display: none !important;
+}

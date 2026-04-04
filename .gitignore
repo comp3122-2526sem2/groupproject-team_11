@@ -3,3 +3,5 @@
 .env
 .env.local
 .agents/workflows/plan-ui.md
+requirement.md
+.gitignore
