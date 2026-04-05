@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Exploration Hub — 我的題庫</title>
+    <meta name="description" content="瀏覽、管理和導出已儲存的 DSE 數學題目。">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/my-problems.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="hub-body">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" role="navigation" aria-label="主導覽">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo" aria-hidden="true">∑</div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Math Hub</span>
+                <span class="sidebar-brand-sub">Education Platform</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">學習模組</span>
+            <a href="../index.html" class="nav-item">
+                <span class="nav-item-icon" aria-hidden="true">📐</span>
+                <span class="nav-item-label">互動數學視覺化</span>
+            </a>
+            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+                <span class="nav-item-icon" aria-hidden="true">🤖</span>
+                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
+                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="dse-geometry.html" class="nav-item" id="nav-dse-geometry">
+                <span class="nav-item-icon" aria-hidden="true">✨</span>
+                <span class="nav-item-label">動態幾何生成器</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="dse-algebra.html" class="nav-item" id="nav-dse-algebra">
+                <span class="nav-item-icon" aria-hidden="true">🧮</span>
+                <span class="nav-item-label">代數問題生成器</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+
+            <span class="nav-section-label" style="margin-top: 1rem;">管理</span>
+            <a href="my-problems.html" class="nav-item active" id="nav-my-problems" aria-current="page">
+                <span class="nav-item-icon" aria-hidden="true">📚</span>
+                <span class="nav-item-label">我的題庫</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="content-area">
+        <div class="content-topbar">
+            <div class="topbar-breadcrumb">
+                <span>Math Hub</span>
+                <span aria-hidden="true">›</span>
+                <span class="current">我的題庫</span>
+            </div>
+        </div>
+
+        <main class="hub-main my-problems-main">
+
+            <!-- Header -->
+            <div class="mp-header">
+                <div class="mp-header-content">
+                    <h1>📚 我的題庫</h1>
+                    <p class="mp-header-desc">管理已儲存的 AI 生成題目，支援導出和重新載入編輯。</p>
+                </div>
+                <div class="mp-stats" id="mp-stats">
+                    <div class="mp-stat-item">
+                        <span class="mp-stat-value" id="mp-total-count">—</span>
+                        <span class="mp-stat-label">題目總數</span>
+                    </div>
+                    <div class="mp-stat-item">
+                        <span class="mp-stat-value" id="mp-geo-count">—</span>
+                        <span class="mp-stat-label">幾何</span>
+                    </div>
+                    <div class="mp-stat-item">
+                        <span class="mp-stat-value" id="mp-alg-count">—</span>
+                        <span class="mp-stat-label">代數</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="mp-filter-bar">
+                <div class="mp-filter-group">
+                    <button class="mp-filter-chip active" data-filter="all" id="filter-all">全部</button>
+                    <button class="mp-filter-chip" data-filter="geometry" id="filter-geometry">📐 幾何</button>
+                    <button class="mp-filter-chip" data-filter="algebra" id="filter-algebra">🧮 代數</button>
+                    <button class="mp-filter-chip" data-filter="favorite" id="filter-favorite">⭐ 收藏</button>
+                </div>
+                <div class="mp-filter-group">
+                    <select id="mp-difficulty-filter" class="mp-filter-select">
+                        <option value="">全部難度</option>
+                        <option value="DSE_Level_2">Level 2 (基礎)</option>
+                        <option value="DSE_Level_4">Level 4 (中階)</option>
+                        <option value="DSE_Level_5_star">Level 5* (進階)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Problem Cards Grid -->
+            <div id="mp-problems-grid" class="mp-problems-grid">
+                <!-- Cards injected by JS -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="mp-empty-state" class="mp-empty-state" style="display: none;">
+                <div class="mp-empty-icon">📭</div>
+                <h2>題庫是空的</h2>
+                <p>前往<a href="dse-geometry.html">幾何生成器</a>或<a href="dse-algebra.html">代數生成器</a>，生成題目後點擊「💾 儲存題目」即可將題目加入題庫。</p>
+            </div>
+
+            <!-- Loading State -->
+            <div id="mp-loading" class="mp-loading">
+                <div class="mp-loading-spinner"></div>
+                <p>正在載入題庫…</p>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="mp-toast-container" class="mp-toast-container"></div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="mp-delete-modal" class="mp-modal-overlay" style="display: none;">
+        <div class="mp-modal-content">
+            <h3>⚠️ 確認刪除</h3>
+            <p>確定要刪除此題目嗎？此操作無法復原。</p>
+            <div class="mp-modal-actions">
+                <button id="mp-cancel-delete" class="mp-modal-btn cancel">取消</button>
+                <button id="mp-confirm-delete" class="mp-modal-btn danger">刪除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Export Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- MathJax for LaTeX rendering in PDF -->
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            startup: { typeset: false }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/shared/supabase-config.js"></script>
+    <script src="../js/shared/db-service.js"></script>
+    <script src="../js/generators/my-problems.js"></script>
+</body>
+
+</html>

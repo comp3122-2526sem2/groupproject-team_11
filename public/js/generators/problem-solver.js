@@ -152,6 +152,7 @@ class MathProblemSolver {
             this.problemText = resolvedProblem;
             this.completedSteps = [];
             this.currentStepNumber = 1;
+            this._solveStartTime = new Date().toISOString();
             this.lastWrongAttempt = '';
             this.pendingAcceptedStep = '';
             this.switchToSolvingView();
@@ -417,6 +418,31 @@ Reply with a short English summary.`;
             <strong>✅ Completed Steps:</strong><br>${this.completedSteps.map((s, i) => `${i + 1}. ${this.escapeHtml(s)}`).join('<br>')}<br><br>
             <strong>🎯 Summary:</strong><br>${this.escapeHtml(summary)}
         `;
+
+        // Auto-save to Supabase
+        if (typeof DBService !== 'undefined') {
+            try {
+                const endTime = Date.now();
+                await DBService.saveSolverAttempt({
+                    problemText: this.problemText,
+                    steps: this.completedSteps.map((s, i) => ({
+                        stepNumber: i + 1,
+                        userAnswer: s,
+                        isCorrect: true
+                    })),
+                    totalSteps: this.completedSteps.length,
+                    isCompleted: true,
+                    summary: summary,
+                    startedAt: this._solveStartTime || new Date().toISOString(),
+                    completedAt: new Date().toISOString(),
+                    durationSeconds: this._solveStartTime ?
+                        Math.round((endTime - new Date(this._solveStartTime).getTime()) / 1000) : 0
+                });
+                console.log('[Solver] Attempt saved to Supabase');
+            } catch (err) {
+                console.warn('[Solver] Failed to save attempt:', err.message);
+            }
+        }
     }
 
     async callHuggingFaceAPI(prompt, imageDataUrl = '') {

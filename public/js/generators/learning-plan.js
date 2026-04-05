@@ -622,6 +622,13 @@ Choose 3–5 modules. Tailor the plan to this student's exact DSE target and wee
         } catch (e) {
             console.warn('Save error:', e);
         }
+
+        // Also sync to Supabase (non-blocking)
+        if (typeof DBService !== 'undefined') {
+            DBService.saveLearningPlan(this.assessmentData, this.learningPlan)
+                .then(() => console.log('[LearningPlan] Synced to Supabase'))
+                .catch(err => console.warn('[LearningPlan] Supabase sync failed:', err.message));
+        }
     }
 
     _loadFromStorage() {

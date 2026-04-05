@@ -204,6 +204,11 @@ class DSEAlgebraController {
 
         // Toast
         this.toastContainer = document.getElementById('alg-toast-container');
+
+        // Save / Export buttons
+        this.saveBtn = document.getElementById('alg-save-btn');
+        this.exportJsonBtn = document.getElementById('alg-export-json-btn');
+        this.exportTxtBtn = document.getElementById('alg-export-txt-btn');
     }
 
     populateTopics() {
@@ -235,6 +240,9 @@ class DSEAlgebraController {
     attachEvents() {
         this.generateBtn.addEventListener('click', () => this.handleGenerate());
         this.topicSelect.addEventListener('change', () => this.updateSubtopics());
+        this.saveBtn.addEventListener('click', () => this.handleSave());
+        this.exportJsonBtn.addEventListener('click', () => this.handleExport('json'));
+        this.exportTxtBtn.addEventListener('click', () => this.handleExport('txt'));
 
         // Re-trigger MathJax when <details> sections are expanded
         document.querySelectorAll('details.alg-solution-section, details.alg-marking-section').forEach(details => {
@@ -446,6 +454,52 @@ class DSEAlgebraController {
             window.MathJax.typesetPromise([element]).catch(err => {
                 console.warn('MathJax typeset warning:', err);
             });
+        }
+    }
+
+    // ── Save / Export ─────────────────────────────────
+    async handleSave() {
+        if (!this.currentQuestionData) {
+            this.showToast('尚未生成題目，無法儲存。', 'error');
+            return;
+        }
+        try {
+            this.saveBtn.disabled = true;
+            this.saveBtn.textContent = '⏳ 儲存中…';
+            await DBService.saveProblem('algebra', this.currentQuestionData, {}, {
+                topic: this.topicSelect.value,
+                subtopic: this.subtopicSelect.value,
+                difficulty: this.difficultySelect.value
+            });
+            this.showToast('✅ 題目已儲存到題庫！', 'success');
+        } catch (err) {
+            console.error(err);
+            this.showToast('儲存失敗：' + err.message, 'error');
+        } finally {
+            this.saveBtn.disabled = false;
+            this.saveBtn.textContent = '💾 儲存題目';
+        }
+    }
+
+    async handleExport(format) {
+        if (!this.currentQuestionData) {
+            this.showToast('尚未生成題目，無法導出。', 'error');
+            return;
+        }
+        const pseudoRow = {
+            id: crypto.randomUUID(),
+            type: 'algebra',
+            topic: this.topicSelect.value,
+            subtopic: this.subtopicSelect.value,
+            difficulty: this.difficultySelect.value,
+            question_data: this.currentQuestionData,
+            variables: {}
+        };
+        try {
+            DBService.exportProblem(pseudoRow, format);
+            this.showToast(`📥 已導出 ${format.toUpperCase()} 檔案`, 'success');
+        } catch (err) {
+            this.showToast('導出失敗：' + err.message, 'error');
         }
     }
 }

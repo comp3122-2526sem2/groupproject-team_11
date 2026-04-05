@@ -59,6 +59,12 @@
                 <span class="nav-item-label">代數問題生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
+
+            <span class="nav-section-label" style="margin-top: 1rem;">管理</span>
+            <a href="my-problems.html" class="nav-item" id="nav-my-problems">
+                <span class="nav-item-icon" aria-hidden="true">📚</span>
+                <span class="nav-item-label">我的題庫</span>
+            </a>
         </nav>
         <div class="sidebar-footer">
             <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
@@ -172,6 +178,19 @@
                         <summary>🔍 驗證報告 (Validation Report)</summary>
                         <div id="validation-report-content" class="validation-report-content"></div>
                     </details>
+
+                    <!-- Save / Export Actions -->
+                    <div class="problem-actions" id="problem-actions">
+                        <button id="save-problem-btn" class="action-btn save-btn" title="儲存到題庫">
+                            💾 儲存題目
+                        </button>
+                        <button id="export-json-btn" class="action-btn export-btn" title="導出為 JSON">
+                            📥 導出 JSON
+                        </button>
+                        <button id="export-txt-btn" class="action-btn export-btn" title="導出為純文字">
+                            📄 導出 TXT
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -181,6 +200,9 @@
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/shared/supabase-config.js"></script>
+    <script src="../js/shared/db-service.js"></script>
     <script src="../js/generators/dse-geometry.js"></script>
 </body>
 

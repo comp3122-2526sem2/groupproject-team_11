@@ -231,10 +231,18 @@ class DSEGeometryController {
         this.markingContent = document.getElementById('marking-content');
         this.toastContainer = document.getElementById('toast-container');
         this.validationReportContent = document.getElementById('validation-report-content');
+
+        // Save / Export buttons
+        this.saveProblemBtn = document.getElementById('save-problem-btn');
+        this.exportJsonBtn = document.getElementById('export-json-btn');
+        this.exportTxtBtn = document.getElementById('export-txt-btn');
     }
 
     attachEvents() {
         this.generateBtn.addEventListener('click', () => this.handleGenerate());
+        this.saveProblemBtn.addEventListener('click', () => this.handleSave());
+        this.exportJsonBtn.addEventListener('click', () => this.handleExport('json'));
+        this.exportTxtBtn.addEventListener('click', () => this.handleExport('txt'));
     }
 
     async loadApiKey() {
@@ -631,6 +639,52 @@ class DSEGeometryController {
 
             this.validationReportContent.appendChild(sectionEl);
         });
+    }
+
+    // ── Save / Export ─────────────────────────────────
+    async handleSave() {
+        if (!this.currentQuestionData) {
+            this.showToast('尚未生成題目，無法儲存。', 'error');
+            return;
+        }
+        try {
+            this.saveProblemBtn.disabled = true;
+            this.saveProblemBtn.textContent = '⏳ 儲存中…';
+            await DBService.saveProblem('geometry', this.currentQuestionData, this.sliderVariables, {
+                topic: this.topicInput.value,
+                difficulty: this.difficultyInput.value
+            });
+            this.showToast('✅ 題目已儲存到題庫！', 'success');
+        } catch (err) {
+            console.error(err);
+            this.showToast('儲存失敗：' + err.message, 'error');
+        } finally {
+            this.saveProblemBtn.disabled = false;
+            this.saveProblemBtn.textContent = '💾 儲存題目';
+        }
+    }
+
+    async handleExport(format) {
+        if (!this.currentQuestionData) {
+            this.showToast('尚未生成題目，無法導出。', 'error');
+            return;
+        }
+        // Build a pseudo-row for export utility
+        const pseudoRow = {
+            id: crypto.randomUUID(),
+            type: 'geometry',
+            topic: this.topicInput.value,
+            subtopic: null,
+            difficulty: this.difficultyInput.value,
+            question_data: this.currentQuestionData,
+            variables: this.sliderVariables
+        };
+        try {
+            DBService.exportProblem(pseudoRow, format);
+            this.showToast(`📥 已導出 ${format.toUpperCase()} 檔案`, 'success');
+        } catch (err) {
+            this.showToast('導出失敗：' + err.message, 'error');
+        }
     }
 }
 

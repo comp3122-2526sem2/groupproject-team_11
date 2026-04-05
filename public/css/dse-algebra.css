@@ -536,6 +536,61 @@
 .alg-toast.error { border-left-color: #ef4444; }
 .alg-toast.success { border-left-color: #10b981; }
 
+/* ─── Save / Export Actions ─── */
+.alg-problem-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+}
+
+.alg-problem-actions .action-btn {
+    padding: 0.6rem 1.1rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: inherit;
+}
+
+.alg-problem-actions .action-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.alg-problem-actions .action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.alg-problem-actions .save-btn {
+    background: #0f172a;
+    color: white;
+    border-color: #0f172a;
+}
+
+.alg-problem-actions .save-btn:hover:not(:disabled) {
+    background: #1e293b;
+}
+
+.alg-problem-actions .export-btn {
+    background: #f8fafc;
+    color: #475569;
+}
+
+.alg-problem-actions .export-btn:hover:not(:disabled) {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 900px) {
     .algebra-layout {
