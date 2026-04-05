@@ -49,6 +49,13 @@ class AppHandler(SimpleHTTPRequestHandler):
             token = os.getenv("HF_API_TOKEN", "").strip()
             self._send_json(200, {"ok": True, "tokenConfigured": bool(token)})
             return
+        if self.path == "/api/gemini-key":
+            gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
+            if gemini_key:
+                self._send_json(200, {"key": gemini_key})
+            else:
+                self._send_json(404, {"error": "GEMINI_API_KEY not configured in .env"})
+            return
         super().do_GET()
 
     def do_POST(self):
@@ -131,7 +138,11 @@ class AppHandler(SimpleHTTPRequestHandler):
 
 
 def main():
-    load_dotenv(os.path.join(BASE_DIR, ".env"))
+    # Try .env in same dir first, then fall back to parent dir (project root)
+    env_path = os.path.join(BASE_DIR, ".env")
+    if not os.path.exists(env_path):
+        env_path = os.path.join(os.path.dirname(BASE_DIR), ".env")
+    load_dotenv(env_path)
     port = int(os.getenv("PORT", "8000"))
     handler = partial(AppHandler, directory=BASE_DIR)
     server = ThreadingHTTPServer(("0.0.0.0", port), handler)

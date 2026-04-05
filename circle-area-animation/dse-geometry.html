@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Exploration Hub — 動態幾何生成器</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dse-geometry.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body class="hub-body">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" role="navigation" aria-label="主導覽">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo" aria-hidden="true">∑</div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Math Hub</span>
+                <span class="sidebar-brand-sub">Education Platform</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">學習模組</span>
+            <a href="index.html" class="nav-item">
+                <span class="nav-item-icon" aria-hidden="true">📐</span>
+                <span class="nav-item-label">互動數學視覺化</span>
+            </a>
+            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+                <span class="nav-item-icon" aria-hidden="true">🤖</span>
+                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
+                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="dse-geometry.html" class="nav-item active" id="nav-dse" aria-current="page">
+                <span class="nav-item-icon" aria-hidden="true">✨</span>
+                <span class="nav-item-label">動態幾何生成器</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="content-area">
+        <div class="content-topbar">
+            <div class="topbar-breadcrumb">
+                <span>Math Hub</span>
+                <span aria-hidden="true">›</span>
+                <span class="current">動態幾何生成器</span>
+            </div>
+            <div class="topbar-actions">
+                <button class="topbar-btn secondary" id="btn-api-key">🔑 設定 API Key</button>
+            </div>
+        </div>
+
+        <main class="hub-main geometry-layout">
+            <!-- Left Sidebar (Controls) -->
+            <div class="geometry-panel geometry-controls">
+                
+                <section class="generator-box">
+                    <h3>✨ 生成幾何題</h3>
+                    <div class="form-group">
+                        <label for="topic-input">主題 (Topic)</label>
+                        <select id="topic-input" class="form-control">
+                            <option value="圓的幾何 (Geometry of Circle)">圓的幾何 (Geometry of Circle)</option>
+                            <option value="直線軌跡 (Locus)">直線軌跡 (Locus)</option>
+                            <option value="三角學 (Trigonometry)">三角學 (Trigonometry)</option>
+                            <option value="相似與全等 (Similarity & Congruence)">相似與全等 (Similarity & Congruence)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="difficulty-input">難度 (Difficulty)</label>
+                        <select id="difficulty-input" class="form-control">
+                            <option value="DSE_Level_2">DSE Level 2 (基礎)</option>
+                            <option value="DSE_Level_4" selected>DSE Level 4 (中階)</option>
+                            <option value="DSE_Level_5_star">DSE Level 5* (進階)</option>
+                        </select>
+                    </div>
+
+                    <button id="generate-btn" class="primary-btn full-width">
+                        <span class="btn-text">生成題目</span>
+                        <div class="spinner" style="display: none;"></div>
+                    </button>
+                </section>
+
+                <hr class="panel-divider">
+
+                <section class="sliders-console" id="sliders-container">
+                    <h3>🎛️ 動態操作面板</h3>
+                    <div id="sliders-content">
+                        <div class="empty-text">生成題目後，此處將出現拖曳控制項。</div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Main Content -->
+            <div class="geometry-panel geometry-canvas-area">
+                
+                <!-- Empty State -->
+                <div id="empty-state" class="empty-state">
+                    <div class="empty-icon">📐</div>
+                    <h2>尚未生成題目</h2>
+                    <p>請從左側面板選擇主題並點擊「生成題目」，見證 AI 動態生成互動式幾何題。</p>
+                </div>
+
+                <!-- Skeleton Loader -->
+                <div id="skeleton-loader" class="skeleton-loader style-hidden">
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text short"></div>
+                    <div class="skeleton skeleton-canvas"></div>
+                </div>
+
+                <!-- Rendering Area -->
+                <div id="rendering-area" class="rendering-area style-hidden">
+                    <div class="question-header">
+                        <h2>題目敘述</h2>
+                    </div>
+                    <div id="question-description" class="question-description">
+                        <!-- LaTeX will be injected here -->
+                    </div>
+
+                    <div class="svg-container">
+                        <svg id="geometry-svg" viewBox="-200 -200 400 400" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Definition for markers -->
+                            <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" />
+                                </marker>
+                            </defs>
+                            <!-- Dynamic elements injected here -->
+                            <g id="svg-elements"></g>
+                        </svg>
+                    </div>
+
+                    <div class="marking-scheme">
+                        <details>
+                            <summary>查看評分標準 (Marking Scheme)</summary>
+                            <div id="marking-content" class="marking-content"></div>
+                        </details>
+                    </div>
+
+                    <div class="validation-report">
+                        <details>
+                            <summary>🔍 驗證報告 (Validation Report)</summary>
+                            <div id="validation-report-content" class="validation-report-content"></div>
+                        </details>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="dse-geometry.js"></script>
+</body>
+</html>

@@ -1,0 +1,519 @@
+/* 
+  dse-geometry.css
+  Styles for the interactive dynamic geometry generator
+*/
+
+/* Layout */
+.geometry-layout {
+    display: flex;
+    gap: 2rem;
+    height: calc(100vh - 80px); /* Fill remaining height */
+    align-items: stretch;
+    padding: 0;
+}
+
+.geometry-panel {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.geometry-controls {
+    flex: 0 0 350px;
+    padding: 1.5rem;
+    overflow-y: auto;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.geometry-canvas-area {
+    flex: 1;
+    position: relative;
+    padding: 2rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Forms and Inputs */
+.generator-box h3, .sliders-console h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+}
+
+.primary-btn {
+    background: #0f172a;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.primary-btn:hover:not(:disabled) {
+    background: #1e293b;
+    transform: translateY(-1px);
+}
+
+.primary-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.panel-divider {
+    border: 0;
+    height: 1px;
+    background: #e2e8f0;
+    margin: 2rem 0;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: #64748b;
+}
+
+.empty-state .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.empty-state h2 {
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+.style-hidden {
+    display: none !important;
+}
+
+/* Skeleton Loader */
+.skeleton-loader {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+.skeleton-title { height: 2rem; width: 40%; margin-bottom: 1rem; }
+.skeleton-text { height: 1rem; width: 100%; }
+.skeleton-text.short { width: 70%; margin-bottom: 2rem; }
+.skeleton-canvas { flex: 1; border-radius: 12px; }
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Spinner */
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Rendering Area */
+.rendering-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.question-header {
+    flex-shrink: 0;
+}
+
+.question-header h2 {
+    margin-top: 0;
+    color: #0f172a;
+    font-size: 1.5rem;
+}
+
+.question-description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #334155;
+    background: #f8fafc;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    border-left: 4px solid #3b82f6;
+    flex-shrink: 0;
+    max-height: 25%;
+    overflow-y: auto;
+}
+
+.question-description p {
+    margin: 0 0 0.5rem 0;
+}
+.question-description p:last-child {
+    margin-bottom: 0;
+}
+
+/* SVG Canvas */
+.svg-container {
+    flex: 1 1 0;
+    min-height: 0;
+    background: #ffffff;
+    background-image: 
+        linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: center center;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+#geometry-svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Dynamic SVG Elements Styling */
+.geom-line {
+    stroke: #1e293b;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.geom-circle {
+    stroke: #3b82f6;
+    stroke-width: 2;
+    fill: rgba(59, 130, 246, 0.05);
+}
+
+.geom-arc {
+    stroke: #ef4444;
+    stroke-width: 2;
+    fill: none;
+}
+
+.geom-point {
+    fill: #0f172a;
+}
+
+.geom-label {
+    font-family: 'JetBrains Mono', 'Inter', monospace;
+    font-size: 14px;
+    fill: #0f172a;
+    font-weight: 600;
+}
+
+/* Sliders Control */
+.slider-group {
+    margin-bottom: 1.5rem;
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #334155;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.slider-val {
+    color: #3b82f6;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: #3b82f6;
+}
+
+/* Marking Scheme */
+.marking-scheme {
+    margin-top: auto;
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    flex-shrink: 0;
+}
+
+.marking-scheme summary {
+    font-weight: 600;
+    cursor: pointer;
+    color: #475569;
+    padding: 0.5rem 0;
+}
+
+.marking-content {
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.mark-step {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed #cbd5e1;
+}
+
+.mark-step:last-child {
+    border-bottom: none;
+}
+
+.mark-desc {
+    color: #334155;
+}
+
+.mark-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: #10b981;
+}
+
+/* Toast Notification */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 0.95rem;
+    max-width: 350px;
+    border-left: 4px solid;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.error {
+    background: white;
+    color: #0f172a;
+    border-left-color: #ef4444;
+}
+
+.toast.success {
+    background: white;
+    color: #0f172a;
+    border-left-color: #10b981;
+}
+
+/* Custom Prompt Modal styles (if needed for API Key) */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Validation Report */
+.validation-report {
+    margin-top: 0.5rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    flex-shrink: 0;
+    border: 1px solid #e2e8f0;
+}
+
+.validation-report summary {
+    font-weight: 600;
+    cursor: pointer;
+    color: #475569;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.validation-report-content {
+    margin-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.validation-all-pass {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: #ecfdf5;
+    border-radius: 8px;
+    color: #065f46;
+    font-weight: 500;
+}
+
+.validation-section {
+    margin-bottom: 0.75rem;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+.validation-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.validation-row.pass {
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.validation-row.error {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.validation-row.warning {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.validation-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.validation-name {
+    flex: 1;
+}
+
+.validation-count {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.validation-item {
+    padding: 0.4rem 0.75rem 0.4rem 2rem;
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.validation-item.error {
+    background: #fff5f5;
+    color: #c53030;
+}
+
+.validation-item.warning {
+    background: #fffff0;
+    color: #975a16;
+}
