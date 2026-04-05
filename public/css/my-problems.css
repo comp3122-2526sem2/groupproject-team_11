@@ -451,6 +451,163 @@
     background: #dc2626;
 }
 
+/* ─── Batch Mode Toggle ─── */
+.mp-batch-toggle-wrap {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.mp-batch-toggle-btn {
+    padding: 0.45rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.mp-batch-toggle-btn:hover {
+    background: #f8fafc;
+    color: #6366f1;
+    border-color: #c7d2fe;
+}
+
+.mp-batch-toggle-btn.active {
+    background: #eef2ff;
+    color: #6366f1;
+    border-color: #6366f1;
+}
+
+/* ─── Batch Action Bar ─── */
+.mp-batch-bar {
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    border: 1px solid #c7d2fe;
+    border-radius: 12px;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    animation: mp-slideDown 0.25s ease;
+}
+
+@keyframes mp-slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mp-batch-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #4338ca;
+}
+
+.mp-batch-select-all {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.mp-batch-select-all input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #6366f1;
+    cursor: pointer;
+}
+
+.mp-batch-count strong {
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.mp-batch-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.mp-batch-btn {
+    padding: 0.5rem 1.1rem;
+    border: none;
+    border-radius: 8px;
+    background: #6366f1;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.mp-batch-btn:hover:not(:disabled) {
+    background: #4f46e5;
+}
+
+.mp-batch-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.mp-batch-btn.cancel {
+    background: white;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.mp-batch-btn.cancel:hover {
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+.mp-batch-btn.secondary {
+    background: #818cf8;
+}
+
+.mp-batch-btn.secondary:hover:not(:disabled) {
+    background: #6366f1;
+}
+
+/* ─── Card Checkbox (batch mode) ─── */
+.mp-card-checkbox {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+}
+
+.mp-card-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #6366f1;
+    cursor: pointer;
+}
+
+.mp-card.batch-mode {
+    position: relative;
+    cursor: pointer;
+}
+
+.mp-card.batch-mode .mp-card-checkbox {
+    display: block;
+}
+
+.mp-card.batch-mode.selected {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25), 0 4px 16px rgba(99, 102, 241, 0.1);
+}
+
+.mp-card.batch-mode.selected .mp-card-header {
+    background: #f5f3ff;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
     .mp-header {
@@ -462,5 +619,13 @@
     .mp-filter-bar {
         flex-direction: column;
         align-items: stretch;
+    }
+    .mp-batch-bar {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    .mp-batch-actions {
+        justify-content: center;
     }
 }

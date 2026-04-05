@@ -116,6 +116,32 @@
                 </div>
             </div>
 
+            <!-- Batch Action Bar (hidden by default) -->
+            <div id="mp-batch-bar" class="mp-batch-bar" style="display: none;">
+                <div class="mp-batch-info">
+                    <label class="mp-batch-select-all">
+                        <input type="checkbox" id="mp-select-all"> 全選
+                    </label>
+                    <span class="mp-batch-count">已選 <strong id="mp-selected-count">0</strong> 題</span>
+                </div>
+                <div class="mp-batch-actions">
+                    <button id="mp-batch-txt" class="mp-batch-btn secondary" disabled>
+                        📄 合併導出 TXT
+                    </button>
+                    <button id="mp-batch-pdf" class="mp-batch-btn" disabled>
+                        📑 合併導出 PDF
+                    </button>
+                    <button id="mp-batch-cancel" class="mp-batch-btn cancel">
+                        ✕ 取消選取
+                    </button>
+                </div>
+            </div>
+
+            <!-- Batch Mode Toggle -->
+            <div class="mp-batch-toggle-wrap">
+                <button id="mp-toggle-batch" class="mp-batch-toggle-btn">☑ 批量選取</button>
+            </div>
+
             <!-- Problem Cards Grid -->
             <div id="mp-problems-grid" class="mp-problems-grid">
                 <!-- Cards injected by JS -->
@@ -155,14 +181,18 @@
     <!-- PDF Export Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- MathJax for LaTeX rendering in PDF -->
+    <!-- MathJax SVG output for reliable PDF capture via html2canvas -->
+    <style>
+        mjx-assistive-mml, .mjx-assistive-mml { display: none !important; }
+    </style>
     <script>
         window.MathJax = {
             tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'none' },
             startup: { typeset: false }
         };
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/shared/supabase-config.js"></script>
