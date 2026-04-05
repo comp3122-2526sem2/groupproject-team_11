@@ -18,6 +18,7 @@ VISION_MODELS = [
 ]
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PUBLIC_DIR = os.path.join(os.path.dirname(BASE_DIR), "public")
 
 
 def load_dotenv(dotenv_path=".env"):
@@ -144,7 +145,7 @@ def main():
         env_path = os.path.join(os.path.dirname(BASE_DIR), ".env")
     load_dotenv(env_path)
     port = int(os.getenv("PORT", "8000"))
-    handler = partial(AppHandler, directory=BASE_DIR)
+    handler = partial(AppHandler, directory=PUBLIC_DIR)
     server = ThreadingHTTPServer(("0.0.0.0", port), handler)
     token_configured = bool(os.getenv("HF_API_TOKEN", "").strip())
     print(f"Server running on http://localhost:{port}")

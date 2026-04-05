@@ -5,20 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Exploration Hub — 動態幾何生成器</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dse-geometry.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/dse-geometry.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
         rel="stylesheet">
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         window.MathJax = {
             tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
             svg: { fontCache: 'global' }
         };
     </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body class="hub-body">
@@ -35,7 +35,7 @@
 
         <nav class="sidebar-nav">
             <span class="nav-section-label">學習模組</span>
-            <a href="index.html" class="nav-item">
+            <a href="../index.html" class="nav-item">
                 <span class="nav-item-icon" aria-hidden="true">📐</span>
                 <span class="nav-item-label">互動數學視覺化</span>
             </a>
@@ -181,7 +181,7 @@
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="dse-geometry.js"></script>
+    <script src="../js/generators/dse-geometry.js"></script>
 </body>
 
 </html>

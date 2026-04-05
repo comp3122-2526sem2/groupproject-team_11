@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Exploration Hub — 互動式數學教育平台</title>
     <meta name="description" content="透過互動視覺化、AI 數學求解器與智能學習規劃，以全新方式理解數學概念。">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/common.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -40,28 +40,28 @@
             </a>
 
             <!-- AI Math Solver -->
-            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+            <a href="pages/problem-solver.html" class="nav-item" id="nav-solver">
                 <span class="nav-item-icon" aria-hidden="true">🤖</span>
                 <span class="nav-item-label">AI Math Solver</span>
                 <span class="nav-item-badge">AI</span>
             </a>
 
             <!-- AI Learning Planner -->
-            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+            <a href="pages/learning-plan.html" class="nav-item" id="nav-planner">
                 <span class="nav-item-icon" aria-hidden="true">🗂️</span>
                 <span class="nav-item-label">AI Learning Planner</span>
                 <span class="nav-item-badge">AI</span>
             </a>
 
             <!-- 動態幾何生成器 -->
-            <a href="dse-geometry.html" class="nav-item" id="nav-dse">
+            <a href="pages/dse-geometry.html" class="nav-item" id="nav-dse">
                 <span class="nav-item-icon" aria-hidden="true">✨</span>
                 <span class="nav-item-label">動態幾何生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
 
             <!-- 代數問題生成器 -->
-            <a href="dse-algebra.html" class="nav-item" id="nav-dse-algebra">
+            <a href="pages/dse-algebra.html" class="nav-item" id="nav-dse-algebra">
                 <span class="nav-item-icon" aria-hidden="true">🧮</span>
                 <span class="nav-item-label">代數問題生成器</span>
                 <span class="nav-item-badge">AI</span>
@@ -97,10 +97,10 @@
                 <span class="current">互動數學視覺化</span>
             </div>
             <div class="topbar-actions">
-                <a href="problem-solver.html" class="topbar-btn secondary" id="btn-solver-shortcut">
+                <a href="pages/problem-solver.html" class="topbar-btn secondary" id="btn-solver-shortcut">
                     🤖 AI Solver
                 </a>
-                <a href="learning-plan.html" class="topbar-btn primary" id="btn-planner-shortcut">
+                <a href="pages/learning-plan.html" class="topbar-btn primary" id="btn-planner-shortcut">
                     🗂️ Learning Planner
                 </a>
             </div>
@@ -120,11 +120,11 @@
                     <span>互動視覺化</span>
                     <span class="badge-count">6</span>
                 </div>
-                <a href="problem-solver.html" class="hero-badge" role="listitem" id="hero-badge-solver">
+                <a href="pages/problem-solver.html" class="hero-badge" role="listitem" id="hero-badge-solver">
                     <span class="badge-icon" aria-hidden="true">🤖</span>
                     <span>AI Math Solver</span>
                 </a>
-                <a href="learning-plan.html" class="hero-badge" role="listitem" id="hero-badge-planner">
+                <a href="pages/learning-plan.html" class="hero-badge" role="listitem" id="hero-badge-planner">
                     <span class="badge-icon" aria-hidden="true">🗂️</span>
                     <span>AI Learning Planner</span>
                 </a>
@@ -151,7 +151,7 @@
                 <div class="hub-container">
 
                     <!-- Circle Area -->
-                    <a href="circle.html" class="math-card" id="card-circle" aria-label="圓形面積：開始探索">
+                    <a href="pages/circle.html" class="math-card" id="card-circle" aria-label="圓形面積：開始探索">
                         <div class="card-top">
                             <div class="card-icon" aria-hidden="true">🔵</div>
                             <div class="formula" aria-label="圓形面積公式">A = πr²</div>
@@ -164,7 +164,7 @@
                     </a>
 
                     <!-- Cylinder -->
-                    <a href="cylinder.html" class="math-card" id="card-cylinder" aria-label="圓柱側表面積：開始探索">
+                    <a href="pages/cylinder.html" class="math-card" id="card-cylinder" aria-label="圓柱側表面積：開始探索">
                         <div class="card-top">
                             <div class="card-icon" aria-hidden="true">🛢️</div>
                             <div class="formula" aria-label="圓柱側面積公式">A = 2πrh</div>
@@ -177,7 +177,7 @@
                     </a>
 
                     <!-- Pythagoras -->
-                    <a href="pythagoras.html" class="math-card" id="card-pythagoras" aria-label="畢氏定理：開始探索">
+                    <a href="pages/pythagoras.html" class="math-card" id="card-pythagoras" aria-label="畢氏定理：開始探索">
                         <div class="card-top">
                             <div class="card-icon" aria-hidden="true">📐</div>
                             <div class="formula" aria-label="畢氏定理公式">a² + b² = c²</div>
@@ -203,7 +203,7 @@
                 <div class="hub-container">
 
                     <!-- Law of Large Numbers -->
-                    <a href="probability.html" class="math-card" id="card-probability" aria-label="大數法則：開始探索">
+                    <a href="pages/probability.html" class="math-card" id="card-probability" aria-label="大數法則：開始探索">
                         <div class="card-top">
                             <div class="card-icon" aria-hidden="true">🎲</div>
                             <div class="formula" aria-label="概率公式">P(H) → 0.5</div>
@@ -229,7 +229,7 @@
                 <div class="hub-container">
 
                     <!-- √2 -->
-                    <a href="sqrt2.html" class="math-card" id="card-sqrt2" aria-label="無理數根號2：開始探索">
+                    <a href="pages/sqrt2.html" class="math-card" id="card-sqrt2" aria-label="無理數根號2：開始探索">
                         <div class="card-top">
                             <div class="card-icon" aria-hidden="true">📏</div>
                             <div class="formula" aria-label="根號2">√2 = 1.414…</div>
@@ -242,7 +242,7 @@
                     </a>
 
                     <!-- Exponential Growth -->
-                    <a href="exponential.html" class="math-card" id="card-exponential" aria-label="指數增長：開始探索">
+                    <a href="pages/exponential.html" class="math-card" id="card-exponential" aria-label="指數增長：開始探索">
                         <div class="card-top">
                             <div class="card-icon" aria-hidden="true">📈</div>
                             <div class="formula" aria-label="指數公式">2ⁿ vs n</div>
