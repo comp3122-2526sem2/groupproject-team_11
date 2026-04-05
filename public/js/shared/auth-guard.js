@@ -19,8 +19,8 @@
     // Hide the sidebar and content to prevent them interfering with the overlay
     const sidebar = document.querySelector('.sidebar');
     const contentArea = document.querySelector('.content-area');
-    if (sidebar) sidebar.style.display = 'none';
-    if (contentArea) contentArea.style.display = 'none';
+    if (sidebar) sidebar.style.visibility = 'hidden';
+    if (contentArea) contentArea.style.visibility = 'hidden';
 
     const overlay = document.createElement('div');
     overlay.id = 'auth-login-overlay';
