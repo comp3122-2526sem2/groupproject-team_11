@@ -29,41 +29,41 @@
             <div class="sidebar-logo" aria-hidden="true">∑</div>
             <div class="sidebar-brand-text">
                 <span class="sidebar-brand-name">Math Hub</span>
-                <span class="sidebar-brand-sub">Education Platform</span>
+                <span class="sidebar-brand-sub" data-i18n="sidebar.brandSub">Education Platform</span>
             </div>
         </div>
 
         <nav class="sidebar-nav">
-            <span class="nav-section-label">學習模組</span>
+            <span class="nav-section-label" data-i18n="nav.learningModules">學習模組</span>
             <a href="../index.html" class="nav-item">
                 <span class="nav-item-icon" aria-hidden="true">📐</span>
-                <span class="nav-item-label">互動數學視覺化</span>
+                <span class="nav-item-label" data-i18n="nav.interactiveMath">互動數學視覺化</span>
             </a>
             <a href="problem-solver.html" class="nav-item" id="nav-solver">
                 <span class="nav-item-icon" aria-hidden="true">🤖</span>
-                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-label" data-i18n="nav.aiSolver">AI Math Solver</span>
                 <span class="nav-item-badge">AI</span>
             </a>
             <a href="learning-plan.html" class="nav-item" id="nav-planner">
                 <span class="nav-item-icon" aria-hidden="true">🗂️</span>
-                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-label" data-i18n="nav.aiPlanner">AI Learning Planner</span>
                 <span class="nav-item-badge">AI</span>
             </a>
             <a href="dse-geometry.html" class="nav-item active" id="nav-dse" aria-current="page">
                 <span class="nav-item-icon" aria-hidden="true">✨</span>
-                <span class="nav-item-label">動態幾何生成器</span>
+                <span class="nav-item-label" data-i18n="nav.geometryGen">動態幾何生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
             <a href="dse-algebra.html" class="nav-item" id="nav-dse-algebra">
                 <span class="nav-item-icon" aria-hidden="true">🧮</span>
-                <span class="nav-item-label">代數問題生成器</span>
+                <span class="nav-item-label" data-i18n="nav.algebraGen">代數問題生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
 
-            <span class="nav-section-label" style="margin-top: 1rem;">管理</span>
+            <span class="nav-section-label" style="margin-top: 1rem;" data-i18n="nav.management">管理</span>
             <a href="my-problems.html" class="nav-item" id="nav-my-problems">
                 <span class="nav-item-icon" aria-hidden="true">📚</span>
-                <span class="nav-item-label">我的題庫</span>
+                <span class="nav-item-label" data-i18n="nav.myProblems">我的題庫</span>
             </a>
         </nav>
         <div class="sidebar-footer">
@@ -77,7 +77,7 @@
             <div class="topbar-breadcrumb">
                 <span>Math Hub</span>
                 <span aria-hidden="true">›</span>
-                <span class="current">動態幾何生成器</span>
+                <span class="current" data-i18n="geo.breadcrumb">動態幾何生成器</span>
             </div>
             <div class="topbar-actions"></div>
         </div>
@@ -87,31 +87,32 @@
             <div class="geometry-panel geometry-controls">
 
                 <section class="generator-box">
-                    <h3>✨ 生成幾何題</h3>
+                    <h3 data-i18n="geo.genTitle">✨ 生成幾何題</h3>
                     <div class="form-group">
-                        <label for="topic-input">主題 (Topic)</label>
+                        <label for="topic-input" data-i18n="geo.topicLabel">主題 (Topic)</label>
                         <select id="topic-input" class="form-control">
-                            <option value="圓的幾何 (Geometry of Circle)">圓的幾何 (Geometry of Circle)</option>
-                            <option value="直線軌跡 (Locus)">直線軌跡 (Locus)</option>
-                            <option value="三角學 (Trigonometry)">三角學 (Trigonometry)</option>
-                            <option value="相似與全等 (Similarity & Congruence)">相似與全等 (Similarity & Congruence)</option>
+                            <option value="圓的幾何 (Geometry of Circle)" data-i18n="geo.topicCircle">圓的幾何 (Geometry of Circle)</option>
+                            <option value="直線軌跡 (Locus)" data-i18n="geo.topicLocus">直線軌跡 (Locus)</option>
+                            <option value="三角學 (Trigonometry)" data-i18n="geo.topicTrig">三角學 (Trigonometry)</option>
+                            <option value="相似與全等 (Similarity & Congruence)" data-i18n="geo.topicSimilar">相似與全等 (Similarity & Congruence)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="difficulty-input">難度 (Difficulty)</label>
+                        <label for="difficulty-input" data-i18n="geo.diffLabel">難度 (Difficulty)</label>
                         <select id="difficulty-input" class="form-control">
-                            <option value="DSE_Level_2">DSE Level 2 (基礎)</option>
-                            <option value="DSE_Level_4" selected>DSE Level 4 (中階)</option>
-                            <option value="DSE_Level_5_star">DSE Level 5* (進階)</option>
+                            <option value="DSE_Level_2" data-i18n="diff.level2">DSE Level 2 (基礎)</option>
+                            <option value="DSE_Level_4" selected data-i18n="diff.level4">DSE Level 4 (中階)</option>
+                            <option value="DSE_Level_5_star" data-i18n="diff.level5">DSE Level 5* (進階)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="prompt-input">自訂指令 (Prompt)</label>
+                        <label for="prompt-input" data-i18n="geo.promptLabel">自訂指令 (Prompt)</label>
                         <textarea id="prompt-input" class="form-control" rows="3"
+                            data-i18n-placeholder="geo.promptPlaceholder"
                             placeholder="例如：生成一題求圓周角的題目..."></textarea>
                     </div>
                     <button id="generate-btn" class="primary-btn full-width">
-                        <span class="btn-text">生成題目</span>
+                        <span class="btn-text" data-i18n="geo.generateBtn">生成題目</span>
                         <div class="spinner" style="display: none;"></div>
                     </button>
                 </section>
@@ -119,9 +120,9 @@
                 <hr class="panel-divider">
 
                 <section class="sliders-console" id="sliders-container">
-                    <h3>🎛️ 動態操作面板</h3>
+                    <h3 data-i18n="geo.slidersTitle">🎛️ 動態操作面板</h3>
                     <div id="sliders-content">
-                        <div class="empty-text">生成題目後，此處將出現拖曳控制項。</div>
+                        <div class="empty-text" data-i18n="geo.slidersEmpty">生成題目後，此處將出現拖曳控制項。</div>
                     </div>
                 </section>
             </div>
@@ -132,8 +133,8 @@
                 <!-- Empty State -->
                 <div id="empty-state" class="empty-state">
                     <div class="empty-icon">📐</div>
-                    <h2>尚未生成題目</h2>
-                    <p>請從左側面板選擇主題並點擊「生成題目」，見證 AI 動態生成互動式幾何題。</p>
+                    <h2 data-i18n="geo.emptyTitle">尚未生成題目</h2>
+                    <p data-i18n="geo.emptyDesc">請從左側面板選擇主題並點擊「生成題目」，見證 AI 動態生成互動式幾何題。</p>
                 </div>
 
                 <!-- Skeleton Loader -->
@@ -147,7 +148,7 @@
                 <!-- Rendering Area -->
                 <div id="rendering-area" class="rendering-area style-hidden">
                     <div class="question-header">
-                        <h2>題目敘述</h2>
+                        <h2 data-i18n="geo.questionHeader">題目敘述</h2>
                     </div>
                     <div id="question-description" class="question-description">
                         <!-- LaTeX will be injected here -->
@@ -169,25 +170,25 @@
 
                     <div class="marking-scheme">
                         <details>
-                            <summary>查看評分標準 (Marking Scheme)</summary>
+                            <summary data-i18n="geo.markingScheme">查看評分標準 (Marking Scheme)</summary>
                             <div id="marking-content" class="marking-content"></div>
                         </details>
                     </div>
 
                     <details class="validation-report">
-                        <summary>🔍 驗證報告 (Validation Report)</summary>
+                        <summary data-i18n="geo.validationReport">🔍 驗證報告 (Validation Report)</summary>
                         <div id="validation-report-content" class="validation-report-content"></div>
                     </details>
 
                     <!-- Save / Export Actions -->
                     <div class="problem-actions" id="problem-actions">
-                        <button id="save-problem-btn" class="action-btn save-btn" title="儲存到題庫">
+                        <button id="save-problem-btn" class="action-btn save-btn" data-i18n="geo.save">
                             💾 儲存題目
                         </button>
-                        <button id="export-json-btn" class="action-btn export-btn" title="導出為 JSON">
+                        <button id="export-json-btn" class="action-btn export-btn" data-i18n="geo.exportJson">
                             📥 導出 JSON
                         </button>
-                        <button id="export-txt-btn" class="action-btn export-btn" title="導出為純文字">
+                        <button id="export-txt-btn" class="action-btn export-btn" data-i18n="geo.exportTxt">
                             📄 導出 TXT
                         </button>
                     </div>
@@ -200,6 +201,7 @@
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
+    <script src="../js/shared/i18n.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/shared/supabase-config.js"></script>
     <script src="../js/shared/auth-guard.js"></script>

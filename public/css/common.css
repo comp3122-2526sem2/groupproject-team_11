@@ -1348,3 +1348,69 @@ a {
     border-color: rgba(248, 113, 113, 0.3);
     color: #fca5a5;
 }
+
+/* ────────────────────────────────────────────────────────────
+   Language Switcher (injected by i18n.js)
+   ──────────────────────────────────────────────────────────── */
+.lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 0.5rem 1rem 0.25rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.lang-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--sidebar-text);
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    padding: 0.45rem 0.5rem;
+    cursor: pointer;
+    transition: all 0.25s var(--ease);
+    text-align: center;
+    letter-spacing: 0.02em;
+    position: relative;
+}
+
+.lang-btn:first-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lang-btn:hover {
+    color: var(--sidebar-text-active);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.lang-btn.active {
+    color: var(--sidebar-text-active);
+    background: rgba(45, 91, 227, 0.35);
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+    .lang-switcher {
+        margin: 0.4rem 0.75rem 0.2rem;
+    }
+}
+
+/* Floating language toggle for standalone pages (no sidebar) */
+.lang-switcher-float {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+    margin: 0;
+    background: rgba(26, 39, 68, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}

@@ -29,41 +29,41 @@
             <div class="sidebar-logo" aria-hidden="true">∑</div>
             <div class="sidebar-brand-text">
                 <span class="sidebar-brand-name">Math Hub</span>
-                <span class="sidebar-brand-sub">Education Platform</span>
+                <span class="sidebar-brand-sub" data-i18n="sidebar.brandSub">Education Platform</span>
             </div>
         </div>
 
         <nav class="sidebar-nav">
-            <span class="nav-section-label">學習模組</span>
+            <span class="nav-section-label" data-i18n="nav.learningModules">學習模組</span>
             <a href="../index.html" class="nav-item">
                 <span class="nav-item-icon" aria-hidden="true">📐</span>
-                <span class="nav-item-label">互動數學視覺化</span>
+                <span class="nav-item-label" data-i18n="nav.interactiveMath">互動數學視覺化</span>
             </a>
             <a href="problem-solver.html" class="nav-item" id="nav-solver">
                 <span class="nav-item-icon" aria-hidden="true">🤖</span>
-                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-label" data-i18n="nav.aiSolver">AI Math Solver</span>
                 <span class="nav-item-badge">AI</span>
             </a>
             <a href="learning-plan.html" class="nav-item" id="nav-planner">
                 <span class="nav-item-icon" aria-hidden="true">🗂️</span>
-                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-label" data-i18n="nav.aiPlanner">AI Learning Planner</span>
                 <span class="nav-item-badge">AI</span>
             </a>
             <a href="dse-geometry.html" class="nav-item" id="nav-dse-geometry">
                 <span class="nav-item-icon" aria-hidden="true">✨</span>
-                <span class="nav-item-label">動態幾何生成器</span>
+                <span class="nav-item-label" data-i18n="nav.geometryGen">動態幾何生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
             <a href="dse-algebra.html" class="nav-item active" id="nav-dse-algebra" aria-current="page">
                 <span class="nav-item-icon" aria-hidden="true">🧮</span>
-                <span class="nav-item-label">代數問題生成器</span>
+                <span class="nav-item-label" data-i18n="nav.algebraGen">代數問題生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
 
-            <span class="nav-section-label" style="margin-top: 1rem;">管理</span>
+            <span class="nav-section-label" style="margin-top: 1rem;" data-i18n="nav.management">管理</span>
             <a href="my-problems.html" class="nav-item" id="nav-my-problems">
                 <span class="nav-item-icon" aria-hidden="true">📚</span>
-                <span class="nav-item-label">我的題庫</span>
+                <span class="nav-item-label" data-i18n="nav.myProblems">我的題庫</span>
             </a>
         </nav>
         <div class="sidebar-footer">
@@ -77,7 +77,7 @@
             <div class="topbar-breadcrumb">
                 <span>Math Hub</span>
                 <span aria-hidden="true">›</span>
-                <span class="current">代數問題生成器</span>
+                <span class="current" data-i18n="alg.breadcrumb">代數問題生成器</span>
             </div>
         </div>
 
@@ -85,33 +85,33 @@
             <!-- Left Sidebar (Controls) -->
             <div class="algebra-panel algebra-controls">
                 <section class="algebra-generator-box">
-                    <h3>🧮 生成代數題</h3>
+                    <h3 data-i18n="alg.genTitle">🧮 生成代數題</h3>
 
                     <div class="alg-form-group">
-                        <label for="alg-topic-input">課題 (Topic)</label>
+                        <label for="alg-topic-input" data-i18n="alg.topicLabel">課題 (Topic)</label>
                         <select id="alg-topic-input" class="alg-form-control">
                             <!-- Populated by JS -->
                         </select>
                     </div>
 
                     <div class="alg-form-group">
-                        <label for="alg-subtopic-input">子課題 (Subtopic)</label>
+                        <label for="alg-subtopic-input" data-i18n="alg.subtopicLabel">子課題 (Subtopic)</label>
                         <select id="alg-subtopic-input" class="alg-form-control">
                             <!-- Cascading, populated by JS -->
                         </select>
                     </div>
 
                     <div class="alg-form-group">
-                        <label for="alg-difficulty-input">難度 (Difficulty)</label>
+                        <label for="alg-difficulty-input" data-i18n="alg.diffLabel">難度 (Difficulty)</label>
                         <select id="alg-difficulty-input" class="alg-form-control">
-                            <option value="DSE_Level_2">DSE Level 2 (基礎)</option>
-                            <option value="DSE_Level_4" selected>DSE Level 4 (中階)</option>
-                            <option value="DSE_Level_5_star">DSE Level 5* (進階)</option>
+                            <option value="DSE_Level_2" data-i18n="diff.level2">DSE Level 2 (基礎)</option>
+                            <option value="DSE_Level_4" selected data-i18n="diff.level4">DSE Level 4 (中階)</option>
+                            <option value="DSE_Level_5_star" data-i18n="diff.level5">DSE Level 5* (進階)</option>
                         </select>
                     </div>
 
                     <button id="alg-generate-btn" class="alg-primary-btn">
-                        <span class="btn-text">生成題目</span>
+                        <span class="btn-text" data-i18n="alg.generateBtn">生成題目</span>
                         <div class="alg-spinner" style="display: none;"></div>
                     </button>
                 </section>
@@ -119,8 +119,8 @@
                 <hr class="alg-panel-divider">
 
                 <div class="alg-info-card">
-                    <h4>💡 使用提示</h4>
-                    <p>選擇課題與難度後，點擊「生成題目」即可取得 AI 即時生成的 DSE 格式代數題。每次點擊將產生全新題目。</p>
+                    <h4 data-i18n="alg.hintTitle">💡 使用提示</h4>
+                    <p data-i18n="alg.hintDesc">選擇課題與難度後，點擊「生成題目」即可取得 AI 即時生成的 DSE 格式代數題。每次點擊將產生全新題目。</p>
                 </div>
             </div>
 
@@ -130,8 +130,8 @@
                 <!-- Empty State -->
                 <div id="alg-empty-state" class="alg-empty-state">
                     <div class="empty-icon">🧮</div>
-                    <h2>尚未生成題目</h2>
-                    <p>請從左側面板選擇課題、子課題及難度，然後點擊「生成題目」，見證 AI 動態生成 DSE 代數題。</p>
+                    <h2 data-i18n="alg.emptyTitle">尚未生成題目</h2>
+                    <p data-i18n="alg.emptyDesc">請從左側面板選擇課題、子課題及難度，然後點擊「生成題目」，見證 AI 動態生成 DSE 代數題。</p>
                 </div>
 
                 <!-- Skeleton Loader -->
@@ -153,7 +153,7 @@
 
                     <!-- Question Card -->
                     <div class="alg-question-card">
-                        <h2>📝 題目敘述</h2>
+                        <h2 data-i18n="alg.questionHeader">📝 題目敘述</h2>
                         <div id="alg-question-text" class="alg-question-text">
                             <!-- LaTeX injected here -->
                         </div>
@@ -164,22 +164,22 @@
 
                     <!-- Solution Steps (collapsed by default) -->
                     <details class="alg-solution-section">
-                        <summary>📖 查看解題步驟 (Solution Steps)</summary>
+                        <summary data-i18n="alg.solutionHeader">📖 查看解題步驟 (Solution Steps)</summary>
                         <div class="alg-solution-steps" id="alg-solution-steps">
                             <!-- Steps injected here -->
                         </div>
                         <div class="alg-final-answer" id="alg-final-answer">
-                            <span class="alg-final-answer-label">✅ 最終答案：</span>
+                            <span class="alg-final-answer-label" data-i18n="alg.finalAnswer">✅ 最終答案：</span>
                             <span class="alg-final-answer-value" id="alg-final-answer-value"></span>
                         </div>
                     </details>
 
                     <!-- Marking Scheme (collapsed by default) -->
                     <details class="alg-marking-section">
-                        <summary>📊 查看評分標準 (Marking Scheme)</summary>
+                        <summary data-i18n="alg.markingHeader">📊 查看評分標準 (Marking Scheme)</summary>
                         <div class="alg-marking-content">
                             <div class="alg-marking-header">
-                                <span>評分細則</span>
+                                <span data-i18n="alg.markingDetail">評分細則</span>
                                 <span class="alg-total-marks" id="alg-total-marks"></span>
                             </div>
                             <div id="alg-marking-content">
@@ -190,13 +190,13 @@
 
                     <!-- Save / Export Actions -->
                     <div class="alg-problem-actions" id="alg-problem-actions">
-                        <button id="alg-save-btn" class="action-btn save-btn" title="儲存到題庫">
+                        <button id="alg-save-btn" class="action-btn save-btn" data-i18n="alg.save">
                             💾 儲存題目
                         </button>
-                        <button id="alg-export-json-btn" class="action-btn export-btn" title="導出為 JSON">
+                        <button id="alg-export-json-btn" class="action-btn export-btn" data-i18n="alg.exportJson">
                             📥 導出 JSON
                         </button>
-                        <button id="alg-export-txt-btn" class="action-btn export-btn" title="導出為純文字">
+                        <button id="alg-export-txt-btn" class="action-btn export-btn" data-i18n="alg.exportTxt">
                             📄 導出 TXT
                         </button>
                     </div>
@@ -209,6 +209,7 @@
     <!-- Toast Container -->
     <div id="alg-toast-container" class="alg-toast-container"></div>
 
+    <script src="../js/shared/i18n.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/shared/supabase-config.js"></script>
     <script src="../js/shared/auth-guard.js"></script>

@@ -1,13 +1,15 @@
 /**
  * auth-guard.js
  * Shows a full-screen login modal if no student ID is stored.
- * Must be loaded AFTER supabase-config.js.
+ * Must be loaded AFTER supabase-config.js and i18n.js.
  *
  * Usage: include this script on every page that requires authentication.
  */
 
 (function () {
     'use strict';
+
+    const _t = (key) => (window.i18n && window.i18n.t) ? window.i18n.t(key) : key;
 
     // If already logged in, just update the sidebar user display and return
     if (window.isLoggedIn && window.isLoggedIn()) {
@@ -27,31 +29,31 @@
     overlay.innerHTML = `
         <div class="auth-login-card">
             <div class="auth-login-logo" aria-hidden="true">∑</div>
-            <h2 class="auth-login-title">歡迎來到 Math Hub</h2>
-            <p class="auth-login-desc">請輸入你的學號以開始使用平台</p>
+            <h2 class="auth-login-title">${_t('auth.welcome')}</h2>
+            <p class="auth-login-desc">${_t('auth.description')}</p>
             <form id="auth-login-form" autocomplete="off">
                 <div class="auth-input-wrap">
-                    <label for="auth-student-id" class="auth-input-label">學號 Student ID</label>
+                    <label for="auth-student-id" class="auth-input-label">${_t('auth.studentId')}</label>
                     <input
                         type="text"
                         id="auth-student-id"
                         class="auth-input"
-                        placeholder="例如：23456789"
+                        placeholder="${_t('auth.placeholder')}"
                         required
                         autofocus
                         minlength="3"
                         maxlength="30"
                         pattern="[A-Za-z0-9_\\-]+"
-                        title="請輸入英文字母、數字、底線或連字號"
+                        title="${_t('auth.inputTitle')}"
                     />
                     <span class="auth-input-hint" id="auth-input-hint"></span>
                 </div>
                 <button type="submit" class="auth-login-btn" id="auth-login-btn">
-                    進入平台
+                    ${_t('auth.enter')}
                     <span class="auth-login-arrow" aria-hidden="true">→</span>
                 </button>
             </form>
-            <p class="auth-login-note">⚠️ 無需密碼 — 任何人都可使用你的學號登入查看你的紀錄。</p>
+            <p class="auth-login-note">${_t('auth.note')}</p>
         </div>
     `;
     document.body.appendChild(overlay);
@@ -75,14 +77,14 @@
 
         // Basic validation
         if (!raw) {
-            hint.textContent = '請輸入學號';
+            hint.textContent = _t('auth.inputHint.empty');
             hint.className = 'auth-input-hint error';
             input.focus();
             return;
         }
 
         if (!/^[A-Za-z0-9_\-]{3,30}$/.test(raw)) {
-            hint.textContent = '學號只可包含英文、數字、_、-（3-30 個字元）';
+            hint.textContent = _t('auth.inputHint.invalid');
             hint.className = 'auth-input-hint error';
             input.focus();
             return;
@@ -122,11 +124,11 @@
                 <div class="sidebar-user-avatar" aria-hidden="true">👤</div>
                 <div class="sidebar-user-text">
                     <span class="sidebar-user-id">${_escHtml(studentId)}</span>
-                    <span class="sidebar-user-label">學號</span>
+                    <span class="sidebar-user-label">${_t('auth.idLabel')}</span>
                 </div>
             </div>
-            <button class="sidebar-logout-btn" id="sidebar-logout-btn" title="登出">
-                ↪ 登出
+            <button class="sidebar-logout-btn" id="sidebar-logout-btn" title="${_t('auth.logout')}">
+                ${_t('auth.logout')}
             </button>
         `;
 
@@ -135,7 +137,7 @@
 
         // Logout handler
         document.getElementById('sidebar-logout-btn').addEventListener('click', () => {
-            if (confirm('確定要登出嗎？登出後需重新輸入學號。')) {
+            if (confirm(_t('auth.logoutConfirm'))) {
                 window.clearStudentId();
                 window.location.reload();
             }

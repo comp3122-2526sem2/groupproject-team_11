@@ -16,6 +16,9 @@ class MathProblemSolver {
         this.lastWrongAttempt = '';
         this.pendingAcceptedStep = '';
 
+        this._t = (key, r) => (window.i18n && window.i18n.t) ? window.i18n.t(key, r) : key;
+        this._lang = () => (window.i18n && window.i18n.getLang) ? window.i18n.getLang() : 'zh';
+
         this.initializeElements();
         this.attachEventListeners();
         this.checkServerHealth();
@@ -80,7 +83,11 @@ class MathProblemSolver {
 
         document.querySelectorAll('.example-card').forEach(card => {
             card.addEventListener('click', () => {
-                this.problemInput.value = card.dataset.problem;
+                // Use language-appropriate problem text
+                const lang = this._lang();
+                this.problemInput.value = lang === 'zh'
+                    ? (card.dataset.problemZh || card.dataset.problem)
+                    : card.dataset.problem;
                 this.examplesArea.style.display = 'none';
                 this.handleSubmitProblem();
             });
@@ -134,7 +141,7 @@ class MathProblemSolver {
     async handleSubmitProblem() {
         const typedProblem = this.problemInput.value.trim();
         if (!typedProblem && !this.imageDataUrl) {
-            this.showError('Please enter a problem or upload an image.');
+            this.showError(this._t('solver.enterProblemErr'));
             return;
         }
 
@@ -184,28 +191,32 @@ class MathProblemSolver {
         return aiText.replace(/```[\s\S]*?```/g, '').trim();
     }
 
+    _getReplyLang() {
+        return this._lang() === 'zh' ? '繁體中文' : 'English';
+    }
+
     renderContext() {
         this.problemDisplay.innerHTML = `
-            <strong>📌 Problem:</strong><br>${this.escapeHtml(this.problemText)}
+            <strong>${this._t('solver.problemLabel')}</strong><br>${this.escapeHtml(this.problemText)}
         `;
 
         this.completedStepsList.innerHTML = '';
         if (this.completedSteps.length === 0) {
             const li = document.createElement('li');
-            li.textContent = 'No completed steps yet.';
+            li.textContent = this._t('solver.noSteps');
             this.completedStepsList.appendChild(li);
         } else {
             this.completedSteps.forEach((step, index) => {
                 const li = document.createElement('li');
-                li.textContent = `Step ${index + 1}: ${step}`;
+                li.textContent = this._t('solver.stepLabel', { n: index + 1, s: step });
                 this.completedStepsList.appendChild(li);
             });
         }
 
         this.updateStepBadges();
         this.stepGuidance.innerHTML = `
-            <h4>Please provide the next step (Step ${this.currentStepNumber})</h4>
-            <p>Enter the operation or reasoning you think should come next.</p>
+            <h4>${this._t('solver.provideNext', { n: this.currentStepNumber })}</h4>
+            <p>${this._t('solver.provideNextDesc')}</p>
         `;
 
         this.showAnswerBtn.style.display = 'none';
@@ -224,6 +235,7 @@ class MathProblemSolver {
     }
 
     updateStepBadges() {
+        const isZh = this._lang() === 'zh';
         this.stepsList.innerHTML = '';
         const total = Math.max(this.completedSteps.length + 1, 1);
         for (let i = 1; i <= total; i++) {
@@ -231,10 +243,10 @@ class MathProblemSolver {
             badge.className = 'step-badge';
             if (i <= this.completedSteps.length) {
                 badge.classList.add('completed');
-                badge.textContent = `✓ Step ${i}`;
+                badge.textContent = isZh ? `✓ 步驟 ${i}` : `✓ Step ${i}`;
             } else {
                 badge.classList.add('current');
-                badge.textContent = `▶ Step ${i}`;
+                badge.textContent = isZh ? `▶ 步驟 ${i}` : `▶ Step ${i}`;
             }
             this.stepsList.appendChild(badge);
         }
@@ -242,7 +254,8 @@ class MathProblemSolver {
 
     async handleHint() {
         try {
-            this.setFeedback('hint', 'AI is generating a hint...');
+            this.setFeedback('hint', this._t('solver.hintGenerating'));
+            const replyLang = this._getReplyLang();
             const prompt = `You are a math tutor. Re-analyze the problem and student context, then provide a hint for the next step.
 
 ${this.getAnalysisContext()}
@@ -250,10 +263,10 @@ ${this.getAnalysisContext()}
 Requirements:
 1. Give direction only for the next step. Do not provide the direct answer.
 2. Do not reveal final answers, final numeric results, or full complete solutions.
-3. Reply in 1-2 concise English sentences.`;
+3. Reply in 1-2 concise sentences in ${replyLang}.`;
 
             const hint = await this.callHuggingFaceAPI(prompt);
-            this.setFeedback('hint', `💡 Hint: ${this.trimUnsafeAnswer(hint)}`);
+            this.setFeedback('hint', `💡 ${this._lang() === 'zh' ? '提示：' : 'Hint: '}${this.trimUnsafeAnswer(hint)}`);
         } catch (error) {
             this.showError(`Hint generation failed: ${error.message}`);
         }
@@ -261,21 +274,21 @@ Requirements:
 
     handlePrevStep() {
         if (this.completedSteps.length === 0) {
-            this.setFeedback('hint', 'You are already at the first step.');
+            this.setFeedback('hint', this._t('solver.atFirstStep'));
             return;
         }
 
         this.completedSteps.pop();
         this.currentStepNumber = Math.max(1, this.currentStepNumber - 1);
         this.lastWrongAttempt = '';
-        this.setFeedback('hint', 'Returned to the previous step. Please try again.');
+        this.setFeedback('hint', this._t('solver.returnedPrev'));
         this.renderContext();
     }
 
     async handleSubmitStep() {
         const userStep = this.stepInput.value.trim();
         if (!userStep) {
-            this.showError('Please enter your next step first.');
+            this.showError(this._t('solver.enterStep'));
             return;
         }
 
@@ -287,7 +300,7 @@ Requirements:
                 this.pendingAcceptedStep = userStep;
                 this.lastWrongAttempt = '';
                 this.showAnswerBtn.style.display = 'none';
-                this.setFeedback('correct', 'Correct. ' + (judgement.feedback || 'Review this feedback, then click Continue to move on.'));
+                this.setFeedback('correct', (this._lang() === 'zh' ? '正確。' : 'Correct. ') + (judgement.feedback || (this._lang() === 'zh' ? '查看反饋後，點擊繼續。' : 'Review this feedback, then click Continue to move on.')));
 
                 if (judgement.is_finished) {
                     await this.showCompletion();
@@ -299,7 +312,7 @@ Requirements:
             } else {
                 this.lastWrongAttempt = userStep;
                 this.showAnswerBtn.style.display = 'inline-flex';
-                this.setFeedback('incorrect', (judgement.feedback || 'This step is not correct. Please try again.'));
+                this.setFeedback('incorrect', (judgement.feedback || (this._lang() === 'zh' ? '這步不正確，請再試。' : 'This step is not correct. Please try again.')));
             }
         } catch (error) {
             this.showError(`Step validation failed: ${error.message}`);
@@ -323,7 +336,8 @@ Requirements:
     }
 
     async validateNextStep(userStep) {
-                const prompt = `You are a rigorous math teacher. Judge whether the student's submitted "next step" is correct.
+        const replyLang = this._getReplyLang();
+        const prompt = `You are a rigorous math teacher. Judge whether the student's submitted "next step" is correct.
 
 Problem: ${this.problemText}
 Completed steps: ${this.completedSteps.length ? this.completedSteps.join(' | ') : 'None'}
@@ -333,7 +347,7 @@ Return JSON only:
 {
   "is_correct": true/false,
   "is_finished": true/false,
-    "feedback": "Short English feedback (do not give the final answer directly)"
+  "feedback": "Short feedback in ${replyLang} (do not give the final answer directly)"
 }
 
 Rules:
@@ -346,7 +360,7 @@ Rules:
         const response = await this.callHuggingFaceAPI(prompt);
         const jsonObj = this.extractFirstJsonObject(response);
         if (!jsonObj || typeof jsonObj !== 'object') {
-            return { is_correct: false, is_finished: false, feedback: 'Unable to parse AI response format. Please try again.' };
+            return { is_correct: false, is_finished: false, feedback: this._lang() === 'zh' ? '無法解析 AI 回覆格式，請重試。' : 'Unable to parse AI response format. Please try again.' };
         }
 
         return {
@@ -380,16 +394,18 @@ Rules:
 
     async handleShowAnswer() {
         try {
+            const replyLang = this._getReplyLang();
             const prompt = `You are a math tutor. Re-analyze the problem and student context, then provide only the reference answer for "next step (Step ${this.currentStepNumber})".
 
 ${this.getAnalysisContext()}
 
 Constraints:
 1. Provide only this step, not the final answer for the entire problem.
-2. Reply in at most 1-2 sentences.`;
+2. Reply in at most 1-2 sentences in ${replyLang}.`;
 
             const answer = await this.callHuggingFaceAPI(prompt);
-            this.setFeedback('hint', `👀 Reference answer for this step: ${answer.trim()}`);
+            const label = this._lang() === 'zh' ? '👀 本步參考答案：' : '👀 Reference answer for this step: ';
+            this.setFeedback('hint', `${label}${answer.trim()}`);
         } catch (error) {
             this.showError(`Failed to show answer: ${error.message}`);
         }
@@ -399,14 +415,15 @@ Constraints:
         this.solvingSection.style.display = 'none';
         this.completionArea.style.display = 'block';
 
+        const replyLang = this._getReplyLang();
         const summaryPrompt = `You are a math tutor. Based on the problem and the student's completed steps, summarize the solving process.
 
 Problem: ${this.problemText}
 Completed steps: ${this.completedSteps.join(' | ')}
 
-Reply with a short English summary.`;
+Reply with a short summary in ${replyLang}.`;
 
-        let summary = 'You have completed all key steps.';
+        let summary = this._lang() === 'zh' ? '你已完成所有關鍵步驟。' : 'You have completed all key steps.';
         try {
             summary = await this.callHuggingFaceAPI(summaryPrompt);
         } catch (_error) {
@@ -414,9 +431,9 @@ Reply with a short English summary.`;
         }
 
         document.getElementById('final-solution').innerHTML = `
-            <strong>✅ Problem:</strong><br>${this.escapeHtml(this.problemText)}<br><br>
-            <strong>✅ Completed Steps:</strong><br>${this.completedSteps.map((s, i) => `${i + 1}. ${this.escapeHtml(s)}`).join('<br>')}<br><br>
-            <strong>🎯 Summary:</strong><br>${this.escapeHtml(summary)}
+            <strong>${this._t('solver.finalProblem')}</strong><br>${this.escapeHtml(this.problemText)}<br><br>
+            <strong>${this._t('solver.finalSteps')}</strong><br>${this.completedSteps.map((s, i) => `${i + 1}. ${this.escapeHtml(s)}`).join('<br>')}<br><br>
+            <strong>${this._t('solver.finalSummary')}</strong><br>${this.escapeHtml(summary)}
         `;
 
         // Auto-save to Supabase
@@ -515,7 +532,9 @@ Reply with a short English summary.`;
         const value = String(text || '').trim();
         const leakPattern = /(final answer|the answer is|therefore\s*[a-zA-Z]\s*=|[a-zA-Z]\s*=\s*[-+]?\d+(?:\.\d+)?)/i;
         if (leakPattern.test(value)) {
-            return 'Check your current equation first. The next step should be algebraic transformation or substitution.';
+            return this._lang() === 'zh'
+                ? '請先檢查你當前的等式。下一步應該是代數變換或代入。'
+                : 'Check your current equation first. The next step should be algebraic transformation or substitution.';
         }
         return value;
     }

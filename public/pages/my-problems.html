@@ -22,41 +22,41 @@
             <div class="sidebar-logo" aria-hidden="true">∑</div>
             <div class="sidebar-brand-text">
                 <span class="sidebar-brand-name">Math Hub</span>
-                <span class="sidebar-brand-sub">Education Platform</span>
+                <span class="sidebar-brand-sub" data-i18n="sidebar.brandSub">Education Platform</span>
             </div>
         </div>
 
         <nav class="sidebar-nav">
-            <span class="nav-section-label">學習模組</span>
+            <span class="nav-section-label" data-i18n="nav.learningModules">學習模組</span>
             <a href="../index.html" class="nav-item">
                 <span class="nav-item-icon" aria-hidden="true">📐</span>
-                <span class="nav-item-label">互動數學視覺化</span>
+                <span class="nav-item-label" data-i18n="nav.interactiveMath">互動數學視覺化</span>
             </a>
             <a href="problem-solver.html" class="nav-item" id="nav-solver">
                 <span class="nav-item-icon" aria-hidden="true">🤖</span>
-                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-label" data-i18n="nav.aiSolver">AI Math Solver</span>
                 <span class="nav-item-badge">AI</span>
             </a>
             <a href="learning-plan.html" class="nav-item" id="nav-planner">
                 <span class="nav-item-icon" aria-hidden="true">🗂️</span>
-                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-label" data-i18n="nav.aiPlanner">AI Learning Planner</span>
                 <span class="nav-item-badge">AI</span>
             </a>
             <a href="dse-geometry.html" class="nav-item" id="nav-dse-geometry">
                 <span class="nav-item-icon" aria-hidden="true">✨</span>
-                <span class="nav-item-label">動態幾何生成器</span>
+                <span class="nav-item-label" data-i18n="nav.geometryGen">動態幾何生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
             <a href="dse-algebra.html" class="nav-item" id="nav-dse-algebra">
                 <span class="nav-item-icon" aria-hidden="true">🧮</span>
-                <span class="nav-item-label">代數問題生成器</span>
+                <span class="nav-item-label" data-i18n="nav.algebraGen">代數問題生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
 
-            <span class="nav-section-label" style="margin-top: 1rem;">管理</span>
+            <span class="nav-section-label" style="margin-top: 1rem;" data-i18n="nav.management">管理</span>
             <a href="my-problems.html" class="nav-item active" id="nav-my-problems" aria-current="page">
                 <span class="nav-item-icon" aria-hidden="true">📚</span>
-                <span class="nav-item-label">我的題庫</span>
+                <span class="nav-item-label" data-i18n="nav.myProblems">我的題庫</span>
             </a>
         </nav>
         <div class="sidebar-footer">
@@ -70,7 +70,7 @@
             <div class="topbar-breadcrumb">
                 <span>Math Hub</span>
                 <span aria-hidden="true">›</span>
-                <span class="current">我的題庫</span>
+                <span class="current" data-i18n="nav.myProblems">我的題庫</span>
             </div>
         </div>
 
@@ -79,21 +79,21 @@
             <!-- Header -->
             <div class="mp-header">
                 <div class="mp-header-content">
-                    <h1>📚 我的題庫</h1>
-                    <p class="mp-header-desc">管理已儲存的 AI 生成題目，支援導出和重新載入編輯。</p>
+                    <h1 data-i18n="myp.title">📚 我的題庫</h1>
+                    <p class="mp-header-desc" data-i18n="myp.desc">管理已儲存的 AI 生成題目，支援導出和重新載入編輯。</p>
                 </div>
                 <div class="mp-stats" id="mp-stats">
                     <div class="mp-stat-item">
                         <span class="mp-stat-value" id="mp-total-count">—</span>
-                        <span class="mp-stat-label">題目總數</span>
+                        <span class="mp-stat-label" data-i18n="myp.totalCount">題目總數</span>
                     </div>
                     <div class="mp-stat-item">
                         <span class="mp-stat-value" id="mp-geo-count">—</span>
-                        <span class="mp-stat-label">幾何</span>
+                        <span class="mp-stat-label" data-i18n="myp.geoCount">幾何</span>
                     </div>
                     <div class="mp-stat-item">
                         <span class="mp-stat-value" id="mp-alg-count">—</span>
-                        <span class="mp-stat-label">代數</span>
+                        <span class="mp-stat-label" data-i18n="myp.algCount">代數</span>
                     </div>
                 </div>
             </div>
@@ -194,6 +194,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 
+    <script src="../js/shared/i18n.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/shared/supabase-config.js"></script>
     <script src="../js/shared/auth-guard.js"></script>

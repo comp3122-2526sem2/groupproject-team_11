@@ -43,8 +43,13 @@ class AlgebraAIService {
         this.modelName = 'gemini-3-flash-preview';
     }
 
+    _getLang() { return (window.i18n && window.i18n.getLang) ? window.i18n.getLang() : 'zh'; }
+    _t(key, r) { return (window.i18n && window.i18n.t) ? window.i18n.t(key, r) : key; }
+
     buildSystemPrompt() {
-        return `你是一位專業的香港 DSE 數學科出題專家，專精「數與代數 (Numbers & Algebra)」範疇。
+        const isZh = this._getLang() === 'zh';
+        if (isZh) {
+            return `你是一位專業的香港 DSE 數學科出題專家，專精「數與代數 (Numbers & Algebra)」範疇。
 請根據使用者提供的「主題」、「子課題」與「難度」，生成一題符合 DSE 格式的數學代數題。
 
 【數學品質要求 — 最高優先級】
@@ -89,11 +94,60 @@ class AlgebraAIService {
 - marking_scheme.steps 中 markType 只能是 "M"（方法分）或 "A"（答案分）。
 - 分數使用 \\frac{}{}，根號使用 \\sqrt{}，乘號使用 \\times。
 - JSON 格式必須完美無缺，能被 JSON.parse() 解析。`;
+        }
+        return `You are a professional Hong Kong DSE Mathematics question designer, specialising in Numbers & Algebra.
+Generate a DSE-format algebra question based on the topic, subtopic and difficulty provided.
+
+【Math Quality — Top Priority】
+1. Use Chain-of-Thought reasoning internally to ensure all numerical answers are "nice integers" or rational numbers (simple fractions).
+2. Do not generate questions requiring infinite non-repeating decimals, calculators, or unreasonable values.
+3. Before generating, verify internally that each step's answer can be computed from the given conditions.
+
+【Output Format】
+Output ONLY a valid JSON object. No markdown fences or extra text.
+The JSON must follow this structure:
+
+{
+  "metadata": {
+    "topic": "Topic name",
+    "subtopic": "Subtopic name",
+    "difficulty": "Difficulty level"
+  },
+  "question": {
+    "text": "Full question text in English. Supports LaTeX: inline $...$ and display $$...$$." ,
+    "parts": [
+      { "label": "(a)", "text": "Sub-question (supports LaTeX)", "marks": 3 }
+    ]
+  },
+  "solution": {
+    "steps": [
+      { "description": "Step description (English)", "expression": "Key expression (LaTeX)" }
+    ],
+    "final_answer": "Final answer (LaTeX)"
+  },
+  "marking_scheme": {
+    "total_marks": 7,
+    "steps": [
+      { "description": "Marking step description", "marks": 1, "markType": "M" }
+    ]
+  }
+}
+
+【Additional Rules】
+- All text in English.
+- question.parts can have 1-4 sub-questions, or empty [] if not needed.
+- solution.steps must have at least 2 steps showing full derivation.
+- markType must be "M" (method) or "A" (answer).
+- Use \\frac{}{} for fractions, \\sqrt{} for roots, \\times for multiplication.
+- JSON must be perfectly valid for JSON.parse().`;
     }
 
     async generateQuestion(topic, subtopic, difficulty) {
         const systemInstruction = this.buildSystemPrompt();
-        const userMessage = `主題：${topic}\n子課題：${subtopic}\n難度：${difficulty}`;
+        const isZh = this._getLang() === 'zh';
+        const userMessage = isZh
+            ? `主題：${topic}\n子課題：${subtopic}\n難度：${difficulty}`
+            : `Topic: ${topic}\nSubtopic: ${subtopic}\nDifficulty: ${difficulty}`;
 
         const MAX_RETRIES = 2;
         let attempt = 0;
@@ -178,6 +232,8 @@ class DSEAlgebraController {
         this.attachEvents();
         this.loadApiKey();
     }
+
+    _t(key, r) { return (window.i18n && window.i18n.t) ? window.i18n.t(key, r) : key; }
 
     initDOM() {
         // Form elements
@@ -264,7 +320,7 @@ class DSEAlgebraController {
             this.apiKey = localStorage.getItem('GEMINI_API_KEY') || '';
             if (!this.apiKey) {
                 console.warn('GEMINI_API_KEY not found.');
-                this.showToast('未找到 API Key，請在 .env 設定 GEMINI_API_KEY 並重啟伺服器。', 'error');
+                this.showToast(this._t('geo.noApiKey'), 'error');
             }
         }
     }
@@ -302,7 +358,8 @@ class DSEAlgebraController {
             await this.loadApiKey();
         }
         if (!this.apiKey) {
-            this.showToast('未找到 API Key，請確認 .env 已設定 GEMINI_API_KEY 並重啟伺服器。', 'error');
+            const _t = (k, r) => (window.i18n && window.i18n.t) ? window.i18n.t(k, r) : k;
+            this.showToast(_t('geo.noApiKey'), 'error');
             return;
         }
 
@@ -318,10 +375,10 @@ class DSEAlgebraController {
             this.currentQuestionData = data;
             this.renderAll();
             this.renderingArea.classList.remove('alg-style-hidden');
-            this.showToast('題目生成成功！', 'success');
+            this.showToast(this._t('alg.genSuccess'), 'success');
         } catch (error) {
             console.error(error);
-            this.showToast('題目生成失敗: ' + error.message, 'error');
+            this.showToast(this._t('alg.genFail') + error.message, 'error');
             this.emptyState.classList.remove('alg-style-hidden');
         } finally {
             this.setLoadingState(false);
@@ -360,11 +417,12 @@ class DSEAlgebraController {
             parts.forEach(part => {
                 const div = document.createElement('div');
                 div.className = 'alg-question-part';
-                div.innerHTML = `
-                    <span class="alg-part-label">${part.label}</span>
-                    <span class="alg-part-text">${part.text}</span>
-                    <span class="alg-part-marks">${part.marks} 分</span>
-                `;
+                    const marksLabel = (window.i18n && window.i18n.getLang() === 'en') ? ` marks` : ` 分`;
+                    div.innerHTML = `
+                        <span class="alg-part-label">${part.label}</span>
+                        <span class="alg-part-text">${part.text}</span>
+                        <span class="alg-part-marks">${part.marks}${marksLabel}</span>
+                    `;
                 this.questionPartsEl.appendChild(div);
             });
         }
@@ -459,31 +517,33 @@ class DSEAlgebraController {
 
     // ── Save / Export ─────────────────────────────────
     async handleSave() {
+        const _t = (k, r) => (window.i18n && window.i18n.t) ? window.i18n.t(k, r) : k;
         if (!this.currentQuestionData) {
-            this.showToast('尚未生成題目，無法儲存。', 'error');
+            this.showToast(_t('geo.noData'), 'error');
             return;
         }
         try {
             this.saveBtn.disabled = true;
-            this.saveBtn.textContent = '⏳ 儲存中…';
+            this.saveBtn.textContent = _t('alg.saving');
             await DBService.saveProblem('algebra', this.currentQuestionData, {}, {
                 topic: this.topicSelect.value,
                 subtopic: this.subtopicSelect.value,
                 difficulty: this.difficultySelect.value
             });
-            this.showToast('✅ 題目已儲存到題庫！', 'success');
+            this.showToast(_t('alg.saved'), 'success');
         } catch (err) {
             console.error(err);
-            this.showToast('儲存失敗：' + err.message, 'error');
+            this.showToast(_t('geo.saveFail') + err.message, 'error');
         } finally {
             this.saveBtn.disabled = false;
-            this.saveBtn.textContent = '💾 儲存題目';
+            this.saveBtn.textContent = _t('alg.save');
         }
     }
 
     async handleExport(format) {
+        const _te = (k, r) => (window.i18n && window.i18n.t) ? window.i18n.t(k, r) : k;
         if (!this.currentQuestionData) {
-            this.showToast('尚未生成題目，無法導出。', 'error');
+            this.showToast(_te('geo.noDataExport'), 'error');
             return;
         }
         const pseudoRow = {
@@ -497,9 +557,9 @@ class DSEAlgebraController {
         };
         try {
             DBService.exportProblem(pseudoRow, format);
-            this.showToast(`📥 已導出 ${format.toUpperCase()} 檔案`, 'success');
+            this.showToast(_te('geo.exportDone', { f: format.toUpperCase() }), 'success');
         } catch (err) {
-            this.showToast('導出失敗：' + err.message, 'error');
+            this.showToast(_te('geo.exportFail') + err.message, 'error');
         }
     }
 }

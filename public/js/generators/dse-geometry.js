@@ -10,13 +10,19 @@
 class AIGenerationService {
     constructor(apiKey) {
         this.apiKey = apiKey;
-        this.modelName = 'gemini-3-flash-preview'; // 使用具備 Reasoning/Thinking 能力的 Gemini 3 Flash 模型
+        this.modelName = 'gemini-3-flash-preview';
     }
 
+    _getLang() { return (window.i18n && window.i18n.getLang) ? window.i18n.getLang() : 'zh'; }
+
     async generateQuestion(topic, difficulty, promptText) {
-        const systemInstruction = `
+        const lang = this._getLang();
+        const isZh = lang === 'zh';
+        const replyLang = isZh ? '繁體中文' : 'English';
+        const systemInstruction = isZh ? `
     你是一位專業的香港 DSE 數學科出題專家。
     請根據使用者提供的「主題」、「難度」與「自訂指令」，生成一題符合 DSE 格式的數學幾何題。
+    請使用繁體中文撰寫題目描述和評分標準。
     
     【重要輸出規範】
     你必須且只能輸出一個合法的 JSON 物件，不可以包含任何 Markdown 標籤 (例如 \`\`\`json) 或其他廢話。
@@ -57,9 +63,55 @@ class AIGenerationService {
     請確保：
     - 點 ID 彼此存在依賴時，不會產生循環依賴。
     - 預設一律將原點設為 center 或 (0,0)，並且合理佈局 x,y 給 viewBox (-200 -200 400 400)。所以座標系盡量介於 -150 到 150 之間。
-    - JSON 格式必須完美無缺，能被 JSON.parse() 解析。`;
+    - JSON 格式必須完美無缺，能被 JSON.parse() 解析。` : `
+    You are a professional Hong Kong DSE Mathematics question designer.
+    Generate a DSE-format geometry question based on the topic, difficulty and custom prompt.
+    Write the question description and marking scheme in English.
+    
+    【Output Requirements】
+    You must output ONLY a valid JSON object. No markdown fences or extra text.
+    The JSON must follow this structure:
+    
+    {
+      "geometry_state": {
+        "variables": { "varName": defaultValue (Number) },
+        "points": {
+          "pointId": { 
+              "type": "absolute", "x": 0, "y": 0 
+          } or { 
+              "type": "polar", "refOrigin": "A", "radiusVar": "r", "angleVar": "theta" 
+          } or { 
+              "type": "polar_eval", "refOrigin": "A", "radiusVar": "r", "angleExpression": "theta / 2" 
+          }
+        },
+        "elements": {
+          "lines": [{ "from": "A", "to": "B" }],
+          "circles": [{ "center": "A", "radiusVar": "r" }],
+          "arcs": [{ "center": "A", "from": "B", "to": "C", "radius": 20 }],
+          "labels": [{ "point": "A", "text": "A", "offset": { "x": -10, "y": -10 } }]
+        }
+      },
+      "question_template": { "text": "Question text, supports KaTeX $...$. Use _{{var}}_ to bind variables." },
+      "marking_scheme": { 
+        "steps": [
+            { "description": "Marking step description", "marks": 1, "markType": "M" }
+        ]
+      },
+      "controls": {
+        "sliders": [
+            { "targetVariable": "varName", "label": "UI label", "min": 1, "max": 100, "step": 1 }
+        ]
+      }
+    }
+    
+    Ensure:
+    - No circular dependencies between point IDs.
+    - Default origin at center (0,0), layout within viewBox (-200 -200 400 400), coordinates between -150 and 150.
+    - JSON must be valid and parseable by JSON.parse().`;
 
-        const userMessage = `主題：${topic}\n難度：${difficulty}\n指令：${promptText}`;
+        const userMessage = isZh
+            ? `主題：${topic}\n難度：${difficulty}\n指令：${promptText}`
+            : `Topic: ${topic}\nDifficulty: ${difficulty}\nPrompt: ${promptText}`;
 
         const MAX_RETRIES = 2;
         let attempt = 0;
@@ -286,7 +338,8 @@ class DSEGeometryController {
             this.renderingArea.classList.add('style-hidden');
             this.skeletonLoader.classList.remove('style-hidden');
 
-            this.slidersContent.innerHTML = '<div class="empty-text">載入中...</div>';
+            const _t = (k) => (window.i18n && window.i18n.t) ? window.i18n.t(k) : k;
+            this.slidersContent.innerHTML = `<div class="empty-text">${_t('geo.loading')}</div>`;
         } else {
             this.generateBtn.disabled = false;
             this.generateBtnText.style.display = 'block';
@@ -303,13 +356,15 @@ class DSEGeometryController {
             await this.loadApiKey();
         }
         if (!this.apiKey) {
-            this.showToast('未找到 API Key，請確認 .env 已設定 GEMINI_API_KEY 並重啟伺服器。', 'error');
+            const _t = (k) => (window.i18n && window.i18n.t) ? window.i18n.t(k) : k;
+            this.showToast(_t('geo.noApiKey'), 'error');
             return;
         }
 
         const topic = this.topicInput.value;
         const difficulty = this.difficultyInput.value;
-        const promptText = this.promptInput.value.trim() || '請自動出題';
+        const isZhLang = (window.i18n && window.i18n.getLang) ? window.i18n.getLang() === 'zh' : true;
+        const promptText = this.promptInput.value.trim() || (isZhLang ? '請自動出題' : 'Auto-generate a question');
 
         this.setLoadingState(true);
         const aiService = new AIGenerationService(this.apiKey);
@@ -325,7 +380,8 @@ class DSEGeometryController {
             this.renderingArea.classList.remove('style-hidden');
         } catch (error) {
             console.error(error);
-            this.showToast('題目生成失敗: ' + error.message, 'error');
+            const _t2 = (k) => (window.i18n && window.i18n.t) ? window.i18n.t(k) : k;
+            this.showToast(_t2('geo.genFail') + error.message, 'error');
             this.emptyState.classList.remove('style-hidden');
         } finally {
             this.setLoadingState(false);
@@ -340,7 +396,8 @@ class DSEGeometryController {
         const controls = this.currentQuestionData.controls?.sliders || [];
 
         if (controls.length === 0) {
-            this.slidersContent.innerHTML = '<div class="empty-text">沒有動態操作項</div>';
+            const _t3 = (k) => (window.i18n && window.i18n.t) ? window.i18n.t(k) : k;
+            this.slidersContent.innerHTML = `<div class="empty-text">${_t3('geo.noSliders')}</div>`;
         }
 
         controls.forEach(control => {
@@ -643,30 +700,32 @@ class DSEGeometryController {
 
     // ── Save / Export ─────────────────────────────────
     async handleSave() {
+        const _t = (k, r) => (window.i18n && window.i18n.t) ? window.i18n.t(k, r) : k;
         if (!this.currentQuestionData) {
-            this.showToast('尚未生成題目，無法儲存。', 'error');
+            this.showToast(_t('geo.noData'), 'error');
             return;
         }
         try {
             this.saveProblemBtn.disabled = true;
-            this.saveProblemBtn.textContent = '⏳ 儲存中…';
+            this.saveProblemBtn.textContent = _t('geo.saving');
             await DBService.saveProblem('geometry', this.currentQuestionData, this.sliderVariables, {
                 topic: this.topicInput.value,
                 difficulty: this.difficultyInput.value
             });
-            this.showToast('✅ 題目已儲存到題庫！', 'success');
+            this.showToast(_t('geo.saved'), 'success');
         } catch (err) {
             console.error(err);
-            this.showToast('儲存失敗：' + err.message, 'error');
+            this.showToast(_t('geo.saveFail') + err.message, 'error');
         } finally {
             this.saveProblemBtn.disabled = false;
-            this.saveProblemBtn.textContent = '💾 儲存題目';
+            this.saveProblemBtn.textContent = _t('geo.save');
         }
     }
 
     async handleExport(format) {
+        const _te = (k, r) => (window.i18n && window.i18n.t) ? window.i18n.t(k, r) : k;
         if (!this.currentQuestionData) {
-            this.showToast('尚未生成題目，無法導出。', 'error');
+            this.showToast(_te('geo.noDataExport'), 'error');
             return;
         }
         // Build a pseudo-row for export utility
@@ -681,9 +740,9 @@ class DSEGeometryController {
         };
         try {
             DBService.exportProblem(pseudoRow, format);
-            this.showToast(`📥 已導出 ${format.toUpperCase()} 檔案`, 'success');
+            this.showToast(_te('geo.exportDone', { f: format.toUpperCase() }), 'success');
         } catch (err) {
-            this.showToast('導出失敗：' + err.message, 'error');
+            this.showToast(_te('geo.exportFail') + err.message, 'error');
         }
     }
 }

@@ -24,61 +24,61 @@
             <div class="sidebar-logo" aria-hidden="true">∑</div>
             <div class="sidebar-brand-text">
                 <span class="sidebar-brand-name">Math Hub</span>
-                <span class="sidebar-brand-sub">Education Platform</span>
+                <span class="sidebar-brand-sub" data-i18n="sidebar.brandSub">Education Platform</span>
             </div>
         </div>
 
         <!-- Main Navigation -->
         <nav class="sidebar-nav">
 
-            <span class="nav-section-label">學習模組</span>
+            <span class="nav-section-label" data-i18n="nav.learningModules">學習模組</span>
 
             <!-- Active: Interactive Math -->
             <a href="index.html" class="nav-item active" id="nav-math-viz" aria-current="page">
                 <span class="nav-item-icon" aria-hidden="true">📐</span>
-                <span class="nav-item-label">互動數學視覺化</span>
+                <span class="nav-item-label" data-i18n="nav.interactiveMath">互動數學視覺化</span>
             </a>
 
             <!-- AI Math Solver -->
             <a href="pages/problem-solver.html" class="nav-item" id="nav-solver">
                 <span class="nav-item-icon" aria-hidden="true">🤖</span>
-                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-label" data-i18n="nav.aiSolver">AI Math Solver</span>
                 <span class="nav-item-badge">AI</span>
             </a>
 
             <!-- AI Learning Planner -->
             <a href="pages/learning-plan.html" class="nav-item" id="nav-planner">
                 <span class="nav-item-icon" aria-hidden="true">🗂️</span>
-                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-label" data-i18n="nav.aiPlanner">AI Learning Planner</span>
                 <span class="nav-item-badge">AI</span>
             </a>
 
             <!-- 動態幾何生成器 -->
             <a href="pages/dse-geometry.html" class="nav-item" id="nav-dse">
                 <span class="nav-item-icon" aria-hidden="true">✨</span>
-                <span class="nav-item-label">動態幾何生成器</span>
+                <span class="nav-item-label" data-i18n="nav.geometryGen">動態幾何生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
 
             <!-- 代數問題生成器 -->
             <a href="pages/dse-algebra.html" class="nav-item" id="nav-dse-algebra">
                 <span class="nav-item-icon" aria-hidden="true">🧮</span>
-                <span class="nav-item-label">代數問題生成器</span>
+                <span class="nav-item-label" data-i18n="nav.algebraGen">代數問題生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
 
-            <span class="nav-section-label">管理</span>
+            <span class="nav-section-label" data-i18n="nav.management">管理</span>
             <a href="pages/my-problems.html" class="nav-item" id="nav-my-problems">
                 <span class="nav-item-icon" aria-hidden="true">📚</span>
-                <span class="nav-item-label">我的題庫</span>
+                <span class="nav-item-label" data-i18n="nav.myProblems">我的題庫</span>
             </a>
 
-            <span class="nav-section-label">即將推出</span>
+            <span class="nav-section-label" data-i18n="nav.comingSoon">即將推出</span>
 
             <!-- Online Classroom — Locked -->
-            <div class="nav-item locked" id="nav-classroom" title="即將推出" aria-disabled="true">
+            <div class="nav-item locked" id="nav-classroom" title="即將推出" aria-disabled="true" data-i18n-title="nav.comingSoon">
                 <span class="nav-item-icon" aria-hidden="true">🖥️</span>
-                <span class="nav-item-label">在線課堂</span>
+                <span class="nav-item-label" data-i18n="nav.onlineClassroom">在線課堂</span>
                 <span class="nav-lock-icon" aria-hidden="true">🔒</span>
             </div>
 
@@ -100,13 +100,13 @@
             <div class="topbar-breadcrumb">
                 <span>Math Hub</span>
                 <span aria-hidden="true">›</span>
-                <span class="current">互動數學視覺化</span>
+                <span class="current" data-i18n="home.breadcrumb">互動數學視覺化</span>
             </div>
             <div class="topbar-actions">
-                <a href="pages/problem-solver.html" class="topbar-btn secondary" id="btn-solver-shortcut">
+                <a href="pages/problem-solver.html" class="topbar-btn secondary" id="btn-solver-shortcut" data-i18n="topbar.aiSolver">
                     🤖 AI Solver
                 </a>
-                <a href="pages/learning-plan.html" class="topbar-btn primary" id="btn-planner-shortcut">
+                <a href="pages/learning-plan.html" class="topbar-btn primary" id="btn-planner-shortcut" data-i18n="topbar.planner">
                     🗂️ Learning Planner
                 </a>
             </div>
@@ -115,15 +115,16 @@
         <!-- Page Hero -->
         <header class="page-hero" id="main-hero">
             <div class="hero-eyebrow">
-                <span aria-hidden="true">✦</span> 互動式數學學習平台
+                <span aria-hidden="true">✦</span> <span data-i18n="home.heroEyebrow">互動式數學學習平台</span>
             </div>
-            <h1>透過<span class="accent-word">視覺化</span>，<br>看見數學之美</h1>
-            <p>跟著動態圖形一起探索幾何、概率、代數背後的數學直覺——<br>搭配 AI 求解器與智能學習規劃，讓每一次學習都更高效。</p>
+            <h1 data-i18n-html="home.heroTitle1">透過<span class="accent-word" data-i18n="home.heroAccent">視覺化</span>，<br>看見數學之美</h1>
+            <p data-i18n="home.heroDesc">跟著動態圖形一起探索幾何、概率、代數背後的數學直覺——
+搭配 AI 求解器與智能學習規劃，讓每一次學習都更高效。</p>
 
             <div class="hero-badges" role="list">
                 <div class="hero-badge" role="listitem">
                     <span class="badge-icon" aria-hidden="true">📐</span>
-                    <span>互動視覺化</span>
+                    <span data-i18n="home.badgeViz">互動視覺化</span>
                     <span class="badge-count">6</span>
                 </div>
                 <a href="pages/problem-solver.html" class="hero-badge" role="listitem" id="hero-badge-solver">
@@ -136,7 +137,7 @@
                 </a>
                 <div class="hero-badge" role="listitem">
                     <span class="badge-icon" aria-hidden="true">🖥️</span>
-                    <span>在線課堂（即將推出）</span>
+                    <span data-i18n="home.badgeClassroom">在線課堂（即將推出）</span>
                 </div>
             </div>
         </header>
@@ -150,8 +151,8 @@
             <section class="category-section" aria-labelledby="cat-geometry">
                 <div class="category-header">
                     <div class="category-icon-wrap" aria-hidden="true">📐</div>
-                    <h2 class="category-title" id="cat-geometry">幾何與測量</h2>
-                    <span class="category-subtitle">Geometry &amp; Measurement</span>
+                    <h2 class="category-title" id="cat-geometry" data-i18n="home.catGeometry">幾何與測量</h2>
+                    <span class="category-subtitle" data-i18n="home.catGeometrySub">Geometry &amp; Measurement</span>
                 </div>
 
                 <div class="hub-container">
@@ -162,10 +163,10 @@
                             <div class="card-icon" aria-hidden="true">🔵</div>
                             <div class="formula" aria-label="圓形面積公式">A = πr²</div>
                         </div>
-                        <h3>圓形面積</h3>
-                        <p>透過將圓形切片展開並重新組合，視覺化體驗這個最經典的從圓到長方形的數學轉換過程。</p>
+                        <h3 data-i18n="home.circleTitle">圓形面積</h3>
+                        <p data-i18n="home.circleDesc">透過將圓形切片展開並重新組合，視覺化體驗這個最經典的從圓到長方形的數學轉換過程。</p>
                         <span class="btn-explore">
-                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                            <span data-i18n="home.explore">開始探索</span> <span class="arrow" aria-hidden="true">→</span>
                         </span>
                     </a>
 
@@ -175,10 +176,10 @@
                             <div class="card-icon" aria-hidden="true">🛢️</div>
                             <div class="formula" aria-label="圓柱側面積公式">A = 2πrh</div>
                         </div>
-                        <h3>圓柱側表面積</h3>
-                        <p>將立體的圓柱沿著側面剪開攤平，你會發現原本彎曲的表面原來只是一個簡單的長方形。</p>
+                        <h3 data-i18n="home.cylinderTitle">圓柱側表面積</h3>
+                        <p data-i18n="home.cylinderDesc">將立體的圓柱沿著側面剪開攤平，你會發現原本彎曲的表面原來只是一個簡單的長方形。</p>
                         <span class="btn-explore">
-                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                            <span data-i18n="home.explore">開始探索</span> <span class="arrow" aria-hidden="true">→</span>
                         </span>
                     </a>
 
@@ -188,10 +189,10 @@
                             <div class="card-icon" aria-hidden="true">📐</div>
                             <div class="formula" aria-label="畢氏定理公式">a² + b² = c²</div>
                         </div>
-                        <h3>畢氏定理</h3>
-                        <p>透過面積拼湊法和倒水實驗，親眼見證直角三角形三邊的神奇關係。</p>
+                        <h3 data-i18n="home.pythagorasTitle">畢氏定理</h3>
+                        <p data-i18n="home.pythagorasDesc">透過面積拼湊法和倒水實驗，親眼見證直角三角形三邊的神奇關係。</p>
                         <span class="btn-explore">
-                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                            <span data-i18n="home.explore">開始探索</span> <span class="arrow" aria-hidden="true">→</span>
                         </span>
                     </a>
 
@@ -202,8 +203,8 @@
             <section class="category-section" aria-labelledby="cat-probability">
                 <div class="category-header">
                     <div class="category-icon-wrap" aria-hidden="true">🎲</div>
-                    <h2 class="category-title" id="cat-probability">概率與統計</h2>
-                    <span class="category-subtitle">Probability &amp; Statistics</span>
+                    <h2 class="category-title" id="cat-probability" data-i18n="home.catProbability">概率與統計</h2>
+                    <span class="category-subtitle" data-i18n="home.catProbabilitySub">Probability &amp; Statistics</span>
                 </div>
 
                 <div class="hub-container">
@@ -214,10 +215,10 @@
                             <div class="card-icon" aria-hidden="true">🎲</div>
                             <div class="formula" aria-label="概率公式">P(H) → 0.5</div>
                         </div>
-                        <h3>大數法則</h3>
-                        <p>擲硬幣時，正面比例一開始會大幅震盪，但隨著次數增加，曲線會肉眼可見地收斂到 0.5。親手體驗隨機性中的規律！</p>
+                        <h3 data-i18n="home.probabilityTitle">大數法則</h3>
+                        <p data-i18n="home.probabilityDesc">擲硬幣時，正面比例一開始會大幅震盪，但隨著次數增加，曲線會肉眼可見地收斂到 0.5。親手體驗隨機性中的規律！</p>
                         <span class="btn-explore">
-                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                            <span data-i18n="home.explore">開始探索</span> <span class="arrow" aria-hidden="true">→</span>
                         </span>
                     </a>
 
@@ -228,8 +229,8 @@
             <section class="category-section" aria-labelledby="cat-algebra">
                 <div class="category-header">
                     <div class="category-icon-wrap" aria-hidden="true">🔢</div>
-                    <h2 class="category-title" id="cat-algebra">數與代數</h2>
-                    <span class="category-subtitle">Numbers &amp; Algebra</span>
+                    <h2 class="category-title" id="cat-algebra" data-i18n="home.catAlgebra">數與代數</h2>
+                    <span class="category-subtitle" data-i18n="home.catAlgebraSub">Numbers &amp; Algebra</span>
                 </div>
 
                 <div class="hub-container">
@@ -240,10 +241,10 @@
                             <div class="card-icon" aria-hidden="true">📏</div>
                             <div class="formula" aria-label="根號2">√2 = 1.414…</div>
                         </div>
-                        <h3>無理數 √2</h3>
-                        <p>在數線上用圓規作圖精確標出 √2，並透過無限放大，親眼看見無理數確實存在！</p>
+                        <h3 data-i18n="home.sqrt2Title">無理數 √2</h3>
+                        <p data-i18n="home.sqrt2Desc">在數線上用圓規作圖精確標出 √2，並透過無限放大，親眼看見無理數確實存在！</p>
                         <span class="btn-explore">
-                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                            <span data-i18n="home.explore">開始探索</span> <span class="arrow" aria-hidden="true">→</span>
                         </span>
                     </a>
 
@@ -253,10 +254,10 @@
                             <div class="card-icon" aria-hidden="true">📈</div>
                             <div class="formula" aria-label="指數公式">2ⁿ vs n</div>
                         </div>
-                        <h3>指數增長 vs 線性增長</h3>
-                        <p>在 8×8 棋盤上放米粒，每格翻倍。親眼見證指數增長如何令線性增長完全消失，理解複利與病毒傳播的數學直覺。</p>
+                        <h3 data-i18n="home.expTitle">指數增長 vs 線性增長</h3>
+                        <p data-i18n="home.expDesc">在 8×8 棋盤上放米粒，每格翻倍。親眼見證指數增長如何令線性增長完全消失，理解複利與病毒傳播的數學直覺。</p>
                         <span class="btn-explore">
-                            開始探索 <span class="arrow" aria-hidden="true">→</span>
+                            <span data-i18n="home.explore">開始探索</span> <span class="arrow" aria-hidden="true">→</span>
                         </span>
                     </a>
 
@@ -266,9 +267,9 @@
                             <div class="card-icon" aria-hidden="true">🌀</div>
                             <div class="formula">∫ f(x)dx</div>
                         </div>
-                        <h3>微積分基礎</h3>
-                        <p>體驗極限與無窮分割的概念，看著曲線下的面積如何被精確計算。</p>
-                        <span class="locked-badge">
+                        <h3 data-i18n="home.calculusTitle">微積分基礎</h3>
+                        <p data-i18n="home.calculusDesc">體驗極限與無窮分割的概念，看著曲線下的面積如何被精確計算。</p>
+                        <span class="locked-badge" data-i18n="home.inDev">
                             🔒 開發中
                         </span>
                     </div>
@@ -282,6 +283,7 @@
     </div>
     <!-- end content-area -->
 
+    <script src="js/shared/i18n.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/shared/supabase-config.js"></script>
     <script src="js/shared/auth-guard.js"></script>
