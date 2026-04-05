@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Exploration Hub — 代數問題生成器</title>
+    <meta name="description" content="AI 動態生成 DSE 數學代數題目，涵蓋一元二次方程、數列與級數、多項式及變分課題。">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dse-algebra.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body class="hub-body">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" role="navigation" aria-label="主導覽">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo" aria-hidden="true">∑</div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Math Hub</span>
+                <span class="sidebar-brand-sub">Education Platform</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <span class="nav-section-label">學習模組</span>
+            <a href="index.html" class="nav-item">
+                <span class="nav-item-icon" aria-hidden="true">📐</span>
+                <span class="nav-item-label">互動數學視覺化</span>
+            </a>
+            <a href="problem-solver.html" class="nav-item" id="nav-solver">
+                <span class="nav-item-icon" aria-hidden="true">🤖</span>
+                <span class="nav-item-label">AI Math Solver</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="learning-plan.html" class="nav-item" id="nav-planner">
+                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
+                <span class="nav-item-label">AI Learning Planner</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="dse-geometry.html" class="nav-item" id="nav-dse-geometry">
+                <span class="nav-item-icon" aria-hidden="true">✨</span>
+                <span class="nav-item-label">動態幾何生成器</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+            <a href="dse-algebra.html" class="nav-item active" id="nav-dse-algebra" aria-current="page">
+                <span class="nav-item-icon" aria-hidden="true">🧮</span>
+                <span class="nav-item-label">代數問題生成器</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="content-area">
+        <div class="content-topbar">
+            <div class="topbar-breadcrumb">
+                <span>Math Hub</span>
+                <span aria-hidden="true">›</span>
+                <span class="current">代數問題生成器</span>
+            </div>
+        </div>
+
+        <main class="hub-main algebra-layout">
+            <!-- Left Sidebar (Controls) -->
+            <div class="algebra-panel algebra-controls">
+                <section class="algebra-generator-box">
+                    <h3>🧮 生成代數題</h3>
+
+                    <div class="alg-form-group">
+                        <label for="alg-topic-input">課題 (Topic)</label>
+                        <select id="alg-topic-input" class="alg-form-control">
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+
+                    <div class="alg-form-group">
+                        <label for="alg-subtopic-input">子課題 (Subtopic)</label>
+                        <select id="alg-subtopic-input" class="alg-form-control">
+                            <!-- Cascading, populated by JS -->
+                        </select>
+                    </div>
+
+                    <div class="alg-form-group">
+                        <label for="alg-difficulty-input">難度 (Difficulty)</label>
+                        <select id="alg-difficulty-input" class="alg-form-control">
+                            <option value="DSE_Level_2">DSE Level 2 (基礎)</option>
+                            <option value="DSE_Level_4" selected>DSE Level 4 (中階)</option>
+                            <option value="DSE_Level_5_star">DSE Level 5* (進階)</option>
+                        </select>
+                    </div>
+
+                    <button id="alg-generate-btn" class="alg-primary-btn">
+                        <span class="btn-text">生成題目</span>
+                        <div class="alg-spinner" style="display: none;"></div>
+                    </button>
+                </section>
+
+                <hr class="alg-panel-divider">
+
+                <div class="alg-info-card">
+                    <h4>💡 使用提示</h4>
+                    <p>選擇課題與難度後，點擊「生成題目」即可取得 AI 即時生成的 DSE 格式代數題。每次點擊將產生全新題目。</p>
+                </div>
+            </div>
+
+            <!-- Right Main Content -->
+            <div class="algebra-panel algebra-content-area">
+
+                <!-- Empty State -->
+                <div id="alg-empty-state" class="alg-empty-state">
+                    <div class="empty-icon">🧮</div>
+                    <h2>尚未生成題目</h2>
+                    <p>請從左側面板選擇課題、子課題及難度，然後點擊「生成題目」，見證 AI 動態生成 DSE 代數題。</p>
+                </div>
+
+                <!-- Skeleton Loader -->
+                <div id="alg-skeleton-loader" class="alg-skeleton-loader alg-style-hidden">
+                    <div class="alg-skeleton alg-skeleton-title"></div>
+                    <div class="alg-skeleton alg-skeleton-text"></div>
+                    <div class="alg-skeleton alg-skeleton-text medium"></div>
+                    <div class="alg-skeleton alg-skeleton-text short"></div>
+                    <div class="alg-skeleton alg-skeleton-block"></div>
+                    <div class="alg-skeleton alg-skeleton-text"></div>
+                    <div class="alg-skeleton alg-skeleton-text short"></div>
+                </div>
+
+                <!-- Rendering Area -->
+                <div id="alg-rendering-area" class="alg-rendering-area alg-style-hidden">
+
+                    <!-- Topic Badges -->
+                    <div id="alg-badges" class="alg-topic-badges"></div>
+
+                    <!-- Question Card -->
+                    <div class="alg-question-card">
+                        <h2>📝 題目敘述</h2>
+                        <div id="alg-question-text" class="alg-question-text">
+                            <!-- LaTeX injected here -->
+                        </div>
+                        <div id="alg-question-parts" class="alg-question-parts">
+                            <!-- Sub-parts (a)(b)(c) injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Solution Steps (collapsed by default) -->
+                    <details class="alg-solution-section">
+                        <summary>📖 查看解題步驟 (Solution Steps)</summary>
+                        <div class="alg-solution-steps" id="alg-solution-steps">
+                            <!-- Steps injected here -->
+                        </div>
+                        <div class="alg-final-answer" id="alg-final-answer">
+                            <span class="alg-final-answer-label">✅ 最終答案：</span>
+                            <span class="alg-final-answer-value" id="alg-final-answer-value"></span>
+                        </div>
+                    </details>
+
+                    <!-- Marking Scheme (collapsed by default) -->
+                    <details class="alg-marking-section">
+                        <summary>📊 查看評分標準 (Marking Scheme)</summary>
+                        <div class="alg-marking-content">
+                            <div class="alg-marking-header">
+                                <span>評分細則</span>
+                                <span class="alg-total-marks" id="alg-total-marks"></span>
+                            </div>
+                            <div id="alg-marking-content">
+                                <!-- Marking steps injected here -->
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="alg-toast-container" class="alg-toast-container"></div>
+
+    <script src="dse-algebra.js"></script>
+</body>
+
+</html>

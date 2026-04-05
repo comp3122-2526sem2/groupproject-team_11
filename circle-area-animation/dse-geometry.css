@@ -7,7 +7,8 @@
 .geometry-layout {
     display: flex;
     gap: 2rem;
-    height: calc(100vh - 80px); /* Fill remaining height */
+    height: calc(100vh - 80px);
+    /* Fill remaining height */
     align-items: stretch;
     padding: 0;
 }
@@ -36,7 +37,8 @@
 }
 
 /* Forms and Inputs */
-.generator-box h3, .sliders-console h3 {
+.generator-box h3,
+.sliders-console h3 {
     margin-top: 0;
     margin-bottom: 1.5rem;
     font-size: 1.1rem;
@@ -163,28 +165,51 @@ textarea.form-control {
     border-radius: 8px;
 }
 
-.skeleton-title { height: 2rem; width: 40%; margin-bottom: 1rem; }
-.skeleton-text { height: 1rem; width: 100%; }
-.skeleton-text.short { width: 70%; margin-bottom: 2rem; }
-.skeleton-canvas { flex: 1; border-radius: 12px; }
+.skeleton-title {
+    height: 2rem;
+    width: 40%;
+    margin-bottom: 1rem;
+}
+
+.skeleton-text {
+    height: 1rem;
+    width: 100%;
+}
+
+.skeleton-text.short {
+    width: 70%;
+    margin-bottom: 2rem;
+}
+
+.skeleton-canvas {
+    flex: 1;
+    border-radius: 12px;
+}
 
 @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 /* Spinner */
 .spinner {
     width: 18px;
     height: 18px;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     border-top-color: white;
     animation: spin 1s ease-in-out infinite;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Rendering Area */
@@ -192,11 +217,7 @@ textarea.form-control {
     display: flex;
     flex-direction: column;
     height: 100%;
-    overflow: hidden;
-}
-
-.question-header {
-    flex-shrink: 0;
+    overflow-y: auto;
 }
 
 .question-header h2 {
@@ -210,28 +231,26 @@ textarea.form-control {
     line-height: 1.7;
     color: #334155;
     background: #f8fafc;
-    padding: 1rem 1.5rem;
+    padding: 1.5rem;
     border-radius: 12px;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     border-left: 4px solid #3b82f6;
-    flex-shrink: 0;
-    max-height: 25%;
-    overflow-y: auto;
 }
 
 .question-description p {
     margin: 0 0 0.5rem 0;
 }
+
 .question-description p:last-child {
     margin-bottom: 0;
 }
 
 /* SVG Canvas */
 .svg-container {
-    flex: 1 1 0;
-    min-height: 0;
+    flex: 1;
+    min-height: 400px;
     background: #ffffff;
-    background-image: 
+    background-image:
         linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
     background-size: 20px 20px;
@@ -242,7 +261,7 @@ textarea.form-control {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 #geometry-svg {
@@ -310,11 +329,10 @@ input[type="range"] {
 
 /* Marking Scheme */
 .marking-scheme {
-    margin-top: auto;
+    margin-top: 1rem;
     background: #f1f5f9;
     border-radius: 8px;
     padding: 0.5rem 1rem;
-    flex-shrink: 0;
 }
 
 .marking-scheme summary {
@@ -366,7 +384,7 @@ input[type="range"] {
     color: white;
     padding: 12px 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateX(120%);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     font-size: 0.95rem;
@@ -393,7 +411,10 @@ input[type="range"] {
 /* Custom Prompt Modal styles (if needed for API Key) */
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(4px);
     display: flex;
@@ -408,7 +429,7 @@ input[type="range"] {
     border-radius: 16px;
     width: 90%;
     max-width: 400px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .modal-content h3 {

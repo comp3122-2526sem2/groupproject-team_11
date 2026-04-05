@@ -9,24 +9,16 @@
     <link rel="stylesheet" href="dse-geometry.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                processEscapes: true
-            },
-            options: {
-                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-            },
-            startup: {
-                pageReady: () => {
-                    return MathJax.startup.defaultPageReady();
-                }
-            }
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
         };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body class="hub-body">
@@ -62,6 +54,11 @@
                 <span class="nav-item-label">動態幾何生成器</span>
                 <span class="nav-item-badge">AI</span>
             </a>
+            <a href="dse-algebra.html" class="nav-item" id="nav-dse-algebra">
+                <span class="nav-item-icon" aria-hidden="true">🧮</span>
+                <span class="nav-item-label">代數問題生成器</span>
+                <span class="nav-item-badge">AI</span>
+            </a>
         </nav>
         <div class="sidebar-footer">
             <p class="sidebar-footer-text">COMP3122 · Group 11 · 2526 Sem 2</p>
@@ -84,7 +81,7 @@
         <main class="hub-main geometry-layout">
             <!-- Left Sidebar (Controls) -->
             <div class="geometry-panel geometry-controls">
-                
+
                 <section class="generator-box">
                     <h3>✨ 生成幾何題</h3>
                     <div class="form-group">
@@ -104,7 +101,11 @@
                             <option value="DSE_Level_5_star">DSE Level 5* (進階)</option>
                         </select>
                     </div>
-
+                    <div class="form-group">
+                        <label for="prompt-input">自訂指令 (Prompt)</label>
+                        <textarea id="prompt-input" class="form-control" rows="3"
+                            placeholder="例如：生成一題求圓周角的題目..."></textarea>
+                    </div>
                     <button id="generate-btn" class="primary-btn full-width">
                         <span class="btn-text">生成題目</span>
                         <div class="spinner" style="display: none;"></div>
@@ -123,7 +124,7 @@
 
             <!-- Right Main Content -->
             <div class="geometry-panel geometry-canvas-area">
-                
+
                 <!-- Empty State -->
                 <div id="empty-state" class="empty-state">
                     <div class="empty-icon">📐</div>
@@ -152,7 +153,8 @@
                         <svg id="geometry-svg" viewBox="-200 -200 400 400" xmlns="http://www.w3.org/2000/svg">
                             <!-- Definition for markers -->
                             <defs>
-                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6"
+                                    markerHeight="6" orient="auto-start-reverse">
                                     <path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" />
                                 </marker>
                             </defs>
@@ -167,13 +169,6 @@
                             <div id="marking-content" class="marking-content"></div>
                         </details>
                     </div>
-
-                    <div class="validation-report">
-                        <details>
-                            <summary>🔍 驗證報告 (Validation Report)</summary>
-                            <div id="validation-report-content" class="validation-report-content"></div>
-                        </details>
-                    </div>
                 </div>
 
             </div>
@@ -185,4 +180,23 @@
 
     <script src="dse-geometry.js"></script>
 </body>
+
+</html>
+<details>
+    <summary>🔍 驗證報告 (Validation Report)</summary>
+    <div id="validation-report-content" class="validation-report-content"></div>
+</details>
+</div>
+</div>
+
+</div>
+</main>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container" class="toast-container"></div>
+
+<script src="dse-geometry.js"></script>
+</body>
+
 </html>
