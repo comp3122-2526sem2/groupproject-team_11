@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Exploration Hub — 我的題庫</title>
     <meta name="description" content="瀏覽、管理和導出已儲存的 DSE 數學題目。">
-    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common.css?v=20260406">
     <link rel="stylesheet" href="../css/my-problems.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,7 +104,7 @@
                     <button class="mp-filter-chip active" data-filter="all" id="filter-all">全部</button>
                     <button class="mp-filter-chip" data-filter="geometry" id="filter-geometry">📐 幾何</button>
                     <button class="mp-filter-chip" data-filter="algebra" id="filter-algebra">🧮 代數</button>
-                    <button class="mp-filter-chip" data-filter="favorite" id="filter-favorite">⭐ 收藏</button>
+
                 </div>
                 <div class="mp-filter-group">
                     <select id="mp-difficulty-filter" class="mp-filter-select">
@@ -196,6 +196,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/shared/supabase-config.js"></script>
+    <script src="../js/shared/auth-guard.js"></script>
     <script src="../js/shared/db-service.js"></script>
     <script src="../js/generators/my-problems.js"></script>
 </body>

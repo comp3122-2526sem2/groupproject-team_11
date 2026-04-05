@@ -116,8 +116,6 @@ class MyProblemsController {
             filtered = filtered.filter(p => p.type === 'geometry');
         } else if (this.activeFilter === 'algebra') {
             filtered = filtered.filter(p => p.type === 'algebra');
-        } else if (this.activeFilter === 'favorite') {
-            filtered = filtered.filter(p => p.is_favorite);
         }
 
         if (this.difficultyFilter) {
@@ -180,8 +178,7 @@ class MyProblemsController {
             month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
         });
         const diffLabel = this.getDifficultyLabel(problem.difficulty);
-        const favClass = problem.is_favorite ? 'is-fav' : '';
-        const favIcon = problem.is_favorite ? '⭐' : '☆';
+
 
         const batchClass = this.batchMode ? 'batch-mode' : '';
         const selectedClass = this.selectedIds.has(problem.id) ? 'selected' : '';
@@ -197,9 +194,6 @@ class MyProblemsController {
                     <span class="mp-badge ${typeClass}">${typeLabel}</span>
                     <span class="mp-badge difficulty">${diffLabel}</span>
                 </div>
-                <button class="mp-card-fav ${favClass}" data-action="fav" data-id="${problem.id}" title="切換收藏">
-                    ${favIcon}
-                </button>
             </div>
             <div class="mp-card-body">
                 <p class="mp-card-title">${this.escapeHtml(problem.title)}</p>
@@ -334,9 +328,7 @@ class MyProblemsController {
             case 'open':
                 this.openProblem(problem);
                 break;
-            case 'fav':
-                this.toggleFavorite(problem);
-                break;
+
             case 'delete':
                 this.showDeleteModal(id);
                 break;
@@ -353,17 +345,7 @@ class MyProblemsController {
         }
     }
 
-    async toggleFavorite(problem) {
-        const newState = !problem.is_favorite;
-        try {
-            await DBService.toggleFavorite(problem.id, newState);
-            problem.is_favorite = newState;
-            this.renderGrid();
-            this.showToast(newState ? '⭐ 已加入收藏' : '已取消收藏', 'success');
-        } catch (err) {
-            this.showToast('收藏操作失敗：' + err.message, 'error');
-        }
-    }
+
 
     showDeleteModal(id) {
         this.pendingDeleteId = id;

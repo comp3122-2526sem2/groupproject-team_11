@@ -187,24 +187,7 @@
     color: #475569;
 }
 
-.mp-card-fav {
-    width: 28px;
-    height: 28px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 1.1rem;
-    opacity: 0.4;
-    transition: all 0.2s;
-    flex-shrink: 0;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-.mp-card-fav:hover { opacity: 0.8; background: #fef3c7; }
-.mp-card-fav.is-fav { opacity: 1; }
 
 .mp-card-body {
     padding: 0 1.25rem;

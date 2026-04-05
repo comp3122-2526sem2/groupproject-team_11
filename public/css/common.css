@@ -987,3 +987,270 @@ a {
 #hero-badge-planner {
     display: none !important;
 }
+
+/* ────────────────────────────────────────────────────────────
+   13. Auth Login Overlay
+   ──────────────────────────────────────────────────────────── */
+#auth-login-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1A2744 0%, #0f172a 50%, #1e293b 100%);
+    animation: authOverlayIn 0.4s var(--ease) both;
+}
+
+#auth-login-overlay::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -30%;
+    width: 160%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 20%, rgba(45, 91, 227, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(108, 142, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+@keyframes authOverlayIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+#auth-login-overlay.auth-fade-out {
+    animation: authOverlayOut 0.35s var(--ease) forwards;
+}
+
+@keyframes authOverlayOut {
+    to { opacity: 0; transform: scale(1.03); }
+}
+
+.auth-login-card {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-xl);
+    padding: 3rem 2.5rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+    animation: authCardIn 0.5s var(--ease-spring) 0.15s both;
+}
+
+@keyframes authCardIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.auth-login-logo {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, var(--brand) 0%, #6C8EFF 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: white;
+    box-shadow: 0 8px 24px rgba(45, 91, 227, 0.4);
+}
+
+.auth-login-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.auth-login-desc {
+    font-size: 0.92rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.auth-input-wrap {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.auth-input-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+}
+
+.auth-input {
+    display: block;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-size: 1.05rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: all 0.25s var(--ease);
+    letter-spacing: 0.05em;
+}
+
+.auth-input::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+.auth-input:focus {
+    border-color: var(--brand);
+    background: rgba(45, 91, 227, 0.1);
+    box-shadow: 0 0 0 3px rgba(45, 91, 227, 0.25);
+}
+
+.auth-input-hint {
+    display: block;
+    min-height: 1.25rem;
+    font-size: 0.78rem;
+    margin-top: 0.4rem;
+    color: rgba(255, 255, 255, 0.35);
+    transition: color 0.2s;
+}
+
+.auth-input-hint.error {
+    color: #f87171;
+}
+
+.auth-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: var(--font-sans);
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--brand) 0%, #6C8EFF 100%);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.25s var(--ease);
+    box-shadow: 0 6px 24px rgba(45, 91, 227, 0.4);
+}
+
+.auth-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 32px rgba(45, 91, 227, 0.5);
+}
+
+.auth-login-btn:active {
+    transform: translateY(0);
+}
+
+.auth-login-arrow {
+    font-size: 1.1rem;
+    transition: transform 0.2s var(--ease);
+}
+
+.auth-login-btn:hover .auth-login-arrow {
+    transform: translateX(4px);
+}
+
+.auth-login-note {
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.3);
+    line-height: 1.5;
+}
+
+/* ────────────────────────────────────────────────────────────
+   14. Sidebar User Badge
+   ──────────────────────────────────────────────────────────── */
+.sidebar-user-badge {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--sidebar-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.sidebar-user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+.sidebar-user-avatar {
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.sidebar-user-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.sidebar-user-id {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--sidebar-text-active);
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar-user-label {
+    font-size: 0.62rem;
+    color: var(--sidebar-text);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.sidebar-logout-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--sidebar-text);
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.sidebar-logout-btn:hover {
+    background: rgba(248, 113, 113, 0.15);
+    border-color: rgba(248, 113, 113, 0.3);
+    color: #fca5a5;
+}

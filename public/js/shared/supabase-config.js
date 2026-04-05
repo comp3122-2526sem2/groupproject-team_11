@@ -23,19 +23,35 @@ if (typeof supabase !== 'undefined' && supabase.createClient) {
 }
 
 // =============================================
-// Anonymous User ID (browser-local)
-// Generates a UUID once and stores in localStorage.
-// This is the lightweight "anonymous auth" approach.
+// Student ID Authentication (browser-local)
+// Uses student ID as the user identifier.
+// Stored in localStorage — no password required.
 // =============================================
-function getAnonymousUserId() {
-    const STORAGE_KEY = 'mathHub.anonymousUserId';
-    let userId = localStorage.getItem(STORAGE_KEY);
-    if (!userId) {
-        // crypto.randomUUID() is available in all modern browsers
-        userId = crypto.randomUUID();
-        localStorage.setItem(STORAGE_KEY, userId);
-    }
-    return userId;
+const STUDENT_ID_KEY = 'mathHub.studentId';
+
+function getStudentId() {
+    return localStorage.getItem(STUDENT_ID_KEY);
 }
 
+function setStudentId(id) {
+    localStorage.setItem(STUDENT_ID_KEY, id);
+}
+
+function clearStudentId() {
+    localStorage.removeItem(STUDENT_ID_KEY);
+}
+
+function isLoggedIn() {
+    return !!getStudentId();
+}
+
+// Backward-compatible alias — used by DBService._userId()
+function getAnonymousUserId() {
+    return getStudentId() || '';
+}
+
+window.getStudentId = getStudentId;
+window.setStudentId = setStudentId;
+window.clearStudentId = clearStudentId;
+window.isLoggedIn = isLoggedIn;
 window.getAnonymousUserId = getAnonymousUserId;
