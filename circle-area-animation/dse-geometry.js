@@ -211,10 +211,6 @@ class DSEGeometryController {
     }
 
     initDOM() {
-        this.btnApiKey = document.getElementById('btn-api-key');
-        // Hide the manual API key button — key is loaded automatically from server
-        if (this.btnApiKey) this.btnApiKey.style.display = 'none';
-
         // Generator Form
         this.topicInput = document.getElementById('topic-input');
         this.difficultyInput = document.getElementById('difficulty-input');
@@ -234,6 +230,7 @@ class DSEGeometryController {
         this.svgElements = document.getElementById('svg-elements');
         this.markingContent = document.getElementById('marking-content');
         this.toastContainer = document.getElementById('toast-container');
+        this.validationReportContent = document.getElementById('validation-report-content');
     }
 
     attachEvents() {
@@ -386,6 +383,9 @@ class DSEGeometryController {
 
         // 4. Update core SVG
         this.updateGeometry();
+
+        // 5. Render Validation Report
+        this.renderValidationReport();
     }
 
     updateQuestionText() {
@@ -536,23 +536,100 @@ class DSEGeometryController {
             });
         }
     }
-}
 
-// Bootstrap
-document.addEventListener('DOMContentLoaded', () => {
-    window.geometryApp = new DSEGeometryController();
-});
-item.textContent = err;
-sectionEl.appendChild(item);
+    renderValidationReport() {
+        if (!this.validationReportContent || !this.currentQuestionData) return;
+        this.validationReportContent.innerHTML = '';
+
+        const data = this.currentQuestionData;
+        const sections = [];
+
+        // Validate geometry_state
+        const geoErrors = [];
+        const geoWarnings = [];
+        if (!data.geometry_state) {
+            geoErrors.push('Missing geometry_state');
+        } else {
+            if (!data.geometry_state.variables || Object.keys(data.geometry_state.variables).length === 0) {
+                geoWarnings.push('No variables defined');
+            }
+            if (!data.geometry_state.points || Object.keys(data.geometry_state.points).length === 0) {
+                geoErrors.push('No points defined');
+            }
+            if (!data.geometry_state.elements) {
+                geoWarnings.push('No drawing elements defined');
+            }
+        }
+        sections.push({ name: 'Geometry State', errors: geoErrors, warnings: geoWarnings });
+
+        // Validate question_template
+        const qtErrors = [];
+        if (!data.question_template || !data.question_template.text) {
+            qtErrors.push('Missing question text');
+        }
+        sections.push({ name: 'Question Template', errors: qtErrors, warnings: [] });
+
+        // Validate marking_scheme
+        const msErrors = [];
+        const msWarnings = [];
+        if (!data.marking_scheme || !data.marking_scheme.steps || data.marking_scheme.steps.length === 0) {
+            msWarnings.push('No marking steps defined');
+        }
+        sections.push({ name: 'Marking Scheme', errors: msErrors, warnings: msWarnings });
+
+        // Validate controls
+        const ctrlWarnings = [];
+        if (!data.controls || !data.controls.sliders || data.controls.sliders.length === 0) {
+            ctrlWarnings.push('No interactive sliders defined');
+        }
+        sections.push({ name: 'Controls', errors: [], warnings: ctrlWarnings });
+
+        // Check if all passed
+        const totalErrors = sections.reduce((sum, s) => sum + s.errors.length, 0);
+        const totalWarnings = sections.reduce((sum, s) => sum + s.warnings.length, 0);
+
+        if (totalErrors === 0 && totalWarnings === 0) {
+            const allPass = document.createElement('div');
+            allPass.className = 'validation-all-pass';
+            allPass.innerHTML = '✅ All validation checks passed';
+            this.validationReportContent.appendChild(allPass);
+            return;
+        }
+
+        sections.forEach(section => {
+            if (section.errors.length === 0 && section.warnings.length === 0) return;
+
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'validation-section';
+
+            // Section header row
+            const hasErrors = section.errors.length > 0;
+            const row = document.createElement('div');
+            row.className = `validation-row ${hasErrors ? 'error' : 'warning'}`;
+            row.innerHTML = `
+                <span class="validation-icon">${hasErrors ? '❌' : '⚠️'}</span>
+                <span class="validation-name">${section.name}</span>
+                <span class="validation-count">${section.errors.length}E / ${section.warnings.length}W</span>
+            `;
+            sectionEl.appendChild(row);
+
+            // Error items
+            section.errors.forEach(err => {
+                const item = document.createElement('div');
+                item.className = 'validation-item error';
+                item.textContent = err;
+                sectionEl.appendChild(item);
             });
-section.warnings.forEach(warn => {
-    const item = document.createElement('div');
-    item.className = 'validation-item warning';
-    item.textContent = warn;
-    sectionEl.appendChild(item);
-});
 
-this.validationReportContent.appendChild(sectionEl);
+            // Warning items
+            section.warnings.forEach(warn => {
+                const item = document.createElement('div');
+                item.className = 'validation-item warning';
+                item.textContent = warn;
+                sectionEl.appendChild(item);
+            });
+
+            this.validationReportContent.appendChild(sectionEl);
         });
     }
 }

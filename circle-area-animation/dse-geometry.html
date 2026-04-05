@@ -73,9 +73,7 @@
                 <span aria-hidden="true">›</span>
                 <span class="current">動態幾何生成器</span>
             </div>
-            <div class="topbar-actions">
-                <button class="topbar-btn secondary" id="btn-api-key">🔑 設定 API Key</button>
-            </div>
+            <div class="topbar-actions"></div>
         </div>
 
         <main class="hub-main geometry-layout">
@@ -169,6 +167,11 @@
                             <div id="marking-content" class="marking-content"></div>
                         </details>
                     </div>
+
+                    <details class="validation-report">
+                        <summary>🔍 驗證報告 (Validation Report)</summary>
+                        <div id="validation-report-content" class="validation-report-content"></div>
+                    </details>
                 </div>
 
             </div>
@@ -179,24 +182,6 @@
     <div id="toast-container" class="toast-container"></div>
 
     <script src="dse-geometry.js"></script>
-</body>
-
-</html>
-<details>
-    <summary>🔍 驗證報告 (Validation Report)</summary>
-    <div id="validation-report-content" class="validation-report-content"></div>
-</details>
-</div>
-</div>
-
-</div>
-</main>
-</div>
-
-<!-- Toast Container -->
-<div id="toast-container" class="toast-container"></div>
-
-<script src="dse-geometry.js"></script>
 </body>
 
 </html>
