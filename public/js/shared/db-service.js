@@ -592,34 +592,8 @@ class DBService {
         URL.revokeObjectURL(url);
     }
 
-    // ═══════════════════════════════════════════════════════
-    //  SOLVER ATTEMPTS
-    // ═══════════════════════════════════════════════════════
-
-    /**
-     * Save a completed solver attempt.
-     */
-    static async saveSolverAttempt(attemptData) {
-        const { data, error } = await this._client()
-            .from('solver_attempts')
-            .insert({
-                user_id: this._userId(),
-                problem_text: attemptData.problemText || '',
-                steps: attemptData.steps || [],
-                total_steps: attemptData.totalSteps || 0,
-                is_completed: attemptData.isCompleted || false,
-                summary: attemptData.summary || null,
-                started_at: attemptData.startedAt || new Date().toISOString(),
-                completed_at: attemptData.completedAt || null,
-                duration_seconds: attemptData.durationSeconds || 0
-            })
-            .select()
-            .single();
-
-        if (error) throw new Error(`Save attempt failed: ${error.message}`);
-        return data;
-    }
 }
 
 window.DBService = DBService;
+
 

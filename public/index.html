@@ -41,12 +41,6 @@
                 <span class="nav-item-label" data-i18n="nav.interactiveMath">互動數學視覺化</span>
             </a>
 
-            <!-- AI Math Solver -->
-            <a href="pages/problem-solver.html" class="nav-item" id="nav-solver">
-                <span class="nav-item-icon" aria-hidden="true">🤖</span>
-                <span class="nav-item-label" data-i18n="nav.aiSolver">AI Math Solver</span>
-                <span class="nav-item-badge">AI</span>
-            </a>
 
             <!-- 動態幾何生成器 -->
             <a href="pages/dse-geometry.html" class="nav-item" id="nav-dse">
@@ -99,10 +93,6 @@
                 <span class="current" data-i18n="home.breadcrumb">互動數學視覺化</span>
             </div>
             <div class="topbar-actions">
-                <a href="pages/problem-solver.html" class="topbar-btn secondary" id="btn-solver-shortcut"
-                    data-i18n="topbar.aiSolver">
-                    🤖 AI Solver
-                </a>
             </div>
         </div>
 
@@ -122,10 +112,11 @@
                     <span data-i18n="home.badgeViz">互動視覺化</span>
                     <span class="badge-count">6</span>
                 </div>
-                <a href="pages/problem-solver.html" class="hero-badge" role="listitem" id="hero-badge-solver">
+                <div class="hero-badge" role="listitem">
                     <span class="badge-icon" aria-hidden="true">🤖</span>
-                    <span>AI Math Solver</span>
-                </a>
+                    <span data-i18n="home.badgeAI">AI 題目生成器</span>
+                    <span class="badge-count">2</span>
+                </div>
                 <div class="hero-badge" role="listitem">
                     <span class="badge-icon" aria-hidden="true">🖥️</span>
                     <span data-i18n="home.badgeClassroom">在線課堂（即將推出）</span>
@@ -296,8 +287,7 @@
         (function () {
             const path = window.location.pathname.split('/').pop() || 'index.html';
             const map = {
-                'index.html': 'nav-math-viz',
-                'problem-solver.html': 'nav-solver'
+                'index.html': 'nav-math-viz'
             };
             const activeId = map[path];
             if (activeId) {
