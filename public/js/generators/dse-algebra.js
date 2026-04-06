@@ -39,7 +39,7 @@ const TOPIC_SUBTOPICS = {
 // ==========================================
 class AlgebraAIService {
     constructor() {
-        this.modelName = 'gemini-2.5-flash-preview-04-17';
+        this.modelName = 'gemini-3-flash-preview';
     }
 
     _getLang() { return (window.i18n && window.i18n.getLang) ? window.i18n.getLang() : 'zh'; }
