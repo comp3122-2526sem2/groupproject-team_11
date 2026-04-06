@@ -24,51 +24,51 @@ class LearningPlanGenerator {
        ────────────────────────────────────────────────────── */
     _initElements() {
         // Wizard
-        this.wizardSection    = document.getElementById('wizard-section');
-        this.steps            = [1, 2, 3].map(n => document.getElementById(`step-${n}`));
-        this.stepIndicators   = [1, 2, 3].map(n => document.getElementById(`step-indicator-${n}`));
-        this.progressFill     = document.getElementById('progress-fill');
+        this.wizardSection = document.getElementById('wizard-section');
+        this.steps = [1, 2, 3].map(n => document.getElementById(`step-${n}`));
+        this.stepIndicators = [1, 2, 3].map(n => document.getElementById(`step-indicator-${n}`));
+        this.progressFill = document.getElementById('progress-fill');
 
         // Nav buttons
-        this.btnNext1   = document.getElementById('btn-next-1');
-        this.btnBack2   = document.getElementById('btn-back-2');
-        this.btnNext2   = document.getElementById('btn-next-2');
-        this.btnBack3   = document.getElementById('btn-back-3');
-        this.btnSubmit  = document.getElementById('btn-submit');
+        this.btnNext1 = document.getElementById('btn-next-1');
+        this.btnBack2 = document.getElementById('btn-back-2');
+        this.btnNext2 = document.getElementById('btn-next-2');
+        this.btnBack3 = document.getElementById('btn-back-3');
+        this.btnSubmit = document.getElementById('btn-submit');
 
         // Topbar
         this.btnViewSaved = document.getElementById('btn-view-saved');
 
         // Streaming
         this.streamingOverlay = document.getElementById('streaming-overlay');
-        this.streamingText    = document.getElementById('streaming-text');
-        this.streamingSteps   = [1, 2, 3, 4].map(n => document.getElementById(`sstep-${n}`));
+        this.streamingText = document.getElementById('streaming-text');
+        this.streamingSteps = [1, 2, 3, 4].map(n => document.getElementById(`sstep-${n}`));
 
         // Dashboard
         this.dashboardSection = document.getElementById('dashboard-section');
-        this.summaryStats     = document.getElementById('summary-stats');
+        this.summaryStats = document.getElementById('summary-stats');
         this.overallAssessment = document.getElementById('overall-assessment');
-        this.strengthsSection  = document.getElementById('strengths-section');
+        this.strengthsSection = document.getElementById('strengths-section');
         this.weaknessesSection = document.getElementById('weaknesses-section');
-        this.strategySection   = document.getElementById('strategy-section');
-        this.tipsCard          = document.getElementById('tips-card');
-        this.tipsContent       = document.getElementById('tips-content');
-        this.modulesList       = document.getElementById('modules-list');
-        this.modulesCount      = document.getElementById('modules-count');
-        this.btnStartLearning  = document.getElementById('btn-start-learning');
-        this.btnDownloadPlan   = document.getElementById('btn-download-plan');
-        this.btnRestartPlan    = document.getElementById('btn-restart-plan');
+        this.strategySection = document.getElementById('strategy-section');
+        this.tipsCard = document.getElementById('tips-card');
+        this.tipsContent = document.getElementById('tips-content');
+        this.modulesList = document.getElementById('modules-list');
+        this.modulesCount = document.getElementById('modules-count');
+        this.btnStartLearning = document.getElementById('btn-start-learning');
+        this.btnDownloadPlan = document.getElementById('btn-download-plan');
+        this.btnRestartPlan = document.getElementById('btn-restart-plan');
     }
 
     /* ──────────────────────────────────────────────────────
        Event Listeners
        ────────────────────────────────────────────────────── */
     _attachEvents() {
-        this.btnNext1.addEventListener('click',   () => this._goToStep(2));
-        this.btnBack2.addEventListener('click',   () => this._goToStep(1));
-        this.btnNext2.addEventListener('click',   () => this._goToStep(3));
-        this.btnBack3.addEventListener('click',   () => this._goToStep(2));
-        this.btnSubmit.addEventListener('click',  () => this._handleSubmit());
+        this.btnNext1.addEventListener('click', () => this._goToStep(2));
+        this.btnBack2.addEventListener('click', () => this._goToStep(1));
+        this.btnNext2.addEventListener('click', () => this._goToStep(3));
+        this.btnBack3.addEventListener('click', () => this._goToStep(2));
+        this.btnSubmit.addEventListener('click', () => this._handleSubmit());
         this.btnViewSaved.addEventListener('click', () => this._viewSavedPlan());
         this.btnRestartPlan.addEventListener('click', () => this._restart());
         this.btnStartLearning.addEventListener('click', () => this._startFirstModule());
@@ -205,15 +205,15 @@ class LearningPlanGenerator {
 
         // Collect all form data
         this.assessmentData = {
-            level:     this._getRadio('level'),
-            module:    this._getRadio('module'),
+            level: this._getRadio('level'),
+            module: this._getRadio('module'),
             interests: this._getCheckboxes('interests'),
-            q3:        this._getRadio('q3'),
-            q4:        this._getRadio('q4'),
-            q5:        this._getRadio('q5'),
-            time:      this._getRadio('time'),
-            style:     this._getRadio('style'),
-            score:     this._calcScore()
+            q3: this._getRadio('q3'),
+            q4: this._getRadio('q4'),
+            q5: this._getRadio('q5'),
+            time: this._getRadio('time'),
+            style: this._getRadio('style'),
+            score: this._calcScore()
         };
 
         this.btnSubmit.disabled = true;
@@ -328,9 +328,9 @@ class LearningPlanGenerator {
 
     _buildPrompt() {
         const levelLabels = {
-            level2:  'Level 2（達標）',
+            level2: 'Level 2（達標）',
             level34: 'Level 3–4（中等）',
-            level5:  'Level 5–5**（拔尖）'
+            level5: 'Level 5–5**（拔尖）'
         };
         const moduleLabels = {
             core_only: '只修讀核心課程',
@@ -338,17 +338,17 @@ class LearningPlanGenerator {
             m2: '核心 + M2（代數與微積分）'
         };
         const timeLabels = {
-            low:    '每週 1–3 小時',
+            low: '每週 1–3 小時',
             medium: '每週 3–7 小時',
-            high:   '每週 7 小時以上'
+            high: '每週 7 小時以上'
         };
 
         const { level, module, interests, q3, q4, q5, score, time, style } = this.assessmentData;
 
         let strategyHint = '';
-        if (level === 'level2')  strategyHint = 'Focus on all Section A(1) marks — must-score basics.';
+        if (level === 'level2') strategyHint = 'Focus on all Section A(1) marks — must-score basics.';
         if (level === 'level34') strategyHint = 'Balance A(1) consolidation with easier A(2) questions.';
-        if (level === 'level5')  strategyHint = 'Target Section B long questions; efficiency and accuracy under time pressure.';
+        if (level === 'level5') strategyHint = 'Target Section B long questions; efficiency and accuracy under time pressure.';
 
         let moduleHint = '';
         if (module === 'm1') moduleHint = 'Student also takes M1; connect probability and calculus topics.';
@@ -406,14 +406,14 @@ Choose 3–5 modules. Tailor the plan to this student's exact DSE target and wee
         // Try fenced block first
         const fenced = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
         if (fenced?.[1]) {
-            try { return JSON.parse(fenced[1]); } catch (_) {}
+            try { return JSON.parse(fenced[1]); } catch (_) { }
         }
 
         // Try raw JSON object
         const start = text.indexOf('{');
         const end = text.lastIndexOf('}');
         if (start !== -1 && end > start) {
-            try { return JSON.parse(text.slice(start, end + 1)); } catch (_) {}
+            try { return JSON.parse(text.slice(start, end + 1)); } catch (_) { }
         }
 
         return null;
@@ -427,9 +427,9 @@ Choose 3–5 modules. Tailor the plan to this student's exact DSE target and wee
         const data = this.assessmentData;
 
         const levelLabels = {
-            level2:  'Level 2（達標）',
+            level2: 'Level 2（達標）',
             level34: 'Level 3–4（中等）',
-            level5:  'Level 5–5**（拔尖）'
+            level5: 'Level 5–5**（拔尖）'
         };
         const moduleLabels = {
             core_only: '核心課程',
@@ -437,9 +437,9 @@ Choose 3–5 modules. Tailor the plan to this student's exact DSE target and wee
             m2: '核心 + M2'
         };
         const timeLabels = {
-            low:    '每週 1–3 小時',
+            low: '每週 1–3 小時',
             medium: '每週 3–7 小時',
-            high:   '每週 7 小時以上'
+            high: '每週 7 小時以上'
         };
 
         // ── Summary Stats ──
@@ -519,20 +519,20 @@ Choose 3–5 modules. Tailor the plan to this student's exact DSE target and wee
 
         // ── Modules List ──
         const moduleMap = {
-            circle_area:    'circle.html',
-            cylinder_volume:'cylinder.html',
-            pythagoras:     'pythagoras.html',
-            probability:    'probability.html',
-            sqrt2:          'sqrt2.html',
-            exponential:    'exponential.html'
+            circle_area: 'circle.html',
+            cylinder_volume: 'cylinder.html',
+            pythagoras: 'pythagoras.html',
+            probability: 'probability.html',
+            sqrt2: 'sqrt2.html',
+            exponential: 'exponential.html'
         };
         const dseTopicLabel = {
-            circle_area:    'DSE: 求積法',
-            cylinder_volume:'DSE: 立體幾何',
-            pythagoras:     'DSE: 幾何',
-            probability:    'DSE: 概率',
-            sqrt2:          'DSE: 無理數',
-            exponential:    'DSE: 指數函數'
+            circle_area: 'DSE: 求積法',
+            cylinder_volume: 'DSE: 立體幾何',
+            pythagoras: 'DSE: 幾何',
+            probability: 'DSE: 概率',
+            sqrt2: 'DSE: 無理數',
+            exponential: 'DSE: 指數函數'
         };
 
         this.modulesCount.textContent = `共 ${plan.recommendedModules.length} 個模塊`;
@@ -622,6 +622,13 @@ Choose 3–5 modules. Tailor the plan to this student's exact DSE target and wee
         } catch (e) {
             console.warn('Save error:', e);
         }
+
+        // Also sync to Supabase (non-blocking)
+        if (typeof DBService !== 'undefined') {
+            DBService.saveLearningPlan(this.assessmentData, this.learningPlan)
+                .then(() => console.log('[LearningPlan] Synced to Supabase'))
+                .catch(err => console.warn('[LearningPlan] Supabase sync failed:', err.message));
+        }
     }
 
     _loadFromStorage() {
@@ -649,7 +656,7 @@ Choose 3–5 modules. Tailor the plan to this student's exact DSE target and wee
         const saved = this._loadFromStorage();
         if (!saved) return;
         this.assessmentData = saved.assessmentData;
-        this.learningPlan   = saved.learningPlan;
+        this.learningPlan = saved.learningPlan;
         this.wizardSection.style.display = 'none';
         this._renderDashboard();
     }
@@ -688,12 +695,12 @@ Choose 3–5 modules. Tailor the plan to this student's exact DSE target and wee
     _startFirstModule() {
         if (!this.learningPlan?.recommendedModules?.length) return;
         const moduleMap = {
-            circle_area:    'circle.html',
-            cylinder_volume:'cylinder.html',
-            pythagoras:     'pythagoras.html',
-            probability:    'probability.html',
-            sqrt2:          'sqrt2.html',
-            exponential:    'exponential.html'
+            circle_area: 'circle.html',
+            cylinder_volume: 'cylinder.html',
+            pythagoras: 'pythagoras.html',
+            probability: 'probability.html',
+            sqrt2: 'sqrt2.html',
+            exponential: 'exponential.html'
         };
         window.location.href = moduleMap[this.learningPlan.recommendedModules[0].module] || 'index.html';
     }
