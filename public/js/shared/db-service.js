@@ -88,39 +88,10 @@ class DBService {
         if (filters.type) query = query.eq('type', filters.type);
         if (filters.difficulty) query = query.eq('difficulty', filters.difficulty);
         if (filters.topic) query = query.ilike('topic', `%${filters.topic}%`);
-        if (filters.favorite) query = query.eq('is_favorite', true);
 
         const { data, error } = await query;
         if (error) throw new Error(`List failed: ${error.message}`);
         return data || [];
-    }
-
-    /**
-     * Load a single saved problem by ID.
-     */
-    static async loadProblem(problemId) {
-        const { data, error } = await this._client()
-            .from('saved_problems')
-            .select('*')
-            .eq('id', problemId)
-            .eq('user_id', this._userId())
-            .single();
-
-        if (error) throw new Error(`Load failed: ${error.message}`);
-        return data;
-    }
-
-    /**
-     * Toggle the favorite status.
-     */
-    static async toggleFavorite(problemId, isFavorite) {
-        const { error } = await this._client()
-            .from('saved_problems')
-            .update({ is_favorite: isFavorite })
-            .eq('id', problemId)
-            .eq('user_id', this._userId());
-
-        if (error) throw new Error(`Toggle failed: ${error.message}`);
     }
 
     /**
@@ -141,29 +112,11 @@ class DBService {
      * @param {Object} problemRow - Full row from listProblems/loadProblem
      * @param {'json'|'txt'|'pdf'} format
      */
-    static exportProblem(problemRow, format = 'json') {
-        if (format === 'json') {
-            return this._exportAsJson(problemRow);
-        }
+    static exportProblem(problemRow, format = 'txt') {
         if (format === 'pdf') {
             return this._exportAsPdf(problemRow);
         }
         return this._exportAsTxt(problemRow);
-    }
-
-    static _exportAsJson(row) {
-        const payload = {
-            type: row.type,
-            topic: row.topic,
-            subtopic: row.subtopic,
-            difficulty: row.difficulty,
-            questionData: row.question_data,
-            variables: row.variables,
-            exportedAt: new Date().toISOString()
-        };
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-        const filename = `math-problem-${row.type}-${row.id.substring(0, 8)}.json`;
-        DBService._downloadBlob(blob, filename);
     }
 
     static _exportAsTxt(row) {
@@ -638,120 +591,6 @@ class DBService {
         URL.revokeObjectURL(url);
     }
 
-    // ═══════════════════════════════════════════════════════
-    //  LEARNING PLANS
-    // ═══════════════════════════════════════════════════════
-
-    /**
-     * Save a new learning plan. Deactivates previous plans.
-     */
-    static async saveLearningPlan(assessmentData, planData) {
-        // Deactivate existing active plans
-        await this._client()
-            .from('learning_plans')
-            .update({ is_active: false })
-            .eq('user_id', this._userId())
-            .eq('is_active', true);
-
-        const { data, error } = await this._client()
-            .from('learning_plans')
-            .insert({
-                user_id: this._userId(),
-                assessment_data: assessmentData,
-                plan_data: planData,
-                module_progress: {},
-                is_active: true
-            })
-            .select()
-            .single();
-
-        if (error) throw new Error(`Save plan failed: ${error.message}`);
-        return data;
-    }
-
-    /**
-     * Load the current active learning plan.
-     */
-    static async loadActivePlan() {
-        const { data, error } = await this._client()
-            .from('learning_plans')
-            .select('*')
-            .eq('user_id', this._userId())
-            .eq('is_active', true)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .maybeSingle();
-
-        if (error) throw new Error(`Load plan failed: ${error.message}`);
-        return data; // may be null
-    }
-
-    /**
-     * Update module progress for a plan.
-     */
-    static async updateModuleProgress(planId, moduleId, status) {
-        // Read current progress
-        const { data: plan, error: readErr } = await this._client()
-            .from('learning_plans')
-            .select('module_progress')
-            .eq('id', planId)
-            .single();
-
-        if (readErr) throw new Error(`Read progress failed: ${readErr.message}`);
-
-        const progress = plan.module_progress || {};
-        progress[moduleId] = status;
-
-        const { error } = await this._client()
-            .from('learning_plans')
-            .update({ module_progress: progress })
-            .eq('id', planId);
-
-        if (error) throw new Error(`Update progress failed: ${error.message}`);
-    }
-
-    // ═══════════════════════════════════════════════════════
-    //  SOLVER ATTEMPTS
-    // ═══════════════════════════════════════════════════════
-
-    /**
-     * Save a completed solver attempt.
-     */
-    static async saveSolverAttempt(attemptData) {
-        const { data, error } = await this._client()
-            .from('solver_attempts')
-            .insert({
-                user_id: this._userId(),
-                problem_text: attemptData.problemText || '',
-                steps: attemptData.steps || [],
-                total_steps: attemptData.totalSteps || 0,
-                is_completed: attemptData.isCompleted || false,
-                summary: attemptData.summary || null,
-                started_at: attemptData.startedAt || new Date().toISOString(),
-                completed_at: attemptData.completedAt || null,
-                duration_seconds: attemptData.durationSeconds || 0
-            })
-            .select()
-            .single();
-
-        if (error) throw new Error(`Save attempt failed: ${error.message}`);
-        return data;
-    }
-
-    /**
-     * List solver attempts for current user.
-     */
-    static async listSolverAttempts(limit = 20) {
-        const { data, error } = await this._client()
-            .from('solver_attempts')
-            .select('*')
-            .eq('user_id', this._userId())
-            .order('started_at', { ascending: false })
-            .limit(limit);
-
-        if (error) throw new Error(`List attempts failed: ${error.message}`);
-        return data || [];
-    }
 }
 
 window.DBService = DBService;

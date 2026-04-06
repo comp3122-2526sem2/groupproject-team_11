@@ -2,9 +2,7 @@ import json
 import os
 import urllib.error
 import urllib.request
-from functools import partial
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-
+from http.server import BaseHTTPRequestHandler
 
 CHAT_MODELS = [
     "CohereLabs/tiny-aya-global:cohere",
@@ -17,26 +15,7 @@ VISION_MODELS = [
     "meta-llama/Llama-3.2-11B-Vision-Instruct:fastest",
 ]
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PUBLIC_DIR = os.path.join(os.path.dirname(BASE_DIR), "public")
-
-
-def load_dotenv(dotenv_path=".env"):
-    if not os.path.exists(dotenv_path):
-        return
-    with open(dotenv_path, "r", encoding="utf-8") as env_file:
-        for line in env_file:
-            line = line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            key, value = line.split("=", 1)
-            key = key.strip()
-            value = value.strip().strip('"').strip("'")
-            if key and key not in os.environ:
-                os.environ[key] = value
-
-
-class AppHandler(SimpleHTTPRequestHandler):
+class handler(BaseHTTPRequestHandler):
     def _send_json(self, status_code, payload):
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status_code)
@@ -46,21 +25,22 @@ class AppHandler(SimpleHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self):
-        if self.path == "/api/health":
+        if self.path == "/api/health" or self.path.startswith("/api/health?"):
             token = os.getenv("HF_API_TOKEN", "").strip()
             self._send_json(200, {"ok": True, "tokenConfigured": bool(token)})
             return
-        if self.path == "/api/gemini-key":
+        if self.path == "/api/gemini-key" or self.path.startswith("/api/gemini-key?"):
             gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
             if gemini_key:
                 self._send_json(200, {"key": gemini_key})
             else:
-                self._send_json(404, {"error": "GEMINI_API_KEY not configured in .env"})
+                self._send_json(404, {"error": "GEMINI_API_KEY not configured"})
             return
-        super().do_GET()
+        
+        self._send_json(404, {"error": "Not Found"})
 
     def do_POST(self):
-        if self.path != "/api/hf":
+        if self.path != "/api/hf" and not self.path.startswith("/api/hf?"):
             self._send_json(404, {"error": "Not Found"})
             return
 
@@ -136,22 +116,3 @@ class AppHandler(SimpleHTTPRequestHandler):
             self._send_json(err.code, {"error": "Hugging Face request failed", "detail": detail})
         except Exception as err:
             self._send_json(500, {"error": str(err)})
-
-
-def main():
-    # Try .env in same dir first, then fall back to parent dir (project root)
-    env_path = os.path.join(BASE_DIR, ".env")
-    if not os.path.exists(env_path):
-        env_path = os.path.join(os.path.dirname(BASE_DIR), ".env")
-    load_dotenv(env_path)
-    port = int(os.getenv("PORT", "8000"))
-    handler = partial(AppHandler, directory=PUBLIC_DIR)
-    server = ThreadingHTTPServer(("0.0.0.0", port), handler)
-    token_configured = bool(os.getenv("HF_API_TOKEN", "").strip())
-    print(f"Server running on http://localhost:{port}")
-    print(f"HF_API_TOKEN configured: {token_configured}")
-    server.serve_forever()
-
-
-if __name__ == "__main__":
-    main()
