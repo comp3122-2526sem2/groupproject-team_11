@@ -39,7 +39,7 @@ const TOPIC_SUBTOPICS = {
 // ==========================================
 class AlgebraAIService {
     constructor() {
-        this.modelName = 'gemini-2.0-flash';
+        this.modelName = 'gemini-2.5-flash-preview-04-17';
     }
 
     _getLang() { return (window.i18n && window.i18n.getLang) ? window.i18n.getLang() : 'zh'; }
@@ -162,8 +162,9 @@ The JSON must follow this structure:
                             system_instruction: { parts: [{ text: systemInstruction }] },
                             contents: [{ role: 'user', parts: [{ text: userMessage }] }],
                             generationConfig: {
-                                temperature: 0.3,
-                                responseMimeType: "application/json"
+                                temperature: 1,
+                                responseMimeType: "application/json",
+                                thinkingConfig: { thinkingBudget: 8192 }
                             }
                         }
                     })
@@ -179,7 +180,10 @@ The JSON must follow this structure:
                     throw new Error("No candidates returned from Gemini");
                 }
 
-                const rawText = data.candidates[0].content.parts[0].text;
+                // Filter out thinking parts (thought: true) to get the actual response
+                const parts = data.candidates[0].content.parts;
+                const responsePart = parts.find(p => !p.thought) || parts[0];
+                const rawText = responsePart.text;
                 const cleanedText = rawText.replace(/^\s*```json\s*/, '').replace(/\s*```\s*$/, '');
                 const parsed = JSON.parse(cleanedText);
 

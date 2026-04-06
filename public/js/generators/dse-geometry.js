@@ -9,7 +9,7 @@
 // ==========================================
 class AIGenerationService {
     constructor() {
-        this.modelName = 'gemini-2.0-flash';
+        this.modelName = 'gemini-2.5-flash-preview-04-17';
     }
 
     _getLang() { return (window.i18n && window.i18n.getLang) ? window.i18n.getLang() : 'zh'; }
@@ -126,8 +126,9 @@ class AIGenerationService {
                             system_instruction: { parts: [{ text: systemInstruction }] },
                             contents: [{ role: 'user', parts: [{ text: userMessage }] }],
                             generationConfig: {
-                                temperature: 0.2,
-                                responseMimeType: "application/json"
+                                temperature: 1,
+                                responseMimeType: "application/json",
+                                thinkingConfig: { thinkingBudget: 8192 }
                             }
                         }
                     })
@@ -143,7 +144,10 @@ class AIGenerationService {
                     throw new Error("No candidates returned from Gemini");
                 }
 
-                const rawText = data.candidates[0].content.parts[0].text;
+                // Filter out thinking parts (thought: true) to get the actual response
+                const parts = data.candidates[0].content.parts;
+                const responsePart = parts.find(p => !p.thought) || parts[0];
+                const rawText = responsePart.text;
                 const cleanedText = rawText.replace(/^\s*```json\s*/, '').replace(/\s*```\s*$/, '');
 
                 return JSON.parse(cleanedText);
