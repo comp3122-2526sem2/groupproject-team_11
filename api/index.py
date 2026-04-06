@@ -4,6 +4,8 @@ import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler
 
+GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
+
 CHAT_MODELS = [
     "CohereLabs/tiny-aya-global:cohere",
     "CohereLabs/c4ai-command-r7b-12-2024:cohere",
@@ -40,6 +42,12 @@ class handler(BaseHTTPRequestHandler):
         self._send_json(404, {"error": "Not Found"})
 
     def do_POST(self):
+        # ── Gemini proxy ──────────────────────────────────────────────────
+        if self.path == "/api/gemini" or self.path.startswith("/api/gemini?"):
+            self._handle_gemini()
+            return
+
+        # ── HuggingFace proxy ─────────────────────────────────────────────
         if self.path != "/api/hf" and not self.path.startswith("/api/hf?"):
             self._send_json(404, {"error": "Not Found"})
             return
@@ -114,5 +122,42 @@ class handler(BaseHTTPRequestHandler):
         except urllib.error.HTTPError as err:
             detail = err.read().decode("utf-8", errors="ignore")
             self._send_json(err.code, {"error": "Hugging Face request failed", "detail": detail})
+        except Exception as err:
+            self._send_json(500, {"error": str(err)})
+
+    # ── Gemini Proxy Handler ───────────────────────────────────────────────
+    def _handle_gemini(self):
+        gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
+        if not gemini_key:
+            self._send_json(500, {"error": "Server missing GEMINI_API_KEY environment variable."})
+            return
+
+        try:
+            content_length = int(self.headers.get("Content-Length", "0"))
+            raw_body = self.rfile.read(content_length)
+            request_data = json.loads(raw_body.decode("utf-8"))
+
+            model = request_data.get("model", "gemini-2.0-flash")
+            payload = request_data.get("payload")
+            if not payload:
+                self._send_json(400, {"error": "Missing payload"})
+                return
+
+            url = f"{GEMINI_API_BASE}/{model}:generateContent?key={gemini_key}"
+            gemini_req = urllib.request.Request(
+                url=url,
+                data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+
+            with urllib.request.urlopen(gemini_req, timeout=60) as resp:
+                gemini_data = json.loads(resp.read().decode("utf-8"))
+
+            self._send_json(200, gemini_data)
+
+        except urllib.error.HTTPError as err:
+            detail = err.read().decode("utf-8", errors="ignore")
+            self._send_json(err.code, {"error": "Gemini API request failed", "detail": detail})
         except Exception as err:
             self._send_json(500, {"error": str(err)})

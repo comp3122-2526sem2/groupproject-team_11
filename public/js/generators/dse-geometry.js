@@ -8,9 +8,8 @@
 // 1. Core Logic: LLM Service
 // ==========================================
 class AIGenerationService {
-    constructor(apiKey) {
-        this.apiKey = apiKey;
-        this.modelName = 'gemini-3-flash-preview';
+    constructor() {
+        this.modelName = 'gemini-2.0-flash';
     }
 
     _getLang() { return (window.i18n && window.i18n.getLang) ? window.i18n.getLang() : 'zh'; }
@@ -118,22 +117,25 @@ class AIGenerationService {
 
         while (attempt <= MAX_RETRIES) {
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.modelName}:generateContent?key=${this.apiKey}`, {
+                const response = await fetch('/api/gemini', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        system_instruction: { parts: [{ text: systemInstruction }] },
-                        contents: [{ role: 'user', parts: [{ text: userMessage }] }],
-                        generationConfig: {
-                            temperature: 0.2, // Low temp for structured JSON
-                            responseMimeType: "application/json"
+                        model: this.modelName,
+                        payload: {
+                            system_instruction: { parts: [{ text: systemInstruction }] },
+                            contents: [{ role: 'user', parts: [{ text: userMessage }] }],
+                            generationConfig: {
+                                temperature: 0.2,
+                                responseMimeType: "application/json"
+                            }
                         }
                     })
                 });
 
                 if (!response.ok) {
                     const errPayload = await response.json().catch(() => ({}));
-                    throw new Error(`Gemini API Error (${response.status}): ${errPayload.error?.message || ''}`);
+                    throw new Error(`Gemini API Error (${response.status}): ${errPayload.error || errPayload.detail || ''}`);
                 }
 
                 const data = await response.json();
@@ -255,11 +257,9 @@ class DSEGeometryController {
         this.currentQuestionData = null;
         this.sliderVariables = {};
         this.resolvedPoints = new Map();
-        this.apiKey = '';
 
         this.initDOM();
         this.attachEvents();
-        this.loadApiKey(); // Auto-fetch from server
     }
 
     initDOM() {
@@ -351,23 +351,13 @@ class DSEGeometryController {
     }
 
     async handleGenerate() {
-        if (!this.apiKey) {
-            // Try fetching one more time before giving up
-            await this.loadApiKey();
-        }
-        if (!this.apiKey) {
-            const _t = (k) => (window.i18n && window.i18n.t) ? window.i18n.t(k) : k;
-            this.showToast(_t('geo.noApiKey'), 'error');
-            return;
-        }
-
         const topic = this.topicInput.value;
         const difficulty = this.difficultyInput.value;
         const isZhLang = (window.i18n && window.i18n.getLang) ? window.i18n.getLang() === 'zh' : true;
         const promptText = this.promptInput.value.trim() || (isZhLang ? '請自動出題' : 'Auto-generate a question');
 
         this.setLoadingState(true);
-        const aiService = new AIGenerationService(this.apiKey);
+        const aiService = new AIGenerationService();
 
         try {
             const data = await aiService.generateQuestion(topic, difficulty, promptText);

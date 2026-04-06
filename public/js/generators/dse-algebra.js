@@ -38,9 +38,8 @@ const TOPIC_SUBTOPICS = {
 // 2. Core Logic: AI Generation Service
 // ==========================================
 class AlgebraAIService {
-    constructor(apiKey) {
-        this.apiKey = apiKey;
-        this.modelName = 'gemini-3-flash-preview';
+    constructor() {
+        this.modelName = 'gemini-2.0-flash';
     }
 
     _getLang() { return (window.i18n && window.i18n.getLang) ? window.i18n.getLang() : 'zh'; }
@@ -154,25 +153,25 @@ The JSON must follow this structure:
 
         while (attempt <= MAX_RETRIES) {
             try {
-                const response = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/${this.modelName}:generateContent?key=${this.apiKey}`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
+                const response = await fetch('/api/gemini', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: this.modelName,
+                        payload: {
                             system_instruction: { parts: [{ text: systemInstruction }] },
                             contents: [{ role: 'user', parts: [{ text: userMessage }] }],
                             generationConfig: {
                                 temperature: 0.3,
                                 responseMimeType: "application/json"
                             }
-                        })
-                    }
-                );
+                        }
+                    })
+                });
 
                 if (!response.ok) {
                     const errPayload = await response.json().catch(() => ({}));
-                    throw new Error(`Gemini API Error (${response.status}): ${errPayload.error?.message || ''}`);
+                    throw new Error(`Gemini API Error (${response.status}): ${errPayload.error || errPayload.detail || ''}`);
                 }
 
                 const data = await response.json();
@@ -225,12 +224,10 @@ The JSON must follow this structure:
 class DSEAlgebraController {
     constructor() {
         this.currentQuestionData = null;
-        this.apiKey = '';
 
         this.initDOM();
         this.populateTopics();
         this.attachEvents();
-        this.loadApiKey();
     }
 
     _t(key, r) { return (window.i18n && window.i18n.t) ? window.i18n.t(key, r) : key; }
@@ -354,21 +351,12 @@ class DSEAlgebraController {
     }
 
     async handleGenerate() {
-        if (!this.apiKey) {
-            await this.loadApiKey();
-        }
-        if (!this.apiKey) {
-            const _t = (k, r) => (window.i18n && window.i18n.t) ? window.i18n.t(k, r) : k;
-            this.showToast(_t('geo.noApiKey'), 'error');
-            return;
-        }
-
         const topic = this.topicSelect.value;
         const subtopic = this.subtopicSelect.value;
         const difficulty = this.difficultySelect.value;
 
         this.setLoadingState(true);
-        const aiService = new AlgebraAIService(this.apiKey);
+        const aiService = new AlgebraAIService();
 
         try {
             const data = await aiService.generateQuestion(topic, subtopic, difficulty);
@@ -417,8 +405,8 @@ class DSEAlgebraController {
             parts.forEach(part => {
                 const div = document.createElement('div');
                 div.className = 'alg-question-part';
-                    const marksLabel = (window.i18n && window.i18n.getLang() === 'en') ? ` marks` : ` 分`;
-                    div.innerHTML = `
+                const marksLabel = (window.i18n && window.i18n.getLang() === 'en') ? ` marks` : ` 分`;
+                div.innerHTML = `
                         <span class="alg-part-label">${part.label}</span>
                         <span class="alg-part-text">${part.text}</span>
                         <span class="alg-part-marks">${part.marks}${marksLabel}</span>
