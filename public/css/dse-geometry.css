@@ -37,8 +37,7 @@
 }
 
 /* Forms and Inputs */
-.generator-box h3,
-.sliders-console h3 {
+.generator-box h3 {
     margin-top: 0;
     margin-bottom: 1.5rem;
     font-size: 1.1rem;
@@ -299,33 +298,6 @@ textarea.form-control {
     font-weight: 600;
 }
 
-/* Sliders Control */
-.slider-group {
-    margin-bottom: 1.5rem;
-    background: #f8fafc;
-    padding: 1rem;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-}
-
-.slider-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #334155;
-    font-family: 'JetBrains Mono', monospace;
-}
-
-.slider-val {
-    color: #3b82f6;
-}
-
-input[type="range"] {
-    width: 100%;
-    accent-color: #3b82f6;
-}
 
 /* Marking Scheme */
 .marking-scheme {

@@ -51,11 +51,6 @@ class AIGenerationService {
         "steps": [
             { "description": "給分步驟描述", "marks": 1, "markType": "M" }
         ]
-      },
-      "controls": {
-        "sliders": [
-            { "targetVariable": "變數名稱", "label": "UI顯示標籤", "min": 1, "max": 100, "step": 1 }
-        ]
       }
     }
     
@@ -94,11 +89,6 @@ class AIGenerationService {
       "marking_scheme": { 
         "steps": [
             { "description": "Marking step description", "marks": 1, "markType": "M" }
-        ]
-      },
-      "controls": {
-        "sliders": [
-            { "targetVariable": "varName", "label": "UI label", "min": 1, "max": 100, "step": 1 }
         ]
       }
     }
@@ -259,7 +249,7 @@ class DSEGeometryController {
     constructor() {
         this.resolver = new GeometryResolver();
         this.currentQuestionData = null;
-        this.sliderVariables = {};
+        this.variables = {};
         this.resolvedPoints = new Map();
 
         this.initDOM();
@@ -279,7 +269,7 @@ class DSEGeometryController {
         this.emptyState = document.getElementById('empty-state');
         this.skeletonLoader = document.getElementById('skeleton-loader');
         this.renderingArea = document.getElementById('rendering-area');
-        this.slidersContent = document.getElementById('sliders-content');
+
 
         // Rendering Targets
         this.questionDescription = document.getElementById('question-description');
@@ -327,7 +317,7 @@ class DSEGeometryController {
             this.skeletonLoader.classList.remove('style-hidden');
 
             const _t = (k) => (window.i18n && window.i18n.t) ? window.i18n.t(k) : k;
-            this.slidersContent.innerHTML = `<div class="empty-text">${_t('geo.loading')}</div>`;
+
         } else {
             this.generateBtn.disabled = false;
             this.generateBtnText.style.display = 'block';
@@ -352,7 +342,7 @@ class DSEGeometryController {
             this.currentQuestionData = data;
 
             // Initialize slider variables
-            this.sliderVariables = { ...data.geometry_state.variables };
+            this.variables = { ...data.geometry_state.variables };
 
             this.renderUI();
             this.renderingArea.classList.remove('style-hidden');
@@ -369,44 +359,7 @@ class DSEGeometryController {
     renderUI() {
         if (!this.currentQuestionData) return;
 
-        // 1. Render Sliders
-        this.slidersContent.innerHTML = '';
-        const controls = this.currentQuestionData.controls?.sliders || [];
 
-        if (controls.length === 0) {
-            const _t3 = (k) => (window.i18n && window.i18n.t) ? window.i18n.t(k) : k;
-            this.slidersContent.innerHTML = `<div class="empty-text">${_t3('geo.noSliders')}</div>`;
-        }
-
-        controls.forEach(control => {
-            const val = this.sliderVariables[control.targetVariable];
-            const div = document.createElement('div');
-            div.className = 'slider-group';
-            div.innerHTML = `
-                <div class="slider-header">
-                    <span>${control.label}</span>
-                    <span class="slider-val" id="val-${control.targetVariable}">${val}</span>
-                </div>
-                <input type="range" 
-                    id="slider-${control.targetVariable}" 
-                    min="${control.min}" 
-                    max="${control.max}" 
-                    step="${control.step}" 
-                    value="${val}">
-            `;
-
-            const input = div.querySelector('input');
-            const valDisplay = div.querySelector('.slider-val');
-
-            input.addEventListener('input', (e) => {
-                const newVal = parseFloat(e.target.value);
-                valDisplay.textContent = newVal;
-                this.sliderVariables[control.targetVariable] = newVal;
-                this.updateGeometry();
-            });
-
-            this.slidersContent.appendChild(div);
-        });
 
         // 2. Render Text Template initially
         this.updateQuestionText();
@@ -441,9 +394,9 @@ class DSEGeometryController {
         htmlContent = '<p>' + htmlContent + '</p>';
 
         // Handle variable replacement e.g. _{{var}}_
-        Object.keys(this.sliderVariables).forEach(key => {
+        Object.keys(this.variables).forEach(key => {
             const regex = new RegExp(`_\\{\\{${key}\\}\\}_`, 'g');
-            htmlContent = htmlContent.replace(regex, `<strong style="color: #3b82f6;">${this.sliderVariables[key]}</strong>`);
+            htmlContent = htmlContent.replace(regex, `<strong style="color: #3b82f6;">${this.variables[key]}</strong>`);
         });
 
         this.questionDescription.innerHTML = htmlContent;
@@ -461,7 +414,7 @@ class DSEGeometryController {
             // Recalculate all coordinates
             this.resolvedPoints = this.resolver.resolveCoordinates(
                 this.currentQuestionData.geometry_state.points,
-                this.sliderVariables
+                this.variables
             );
 
             this.renderSVG();
@@ -487,7 +440,7 @@ class DSEGeometryController {
                 let r = 0;
                 // radius can be a number or a mapped variable
                 if (typeof c.radiusVar === 'number') r = c.radiusVar;
-                else r = this.sliderVariables[c.radiusVar] || 0;
+                else r = this.variables[c.radiusVar] || 0;
 
                 const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 circle.setAttribute('cx', center.x);
@@ -620,12 +573,7 @@ class DSEGeometryController {
         }
         sections.push({ name: 'Marking Scheme', errors: msErrors, warnings: msWarnings });
 
-        // Validate controls
-        const ctrlWarnings = [];
-        if (!data.controls || !data.controls.sliders || data.controls.sliders.length === 0) {
-            ctrlWarnings.push('No interactive sliders defined');
-        }
-        sections.push({ name: 'Controls', errors: [], warnings: ctrlWarnings });
+
 
         // Check if all passed
         const totalErrors = sections.reduce((sum, s) => sum + s.errors.length, 0);
@@ -686,7 +634,7 @@ class DSEGeometryController {
         try {
             this.saveProblemBtn.disabled = true;
             this.saveProblemBtn.textContent = _t('geo.saving');
-            await DBService.saveProblem('geometry', this.currentQuestionData, this.sliderVariables, {
+            await DBService.saveProblem('geometry', this.currentQuestionData, this.variables, {
                 topic: this.topicInput.value,
                 difficulty: this.difficultyInput.value
             });
@@ -714,7 +662,7 @@ class DSEGeometryController {
             subtopic: null,
             difficulty: this.difficultyInput.value,
             question_data: this.currentQuestionData,
-            variables: this.sliderVariables
+            variables: this.variables
         };
         try {
             // Disable buttons during export
