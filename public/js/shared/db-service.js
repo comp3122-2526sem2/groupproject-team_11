@@ -335,10 +335,11 @@ class DBService {
         // ── Render LaTeX with MathJax (SVG output) ──
         if (window.MathJax?.typesetPromise) {
             try {
-                // Clear MathJax's internal list so it processes fresh elements
-                if (MathJax.startup?.document) {
-                    MathJax.startup.document.clear();
-                    MathJax.startup.document.updateDocument();
+                // Only clear tracking for this container (not the entire page)
+                // Using global clear() + updateDocument() causes double-rendering
+                // on pages where MathJax has already typeset on-screen formulas.
+                if (window.MathJax.typesetClear) {
+                    MathJax.typesetClear([container]);
                 }
                 await MathJax.typesetPromise([container]);
             } catch (e) {
