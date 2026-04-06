@@ -12,13 +12,16 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
         rel="stylesheet">
+    <style>
+        mjx-assistive-mml, .mjx-assistive-mml { display: none !important; }
+    </style>
     <script>
         window.MathJax = {
-            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-            svg: { fontCache: 'global' }
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'none' }
         };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 
 <body class="hub-body">
@@ -176,8 +179,8 @@
                         <button id="save-problem-btn" class="action-btn save-btn" data-i18n="geo.save">
                             💾 儲存題目
                         </button>
-                        <button id="export-json-btn" class="action-btn export-btn" data-i18n="geo.exportJson">
-                            📥 導出 JSON
+                        <button id="export-pdf-btn" class="action-btn export-btn" data-i18n="geo.exportPdf">
+                            📑 導出 PDF
                         </button>
                         <button id="export-txt-btn" class="action-btn export-btn" data-i18n="geo.exportTxt">
                             📄 導出 TXT
@@ -191,6 +194,10 @@
 
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
+
+    <!-- PDF Export Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script src="../js/shared/i18n.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

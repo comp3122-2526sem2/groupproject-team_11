@@ -290,14 +290,14 @@ class DSEGeometryController {
 
         // Save / Export buttons
         this.saveProblemBtn = document.getElementById('save-problem-btn');
-        this.exportJsonBtn = document.getElementById('export-json-btn');
+        this.exportPdfBtn = document.getElementById('export-pdf-btn');
         this.exportTxtBtn = document.getElementById('export-txt-btn');
     }
 
     attachEvents() {
         this.generateBtn.addEventListener('click', () => this.handleGenerate());
         this.saveProblemBtn.addEventListener('click', () => this.handleSave());
-        this.exportJsonBtn.addEventListener('click', () => this.handleExport('json'));
+        this.exportPdfBtn.addEventListener('click', () => this.handleExport('pdf'));
         this.exportTxtBtn.addEventListener('click', () => this.handleExport('txt'));
     }
 
@@ -717,10 +717,22 @@ class DSEGeometryController {
             variables: this.sliderVariables
         };
         try {
-            DBService.exportProblem(pseudoRow, format);
+            // Disable buttons during export
+            const btn = format === 'pdf' ? this.exportPdfBtn : this.exportTxtBtn;
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⏳ 生成中…';
+
+            await DBService.exportProblem(pseudoRow, format);
             this.showToast(_te('geo.exportDone', { f: format.toUpperCase() }), 'success');
+
+            btn.disabled = false;
+            btn.textContent = originalText;
         } catch (err) {
             this.showToast(_te('geo.exportFail') + err.message, 'error');
+            // Reset buttons on error
+            this.exportPdfBtn.disabled = false;
+            this.exportTxtBtn.disabled = false;
         }
     }
 }

@@ -264,7 +264,7 @@ class DSEAlgebraController {
 
         // Save / Export buttons
         this.saveBtn = document.getElementById('alg-save-btn');
-        this.exportJsonBtn = document.getElementById('alg-export-json-btn');
+        this.exportPdfBtn = document.getElementById('alg-export-pdf-btn');
         this.exportTxtBtn = document.getElementById('alg-export-txt-btn');
     }
 
@@ -298,7 +298,7 @@ class DSEAlgebraController {
         this.generateBtn.addEventListener('click', () => this.handleGenerate());
         this.topicSelect.addEventListener('change', () => this.updateSubtopics());
         this.saveBtn.addEventListener('click', () => this.handleSave());
-        this.exportJsonBtn.addEventListener('click', () => this.handleExport('json'));
+        this.exportPdfBtn.addEventListener('click', () => this.handleExport('pdf'));
         this.exportTxtBtn.addEventListener('click', () => this.handleExport('txt'));
 
         // Re-trigger MathJax when <details> sections are expanded
@@ -533,10 +533,22 @@ class DSEAlgebraController {
             variables: {}
         };
         try {
-            DBService.exportProblem(pseudoRow, format);
+            // Disable buttons during export
+            const btn = format === 'pdf' ? this.exportPdfBtn : this.exportTxtBtn;
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⏳ 生成中…';
+
+            await DBService.exportProblem(pseudoRow, format);
             this.showToast(_te('geo.exportDone', { f: format.toUpperCase() }), 'success');
+
+            btn.disabled = false;
+            btn.textContent = originalText;
         } catch (err) {
             this.showToast(_te('geo.exportFail') + err.message, 'error');
+            // Reset buttons on error
+            this.exportPdfBtn.disabled = false;
+            this.exportTxtBtn.disabled = false;
         }
     }
 }
