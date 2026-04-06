@@ -63,8 +63,7 @@ class DBService {
                 subtopic: meta.subtopic || null,
                 difficulty: meta.difficulty || 'DSE_Level_4',
                 question_data: questionData,
-                variables: variables || {},
-                is_favorite: false
+                variables: variables || {}
             })
             .select()
             .single();
@@ -108,19 +107,6 @@ class DBService {
 
         if (error) throw new Error(`Load failed: ${error.message}`);
         return data;
-    }
-
-    /**
-     * Toggle the favorite status.
-     */
-    static async toggleFavorite(problemId, isFavorite) {
-        const { error } = await this._client()
-            .from('saved_problems')
-            .update({ is_favorite: isFavorite })
-            .eq('id', problemId)
-            .eq('user_id', this._userId());
-
-        if (error) throw new Error(`Toggle failed: ${error.message}`);
     }
 
     /**
@@ -345,38 +331,6 @@ class DBService {
         `;
         container.innerHTML = html;
         document.body.appendChild(container);
-
-        // ── Render geometry figures ──
-        const figurePlaceholders = container.querySelectorAll('.pdf-figure-placeholder');
-        for (const placeholder of figurePlaceholders) {
-            const problemId = placeholder.dataset.problemId;
-            const row = rows.find(r => r.id === problemId);
-            if (!row || !row.question_data?.figure_code) continue;
-
-            try {
-                const boardId = 'pdf-jsxgraph-' + problemId.substring(0, 8);
-                const figCanvas = document.createElement('div');
-                figCanvas.id = boardId;
-                figCanvas.style.cssText = 'width: 400px; height: 350px; margin: 0 auto;';
-                placeholder.appendChild(figCanvas);
-                if (window.JXG) {
-                    const board = JXG.JSXGraph.initBoard(boardId, {
-                        boundingbox: [-6, 6, 6, -6], axis: true, showCopyright: false, showNavigation: false
-                    });
-                    try {
-                        const fn = new Function('board', row.question_data.figure_code);
-                        fn(board);
-                    } catch (e) {
-                        console.warn('Figure code exec failed for PDF:', e);
-                        placeholder.innerHTML = '<div style="color: #94a3b8; padding: 20px;">圖形未能渲染</div>';
-                    }
-                } else {
-                    placeholder.innerHTML = '<div style="color: #94a3b8; padding: 20px;">（圖形需在幾何生成器中查看）</div>';
-                }
-            } catch (e) {
-                console.warn('Figure rendering failed:', e);
-            }
-        }
 
         // ── Render LaTeX with MathJax (SVG output) ──
         if (window.MathJax?.typesetPromise) {
@@ -639,78 +593,6 @@ class DBService {
     }
 
     // ═══════════════════════════════════════════════════════
-    //  LEARNING PLANS
-    // ═══════════════════════════════════════════════════════
-
-    /**
-     * Save a new learning plan. Deactivates previous plans.
-     */
-    static async saveLearningPlan(assessmentData, planData) {
-        // Deactivate existing active plans
-        await this._client()
-            .from('learning_plans')
-            .update({ is_active: false })
-            .eq('user_id', this._userId())
-            .eq('is_active', true);
-
-        const { data, error } = await this._client()
-            .from('learning_plans')
-            .insert({
-                user_id: this._userId(),
-                assessment_data: assessmentData,
-                plan_data: planData,
-                module_progress: {},
-                is_active: true
-            })
-            .select()
-            .single();
-
-        if (error) throw new Error(`Save plan failed: ${error.message}`);
-        return data;
-    }
-
-    /**
-     * Load the current active learning plan.
-     */
-    static async loadActivePlan() {
-        const { data, error } = await this._client()
-            .from('learning_plans')
-            .select('*')
-            .eq('user_id', this._userId())
-            .eq('is_active', true)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .maybeSingle();
-
-        if (error) throw new Error(`Load plan failed: ${error.message}`);
-        return data; // may be null
-    }
-
-    /**
-     * Update module progress for a plan.
-     */
-    static async updateModuleProgress(planId, moduleId, status) {
-        // Read current progress
-        const { data: plan, error: readErr } = await this._client()
-            .from('learning_plans')
-            .select('module_progress')
-            .eq('id', planId)
-            .single();
-
-        if (readErr) throw new Error(`Read progress failed: ${readErr.message}`);
-
-        const progress = plan.module_progress || {};
-        progress[moduleId] = status;
-
-        const { error } = await this._client()
-            .from('learning_plans')
-            .update({ module_progress: progress })
-            .eq('id', planId);
-
-        if (error) throw new Error(`Update progress failed: ${error.message}`);
-    }
-
-    // ═══════════════════════════════════════════════════════
     //  SOLVER ATTEMPTS
     // ═══════════════════════════════════════════════════════
 
@@ -737,21 +619,7 @@ class DBService {
         if (error) throw new Error(`Save attempt failed: ${error.message}`);
         return data;
     }
-
-    /**
-     * List solver attempts for current user.
-     */
-    static async listSolverAttempts(limit = 20) {
-        const { data, error } = await this._client()
-            .from('solver_attempts')
-            .select('*')
-            .eq('user_id', this._userId())
-            .order('started_at', { ascending: false })
-            .limit(limit);
-
-        if (error) throw new Error(`List attempts failed: ${error.message}`);
-        return data || [];
-    }
 }
 
 window.DBService = DBService;
+

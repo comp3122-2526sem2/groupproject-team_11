@@ -48,13 +48,6 @@
                 <span class="nav-item-badge">AI</span>
             </a>
 
-            <!-- AI Learning Planner -->
-            <a href="pages/learning-plan.html" class="nav-item" id="nav-planner">
-                <span class="nav-item-icon" aria-hidden="true">🗂️</span>
-                <span class="nav-item-label" data-i18n="nav.aiPlanner">AI Learning Planner</span>
-                <span class="nav-item-badge">AI</span>
-            </a>
-
             <!-- 動態幾何生成器 -->
             <a href="pages/dse-geometry.html" class="nav-item" id="nav-dse">
                 <span class="nav-item-icon" aria-hidden="true">✨</span>
@@ -110,10 +103,6 @@
                     data-i18n="topbar.aiSolver">
                     🤖 AI Solver
                 </a>
-                <a href="pages/learning-plan.html" class="topbar-btn primary" id="btn-planner-shortcut"
-                    data-i18n="topbar.planner">
-                    🗂️ Learning Planner
-                </a>
             </div>
         </div>
 
@@ -136,10 +125,6 @@
                 <a href="pages/problem-solver.html" class="hero-badge" role="listitem" id="hero-badge-solver">
                     <span class="badge-icon" aria-hidden="true">🤖</span>
                     <span>AI Math Solver</span>
-                </a>
-                <a href="pages/learning-plan.html" class="hero-badge" role="listitem" id="hero-badge-planner">
-                    <span class="badge-icon" aria-hidden="true">🗂️</span>
-                    <span>AI Learning Planner</span>
                 </a>
                 <div class="hero-badge" role="listitem">
                     <span class="badge-icon" aria-hidden="true">🖥️</span>
@@ -312,8 +297,7 @@
             const path = window.location.pathname.split('/').pop() || 'index.html';
             const map = {
                 'index.html': 'nav-math-viz',
-                'problem-solver.html': 'nav-solver',
-                'learning-plan.html': 'nav-planner'
+                'problem-solver.html': 'nav-solver'
             };
             const activeId = map[path];
             if (activeId) {

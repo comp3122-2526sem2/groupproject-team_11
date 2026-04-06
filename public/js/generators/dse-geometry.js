@@ -297,22 +297,6 @@ class DSEGeometryController {
         this.exportTxtBtn.addEventListener('click', () => this.handleExport('txt'));
     }
 
-    async loadApiKey() {
-        try {
-            const res = await fetch('/api/gemini-key');
-            if (!res.ok) throw new Error('Key endpoint not available');
-            const data = await res.json();
-            this.apiKey = data.key || '';
-        } catch (e) {
-            // Fallback: try localStorage for backward compatibility
-            this.apiKey = localStorage.getItem('GEMINI_API_KEY') || '';
-            if (!this.apiKey) {
-                console.warn('GEMINI_API_KEY not found. Add it to .env and restart the server.');
-                this.showToast('未找到 API Key，請在 .env 設定 GEMINI_API_KEY 並重啟伺服器。', 'error');
-            }
-        }
-    }
-
     showToast(message, type = 'error') {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;

@@ -13,7 +13,6 @@ CHAT_MODELS = [
 ]
 
 VISION_MODELS = [
-    "Qwen/Qwen3.5-9B:fastest",
     "meta-llama/Llama-3.2-11B-Vision-Instruct:fastest",
 ]
 
